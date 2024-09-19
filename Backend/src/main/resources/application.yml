@@ -18,7 +18,7 @@ spring:
   config:
     activate:
       on-profile: "develop"
-    import: optional:file:.env-develop[.properties]
+    import: optional:file:.env-develop.env[.properties]
   datasource:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&serverTimeZone=Asia/Seoul&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
