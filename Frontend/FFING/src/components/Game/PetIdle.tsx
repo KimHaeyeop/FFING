@@ -1,7 +1,10 @@
 import Phaser from 'phaser';
 import { useEffect, useRef } from 'react';
+import SpeechBubble from '../Common/SpeechBubble';
 import petIdleBackground from '/pet-idle-background.png';
 import petSpriteSheet from '/basic-pet-sprite-sheet.png';
+
+
 
 const PetIdle: React.FC = () => {
   const gameContainerRef = useRef<HTMLDivElement>(null);
@@ -34,6 +37,19 @@ const PetIdle: React.FC = () => {
       const background = this.add.image(175, 100, 'background');
       background.setOrigin(0.5, 0.5);  // 중심점 설정
       background.setDisplaySize(this.cameras.main.width, this.cameras.main.height);  // 화면 크기에 맞추기
+
+      // chip 요소 추가 및 좌상단 위치 설정
+      const chip = this.add.text(10, 10, '138승', {
+        fontSize: '20px',
+        backgroundColor: '#C8E697',
+        color: '#000',
+        padding: { left: 10, right: 10, top: 5, bottom: 5 },
+        align: 'center'
+      });
+
+      // 텍스트를 원형 배경의 중앙에 맞춥니다.
+      chip.setOrigin(0, 0);
+
       const pet = this.add.sprite(300, 160, 'pet');
       pet.flipX = true
       pet.setScale(0.5);
@@ -53,7 +69,11 @@ const PetIdle: React.FC = () => {
     };
   }, []);
 
-  return <div ref={gameContainerRef} style={{ width: '100%', height: '100%' }} />;
+  return (
+    <div ref={gameContainerRef} style={{ width: '100%', height: '100%' }}>
+      <SpeechBubble text="안녕! 난 펫이야!" position={{ x: 400, y: 150 }} />
+    </div>
+  )
 };
 
 export default PetIdle;
