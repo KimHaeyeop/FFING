@@ -1,9 +1,12 @@
 package com.tbtr.ffing.global.error;
 
-import com.ssafy.meshroom.backend.global.error.code.CommonErrorCode;
-import com.ssafy.meshroom.backend.global.error.code.ErrorCode;
-import com.ssafy.meshroom.backend.global.error.dto.ErrorResponse;
-import com.ssafy.meshroom.backend.global.error.exception.*;
+import com.tbtr.ffing.global.error.code.CommonErrorCode;
+import com.tbtr.ffing.global.error.code.ErrorCode;
+import com.tbtr.ffing.global.error.dto.ErrorResponse;
+import com.tbtr.ffing.global.error.exception.FullCapacityLimitException;
+import com.tbtr.ffing.global.error.exception.RestApiException;
+import com.tbtr.ffing.global.error.exception.SecurityAuthenticationException;
+import com.tbtr.ffing.global.error.exception.SessionNotExistException;
 import jakarta.security.auth.message.AuthException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -49,12 +52,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(FullCapacityLimitException.class)
     public ResponseEntity<Object> handleFullCapacityLimitExceptionException(FullCapacityLimitException e) {
-        ErrorCode errorCode = e.getErrorCode();
-        return handleExceptionInternal(errorCode);
-    }
-
-    @ExceptionHandler(OpenViduException.class)
-    public ResponseEntity<Object> handleOpenViduExceptionException(OpenViduException e) {
         ErrorCode errorCode = e.getErrorCode();
         return handleExceptionInternal(errorCode);
     }
