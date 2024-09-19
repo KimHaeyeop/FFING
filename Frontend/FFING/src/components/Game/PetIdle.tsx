@@ -7,6 +7,7 @@ import petSpriteSheet from '/basic-pet-sprite-sheet.png';
 const PetIdle: React.FC = () => {
   const gameContainerRef = useRef<HTMLDivElement>(null);
   const [petPosition, setPetPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
+  const [containerWidth, setContainerWidth] = useState(800);
 
   useEffect(() => {
     const config: Phaser.Types.Core.GameConfig = {
@@ -36,6 +37,8 @@ const PetIdle: React.FC = () => {
       const background = this.add.image(175, 100, 'background');
       background.setOrigin(0.5, 0.5);  // 중심점 설정
       background.setDisplaySize(this.cameras.main.width, this.cameras.main.height);  // 화면 크기에 맞추기
+
+      setContainerWidth(this.cameras.main.width);  // 컨테이너의 너비 업데이트
 
       // chip 요소 추가 및 좌상단 위치 설정
       const chip = this.add.text(10, 10, '138승', {
@@ -74,7 +77,7 @@ const PetIdle: React.FC = () => {
   return (
     <div ref={gameContainerRef} style={{ position: 'relative', width: '100%', height: '100%' }}>
       {/* SpeechBubble을 펫 위치를 기준으로 렌더링 */}
-      <SpeechBubble text="안녕! 난 펫이야!" x={petPosition.x} y={petPosition.y} />
+      <SpeechBubble text="안녕! 난 펫이야!" x={petPosition.x} y={petPosition.y} containerWidth={containerWidth}/>
     </div>
   );
 };
