@@ -2,17 +2,18 @@ import React from 'react';
 
 interface SpeechBubbleProps {
   text: string;
-  position?: { x: number; y: number };  // 말풍선 위치 조정 가능
+  x: number;  // 말풍선의 x 위치
+  y: number;  // 말풍선의 y 위치
 }
 
-const SpeechBubble: React.FC<SpeechBubbleProps> = ({ text, position }) => {
+const SpeechBubble: React.FC<SpeechBubbleProps> = ({ text, x, y }) => {
   return (
     <div
       style={{
         position: 'absolute',
-        left: position?.x || '50%',
-        top: position?.y || '50%',
-        transform: 'translate(-50%, -100%)',
+        left: `${x}px`,
+        top: `${y}px`,
+        transform: 'translate(-50%, -100%)',  // 말풍선을 중앙에 맞추고, 펫의 머리 위로 이동
         padding: '10px 20px',
         backgroundColor: 'white',
         borderRadius: '15px',

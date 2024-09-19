@@ -1,13 +1,12 @@
 import Phaser from 'phaser';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import SpeechBubble from '../Common/SpeechBubble';
 import petIdleBackground from '/pet-idle-background.png';
 import petSpriteSheet from '/basic-pet-sprite-sheet.png';
 
-
-
 const PetIdle: React.FC = () => {
   const gameContainerRef = useRef<HTMLDivElement>(null);
+  const [petPosition, setPetPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
 
   useEffect(() => {
     const config: Phaser.Types.Core.GameConfig = {
@@ -46,13 +45,16 @@ const PetIdle: React.FC = () => {
         padding: { left: 10, right: 10, top: 5, bottom: 5 },
         align: 'center'
       });
-
       // 텍스트를 원형 배경의 중앙에 맞춥니다.
       chip.setOrigin(0, 0);
 
       const pet = this.add.sprite(300, 160, 'pet');
       pet.flipX = true
       pet.setScale(0.5);
+      // 펫의 위치를 상태로 저장
+      setPetPosition({ x: pet.x, y: pet.y - pet.displayHeight / 2 - 20 });
+
+
       this.anims.create({
         key: 'idle',
         frames: this.anims.generateFrameNumbers('pet', { start: 0, end: 8 }),
@@ -70,10 +72,11 @@ const PetIdle: React.FC = () => {
   }, []);
 
   return (
-    <div ref={gameContainerRef} style={{ width: '100%', height: '100%' }}>
-      <SpeechBubble text="안녕! 난 펫이야!" position={{ x: 400, y: 150 }} />
+    <div ref={gameContainerRef} style={{ position: 'relative', width: '100%', height: '100%' }}>
+      {/* SpeechBubble을 펫 위치를 기준으로 렌더링 */}
+      <SpeechBubble text="안녕! 난 펫이야!" x={petPosition.x} y={petPosition.y} />
     </div>
-  )
+  );
 };
 
 export default PetIdle;
