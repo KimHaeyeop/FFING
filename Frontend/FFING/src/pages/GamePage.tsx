@@ -18,7 +18,9 @@ const GamePage: React.FC = () => {
       <div>
         <button> 게임 시작 | 랭킹 </button>
       </div>
-      <NavBar />
+      <footer>
+        <NavBar />
+      </footer>
     </>
   );
 };
