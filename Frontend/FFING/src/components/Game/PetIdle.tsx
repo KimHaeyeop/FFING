@@ -1,8 +1,9 @@
 import Phaser from 'phaser';
 import { useEffect, useRef, useState } from 'react';
 import SpeechBubble from '../Common/SpeechBubble';
-import petIdleBackground from '/pet-idle-background.png';
 import petSpriteSheet from '/basic-pet-sprite-sheet.png';
+import petIdleBackground from '/pet-idle-background.png';
+// import petIdleBackgroundVideo from '/pet-idle-background-video.mp4';
 
 const PetIdle: React.FC = () => {
   const gameContainerRef = useRef<HTMLDivElement>(null);
@@ -76,6 +77,14 @@ const PetIdle: React.FC = () => {
 
   return (
     <div ref={gameContainerRef} style={{ position: 'relative', width: '100%', height: '100%' }}>
+      {/* 비디오 배경 */}
+      {/* <video
+        src={petIdleBackgroundVideo}
+        autoPlay
+        loop
+        muted
+        style={{ position: 'absolute', width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}
+      /> */}
       {/* SpeechBubble을 펫 위치를 기준으로 렌더링 */}
       <SpeechBubble text="안녕! 난 펫이야!" x={petPosition.x} y={petPosition.y} containerWidth={containerWidth}/>
     </div>
