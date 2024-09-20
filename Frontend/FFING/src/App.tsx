@@ -12,9 +12,9 @@ const App: React.FC = () => {
     <Router>
       <Routes>
         {/* 메인 페이지 */}
-        <Route path="/" element={<MainPage />} />
+        <Route path="/main" element={<MainPage />} />
         {/* 게임 페이지 */}
-        <Route path="/game" element={<GamePage />} />
+        <Route path="/" element={<GamePage />} />
         {/* 404 페이지 */}
         <Route path="*" element={<NotFoundPage />} />
         {/* 이규석 테스트 */}
