@@ -82,7 +82,7 @@ const PetIdle: React.FC = () => {
   }, [dvw, dvh]); // 뷰포트 크기 변경 시 재렌더링
 
   return (
-    <div ref={gameContainerRef} style={{ position: 'relative', width: '100%', height: '30vh'}}>
+    <div ref={gameContainerRef} style={{ position: 'relative', width: '100%', height: '40vh'}}>
 
       <SpeechBubble
         text="안녕! 난 펫이야!"
