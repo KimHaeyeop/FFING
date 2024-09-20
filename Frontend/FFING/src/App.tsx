@@ -20,7 +20,7 @@ const App: React.FC = () => {
         {/* 이규석 테스트 */}
         <Route path="/test" element={<LGSTestPage />} />
       </Routes>
-    </Router>
+    </Router> 
   );
 };
 
