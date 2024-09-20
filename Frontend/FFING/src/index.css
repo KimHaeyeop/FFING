@@ -131,6 +131,6 @@ button:focus-visible {
 .font-galmuri-11-bold {
   font-family: 'Galmuri11-bold', sans-serif;
 }
-.font-galmuri-11 {
+html body {
   font-family: 'Galmuri11', sans-serif;
 }
