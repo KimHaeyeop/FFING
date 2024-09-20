@@ -1,4 +1,5 @@
 import React from "react";
+import GameBar from "../components/Game/GameBar";
 import NavBar from "../components/Common/Navbar";
 import PetIdle from "../components/Game/PetIdle";
 import PetStatusChart from "../components/Game/PetStatusChart";
@@ -7,7 +8,7 @@ const GamePage: React.FC = () => {
   return (
     <>
       <div>
-        게임페이지
+        <GameBar />
       </div>
       <div>
         <PetIdle />
