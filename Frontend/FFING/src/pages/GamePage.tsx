@@ -9,7 +9,7 @@ const GamePage: React.FC = () => {
     <div className="flex justify-center items-center">
       <div className="w-screen h-screen">
         <div>
-          게임페이지
+          <GameBar />
         </div>
         <div>
           <PetIdle />
