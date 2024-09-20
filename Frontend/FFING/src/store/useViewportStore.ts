@@ -1,4 +1,5 @@
-import { create } from 'zustand';
+// src/store/useViewportStore.ts
+import {create} from 'zustand'; // 'zustand/vanilla'가 아니라 'zustand'에서 가져와야 합니다.
 
 interface ViewportState {
   dvw: number; // dynamic viewport width
