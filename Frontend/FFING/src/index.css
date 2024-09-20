@@ -71,3 +71,63 @@ button:focus-visible {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* 폰트 추가 */
+@font-face {
+  font-family: 'Galmuri7';
+  src: url('/fonts/Galmuri7.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Galmuri9';
+  src: url('/fonts/Galmuri9.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Galmuri11';
+  src: url('/fonts/Galmuri11.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Galmuri11-Bold';
+  src: url('/fonts/Galmuri11-Bold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Galmuri11-Condensed';
+  src: url('/fonts/Galmuri11-Condensed.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Galmuri14';
+  src: url('/fonts/Galmuri14.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'GalmuriMono7';
+  src: url('/fonts/GalmuriMono7.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'GalmuriMono9';
+  src: url('/fonts/GalmuriMono9.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'GalmuriMono11';
+  src: url('/fonts/GalmuriMono11.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-galmuri-11-bold {
+  font-family: 'Galmuri11-bold', sans-serif;
+}
