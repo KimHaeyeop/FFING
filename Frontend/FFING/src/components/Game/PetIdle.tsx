@@ -4,17 +4,19 @@ import SpeechBubble from '../Common/SpeechBubble';
 import petSpriteSheet from '/basic-pet-sprite-sheet.png';
 import petIdleBackground from '/pet-idle-background.png';
 // import petIdleBackgroundVideo from '/pet-idle-background-video.mp4';
+import useViewportStore from '../../store/useViewportStore';
 
 const PetIdle: React.FC = () => {
   const gameContainerRef = useRef<HTMLDivElement>(null);
   const [petPosition, setPetPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
   const [containerWidth, setContainerWidth] = useState(800);
+  const { dvw, dvh } = useViewportStore();
 
   useEffect(() => {
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,
-      width: 350,
-      height: 200,
+      width: 100*dvw,
+      height: 30*dvh,
       backgroundColor: '#000',
       parent: gameContainerRef.current || undefined,
       scene: {

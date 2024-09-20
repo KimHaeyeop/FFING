@@ -134,3 +134,9 @@ button:focus-visible {
 html body {
   font-family: 'Galmuri11', sans-serif;
 }
+
+@layer utilities {
+  .h-dvh {
+    height: 100dvh;
+  }
+}
