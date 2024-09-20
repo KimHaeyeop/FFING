@@ -3,12 +3,12 @@ import { mdiBell } from '@mdi/js';
 import Icon from '@mdi/react';
 
 const GameBar: React.FC = () => {
-  // 7번째 줄: 기본적으로 보지 않은 알림이 있다고 가정
+  // 기본적으로 보지 않은 알림이 있다고 가정
   const hasUnreadNotifications = true; // 여기에 실제 알림 확인 로직을 추가해야 함
 
   return (
     <div style={{ 
-      display: 'flex',  // 11번째 줄: 추가 - 상단에 위치시키기 위해 flex 사용
+      display: 'flex',  // 상단에 위치시키기 위해 flex 사용
       justifyContent: 'space-between', 
       alignItems: 'center',
       padding: '10px',
