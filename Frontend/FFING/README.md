@@ -1,3 +1,19 @@
+# frontend local 환경에서 실험하기
+1. `git clone` 혹은 `git pull`을 통해 내려 받기
+2. `내려받은경로/S11P21A504/FFING`으로 이동
+3. 터미널에 `npm i` 입력
+4. 터미널에 `npm run dev` 입력
+5. 스마트폰 환경에서 확인하고 싶다면 https://chromewebstore.google.com/detail/%EB%AA%A8%EB%B0%94%EC%9D%BC-%EC%8B%9C%EB%AE%AC%EB%A0%88%EC%9D%B4%ED%84%B0-%EB%B0%98%EC%9D%91%ED%98%95-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EB%8F%84%EA%B5%AC/ckejmhbmlajgoklhgbapkiccekfoccmk?hl=ko 접속하여 확장 프로그램 설치
+6. url 입력창 옆에 멍청한 퍼즐 조각을 눌러 확장 프로그램 확인하기
+7. '모바일 시뮬레이터' 옆에 핀 눌러서 URL 입력창 오른편에 고정하기
+8. chrome을 통해 `http://localhost:5173`으로 접속
+9. URL 입력 창 '모바일 시뮬레이터' 아이콘을 눌러서 모바일 창으로 확인
+10. 우측 navigation에 위치한 테블릿 스마트콘 아이콘을 눌러 기기 전환 가능
+
+
+
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
