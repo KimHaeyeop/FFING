@@ -24,7 +24,8 @@ const PetAttackChoice: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto p-4 border-4 border-black rounded-lg bg-white font-galmuri-11">
+    // 필요에 따라서 너비 수정해야 할 수도 
+    <div className="w-full max-w-md mx-auto p-4 border-4 border-black rounded-lg bg-white">
       {attackOptions.map((attack) => (
         <div
           key={attack.name}

@@ -4,7 +4,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import GamePage from './pages/GamePage';
 import MainPage from './pages/MainPage';
 import NotFoundPage from './pages/NotFoundPage';
-import AttackSelection from '../src/components/Game/AttackSelection'
+// 이규석 테스트 페이지
+import LGSTestPage from './pages/LGSTestPage';
 
 const App: React.FC = () => {
   return (
@@ -17,7 +18,7 @@ const App: React.FC = () => {
         {/* 404 페이지 */}
         <Route path="*" element={<NotFoundPage />} />
         {/* 이규석 테스트 */}
-        <Route path="/test" element={<AttackSelection />} />
+        <Route path="/test" element={<LGSTestPage />} />
       </Routes>
     </Router>
   );
