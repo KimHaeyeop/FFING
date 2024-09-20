@@ -19,10 +19,10 @@ const GamePage: React.FC = () => {
         </div>
 
         {/* 버튼 영역 */}
-        <div className="flex rounded-lg overflow-hidden w-full max-w-screen-md mx-auto mt-6 h-16">
+        <div className="flex rounded-lg overflow-hidden w-full max-w-screen-md mx-auto mt-6 h-16 text-2xl">
           {/* 게임 시작 버튼 */}
           <button
-            className="flex-grow-[7] bg-[#FFD874] text-black py-2 rounded-l-lg font-galmuri-11-bold"
+            className="flex-grow-[7] bg-[#FFD874] text-black py-2 rounded-l-lg font-galmuri-11-bold text-2xl"
           // onClick={() => { /* 게임 시작 라우팅 */ }}
           >
             게임 시작
