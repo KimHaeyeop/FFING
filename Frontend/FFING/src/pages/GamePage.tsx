@@ -20,7 +20,7 @@ const GamePage: React.FC = () => {
       <div className="flex rounded-lg overflow-hidden w-full max-w-screen-md mx-auto mt-6 h-16">
         {/* 게임 시작 버튼 */}
         <button
-          className="flex-grow-[7] bg-[#FFD874] text-black py-2 rounded-l-lg font-galmuri-11-bold"
+          className="flex-grow-[7] bg-[#FFD874] text-black py-2 rounded-l-lg font-galmuri-11-bold text-2xl"
           // onClick={() => { /* 게임 시작 라우팅 */ }}
         >
           게임 시작
@@ -28,7 +28,7 @@ const GamePage: React.FC = () => {
 
         {/* 랭킹 버튼 */}
         <button
-          className="flex-grow-[3] bg-[#FFA1A1] text-black py-2 rounded-r-lg font-galmuri-11-bold"
+          className="flex-grow-[3] bg-[#FFA1A1] text-black py-2 rounded-r-lg font-galmuri-11-bold text-2xl"
           // onClick={() => { /* 랭킹 라우팅 */ }}
         >
           랭킹
