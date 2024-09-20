@@ -1,29 +1,32 @@
 import Phaser from 'phaser';
 import { useEffect, useRef, useState } from 'react';
+import useViewportStore from '../../store/useViewportStore'; // Zustand 저장소 사용
 import SpeechBubble from '../Common/SpeechBubble';
 import petSpriteSheet from '/basic-pet-sprite-sheet.png';
 import petIdleBackground from '/pet-idle-background.png';
-// import petIdleBackgroundVideo from '/pet-idle-background-video.mp4';
-import useViewportStore from '../../store/useViewportStore';
 
 const PetIdle: React.FC = () => {
   const gameContainerRef = useRef<HTMLDivElement>(null);
+  const { dvw, dvh } = useViewportStore(); // Zustand에서 동적 뷰포트 크기 가져오기
   const [petPosition, setPetPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
-  const [containerWidth, setContainerWidth] = useState(800);
-  const { dvw, dvh } = useViewportStore();
+  const [containerWidth, setContainerWidth] = useState(dvw * 100); // 화면 너비 맞추기
 
   useEffect(() => {
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,
-      width: 100*dvw,
-      height: 30*dvh,
+      width: dvw * 100,  // 뷰포트에 맞춘 캔버스 너비
+      height: dvh * 100,  // 뷰포트 높이를 100%로 제한
       backgroundColor: '#000',
       parent: gameContainerRef.current || undefined,
       scene: {
         preload: preload,
         create: create,
         update: update
-      }
+      },
+      scale: {
+        mode: Phaser.Scale.RESIZE,  // 게임 크기를 뷰포트에 맞게 조정
+        autoCenter: Phaser.Scale.CENTER_BOTH,  // 중앙 정렬
+      },
     };
 
     const game = new Phaser.Game(config);
@@ -37,11 +40,12 @@ const PetIdle: React.FC = () => {
     }
 
     function create(this: Phaser.Scene) {
-      const background = this.add.image(175, 100, 'background');
-      background.setOrigin(0.5, 0.5);  // 중심점 설정
-      background.setDisplaySize(this.cameras.main.width, this.cameras.main.height);  // 화면 크기에 맞추기
+      setContainerWidth(this.scale.width);  // 컨테이너의 너비 업데이트
 
-      setContainerWidth(this.cameras.main.width);  // 컨테이너의 너비 업데이트
+      // 화면 크기에 따라 배경 이미지 크기와 위치 조정
+      const background = this.add.image(this.scale.width / 2, this.scale.height / 2, 'background');
+      background.setOrigin(0.5, 0.5);
+      background.setDisplaySize(this.scale.width, this.scale.height);  // 화면 크기에 맞추기
 
       // chip 요소 추가 및 좌상단 위치 설정
       const chip = this.add.text(10, 10, '138승', {
@@ -51,15 +55,15 @@ const PetIdle: React.FC = () => {
         padding: { left: 10, right: 10, top: 5, bottom: 5 },
         align: 'center'
       });
-      // 텍스트를 원형 배경의 중앙에 맞춥니다.
       chip.setOrigin(0, 0);
 
-      const pet = this.add.sprite(300, 160, 'pet');
-      pet.flipX = true
+      // 펫의 위치를 동적으로 설정
+      const pet = this.add.sprite(this.scale.width - 100, this.scale.height - 50, 'pet');
+      pet.flipX = true;
       pet.setScale(0.5);
+
       // 펫의 위치를 상태로 저장
       setPetPosition({ x: pet.x, y: pet.y - pet.displayHeight / 2 - 20 });
-
 
       this.anims.create({
         key: 'idle',
@@ -75,20 +79,17 @@ const PetIdle: React.FC = () => {
     return () => {
       game.destroy(true);
     };
-  }, []);
+  }, [dvw, dvh]); // 뷰포트 크기 변경 시 재렌더링
 
   return (
-    <div ref={gameContainerRef} style={{ position: 'relative', width: '100%', height: '100%' }}>
-      {/* 비디오 배경 */}
-      {/* <video
-        src={petIdleBackgroundVideo}
-        autoPlay
-        loop
-        muted
-        style={{ position: 'absolute', width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}
-      /> */}
-      {/* SpeechBubble을 펫 위치를 기준으로 렌더링 */}
-      <SpeechBubble text="안녕! 난 펫이야!" x={petPosition.x} y={petPosition.y} containerWidth={containerWidth}/>
+    <div ref={gameContainerRef} style={{ position: 'relative', width: '100%', height: '30vh'}}>
+
+      <SpeechBubble
+        text="안녕! 난 펫이야!"
+        x={petPosition.x}
+        y={petPosition.y}
+        containerWidth={containerWidth}
+      />
     </div>
   );
 };
