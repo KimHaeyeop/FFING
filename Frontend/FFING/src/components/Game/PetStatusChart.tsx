@@ -50,6 +50,10 @@ const PetStatusChart: React.FC = () => {
         },
         pointLabels: {
           padding: 0,           // 능력치 레이블과 중앙 사이 간격 줄임
+          font: {
+            size: 10,
+            weight: 'bold'
+          }
         },
       },
     },
@@ -68,21 +72,21 @@ const PetStatusChart: React.FC = () => {
   });
 
   return (
-    <div className="flex justify-center bg-gray-100 items-center p-3">
+    <div className="flex justify-center items-center">
       {/* 카드 스타일 적용 */}
       <div className="shadow-lg rounded-lg p-0 max-w-4xl w-full flex flex-row">
         {/* 레이더 차트 */}
-        <div className="w-2/3 flex justify-center items-center">
+        <div className="w-2/3 flex justify-center items-center p-1">
           <Radar data={data} options={options} />
         </div>
 
         {/* 오른쪽 수치 및 변화 */}
         <div className="w-1/3 flex flex-col justify-center p-4">
           {changes.map(({ label, value, change }) => (
-            <div key={label} className="flex items-center justify-between my-0.5">
-              <span className="text-xs font-medium text-gray-700">{label}: {value}</span>
+            <div key={label} className="flex items-center justify-between my-2 whitespace-nowrap">
+              <span className="text-sm font-medium text-gray-700">{label}: {value}</span>
               {change !== 0 && (
-                <span className={`ml-2 text-xs font-bold ${change > 0 ? 'text-blue-500' : 'text-red-500'}`}>
+                <span className={`ml-2 text-sm font-bold ${change > 0 ? 'text-blue-500' : 'text-red-500'}`}>
                   {change > 0 ? `▲ ${Math.abs(change)}` : `▼ ${Math.abs(change)}`}
                 </span>
               )}
