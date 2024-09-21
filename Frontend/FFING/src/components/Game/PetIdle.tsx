@@ -83,7 +83,6 @@ const PetIdle: React.FC = () => {
 
   return (
     <div ref={gameContainerRef} style={{ position: 'relative', width: '100%', height: '40vh'}}>
-
       <SpeechBubble
         text="안녕! 난 펫이야!"
         x={petPosition.x}

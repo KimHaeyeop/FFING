@@ -40,6 +40,7 @@ const PetAttackChoice: React.FC = () => {
               <Icon path={mdiTriangle} size={1} className="rotate-90"/>
               // <div className="mr-2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-black"></div>
             )}
+            &emsp;&emsp;
             <span className="text-lg">{attack.name}</span>
           </div>
           {/* 공격 데미지 표시 */}
