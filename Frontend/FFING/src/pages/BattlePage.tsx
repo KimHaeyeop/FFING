@@ -17,12 +17,28 @@ const attackOptions = [
   { name: '쇼핑', damage: Math.floor(Math.random() * 10) + 1 },
 ];
 
+// 임의의 공격 데이터를 설정합니다.
+const mockOpponentAttack = {
+  name: '쇼핑',
+  damage: Math.floor(Math.random() * 10) + 1,
+};
+
+
+
 const BattlePage: React.FC = () => {
   const gameContainerRef = useRef<HTMLDivElement>(null);
   const { dvw, dvh } = useViewportStore(); // Zustand에서 동적 뷰포트 크기 가져오기
-  const [selectedAttack, setSelectedAttack] = useState<{ name: string; damage: number } | null>(null);
   const [myHp, setMyHp] = useState<number>(100)
   const [opponentHp, setOpponentHp] = useState<number>(100)
+  const [selectedAttack, setSelectedAttack] = useState<{ name: string; damage: number } | null>(null);
+  const [opponentAttack, setOpponentAttack] = useState<{ name: string; damage: number } | null>(null);
+
+  useEffect(() => {
+    // 상대방의 공격을 임의로 설정 (2초 후 opponentAttack 설정)
+    setTimeout(() => {
+      setOpponentAttack(mockOpponentAttack);  // 임의로 상대방 공격 설정
+    }, 2000);
+  }, []);
 
   useEffect(() => {
     const config: Phaser.Types.Core.GameConfig = {
@@ -70,20 +86,41 @@ const BattlePage: React.FC = () => {
       opponentPet.flipX = true;
       opponentPet.setScale(1);
       
-      // 체력 바 추가
+      // 체력 바 위치를 펫의 머리 위로 조정
       const myHpBar = this.add.graphics();
-      myHpBar.fillStyle(0x000000, 1); // 검은색 배경
-      myHpBar.fillRoundedRect(50, 50, 100, 20, 10); // 위치와 크기 설정
+      myHpBar.fillStyle(0x000000, 1);
+      myHpBar.fillRoundedRect(myPet.x - 50, myPet.y - 100, 100, 20, 10);  // 펫의 y 위치 위로 이동
       const myHpFill = this.add.graphics();
-      myHpFill.fillStyle(0xff0000, 1); // 빨간색 현재 체력
-      myHpFill.fillRoundedRect(50, 50, 100 * (myHp / 100), 20, 10); // 체력에 따른 너비 조절
+      myHpFill.clear();
+      myHpFill.fillStyle(0xff0000, 1);
+      myHpFill.fillRoundedRect(myPet.x - 50, myPet.y - 100, 100 * (myHp / 100), 20, 10);
 
       const opponentHpBar = this.add.graphics();
-      opponentHpBar.fillStyle(0x000000, 1); // 검은색 배경
-      opponentHpBar.fillRoundedRect(this.scale.width - 100, 50, 100, 20, 10);
+      opponentHpBar.fillStyle(0x000000, 1);
+      opponentHpBar.fillRoundedRect(opponentPet.x - 50, opponentPet.y - 100, 100, 20, 10);
       const opponentHpFill = this.add.graphics();
-      opponentHpFill.fillStyle(0xff0000, 1); // 빨간색 현재 체력
-      opponentHpFill.fillRoundedRect(this.scale.width - 100, 50, 100 * (opponentHp / 100), 20, 10);
+      opponentHpFill.clear();
+      opponentHpFill.fillStyle(0xff0000, 1);
+      opponentHpFill.fillRoundedRect(opponentPet.x - 50, opponentPet.y - 100, 100 * (opponentHp / 100), 20, 10);
+
+      // 체력 변화에 따른 실시간 업데이트
+      const updateHpBars = () => {
+        myHpBar.clear();
+        myHpBar.fillStyle(0x000000, 1);
+        myHpBar.fillRoundedRect(myPet.x - 50, myPet.y - 100, 100, 20, 10);
+        const myHpFill = this.add.graphics();
+        myHpFill.clear();
+        myHpFill.fillStyle(0xff0000, 1);
+        myHpFill.fillRoundedRect(myPet.x - 50, myPet.y - 100, 100 * (myHp / 100), 20, 10);
+
+        opponentHpBar.clear();
+        opponentHpBar.fillStyle(0x000000, 1);
+        opponentHpBar.fillRoundedRect(opponentPet.x - 50, opponentPet.y - 100, 100, 20, 10);
+        const opponentHpFill = this.add.graphics();
+        opponentHpFill.clear();
+        opponentHpFill.fillStyle(0xff0000, 1);
+        opponentHpFill.fillRoundedRect(opponentPet.x - 50, opponentPet.y - 100, 100 * (opponentHp / 100), 20, 10);
+      };
 
       this.anims.create({
         key: 'my-pet-idle',
@@ -130,33 +167,73 @@ const BattlePage: React.FC = () => {
         frameRate: 10,
         repeat: 0,
       });
-
-      // 공격 선택 시 walk 상태로 변경
-      if (selectedAttack) {
-        myPet.play('my-pet-walk');
-        opponentPet.play('opponent-pet-walk');
-      }
-
-      // 근접 공격 틀 추가
-      this.tweens.add({
-        targets: myPet,
-        x: opponentPet.x - 200, // 상대방 앞까지 이동
-        duration: 500,
-        onComplete: () => {
-          // 펫이 공격 모션을 취함
-          myPet.play('my-pet-attack');
-          this.time.delayedCall(500, () => {
+      
+      // 공격 모션 처리
+      const executeAttack = (attacker: Phaser.GameObjects.Sprite, target: Phaser.GameObjects.Sprite, damage: number, isMyAttack: boolean): Promise<void> => {
+        return new Promise((resolve) => {
+          if (isMyAttack) {
+            attacker.play('my-pet-walk');
             this.tweens.add({
-              targets: myPet,
-              x: myPet.x + 200, // 원래 위치로 복귀
+              targets: attacker,
+              x: attacker.x + 100,
               duration: 500,
               onComplete: () => {
-                myPet.play('my-pet-idle');
+                attacker.play('my-pet-attack');
+                this.time.delayedCall(500, () => {
+                  attacker.play('my-pet-walk');
+                  this.tweens.add({
+                    targets: attacker,
+                    x: attacker.x - 100,
+                    duration: 500,
+                    onComplete: () => {
+                      attacker.play('my-pet-idle');
+                      setOpponentHp((prevHp) => Math.max(prevHp - damage, 0));
+                      // 체력 바 업데이트
+                      updateHpBars();
+                      resolve(); // 공격이 완료되면 Promise를 해결
+                    }
+                  });
+                });
               }
             });
-          })
-        },
-      });
+          } else {
+            attacker.play('opponent-pet-walk');
+            this.tweens.add({
+              targets: attacker,
+              x: attacker.x - 100,
+              duration: 500,
+              onComplete: () => {
+                attacker.play('opponent-pet-attack');
+                this.time.delayedCall(500, () => {
+                  attacker.play('opponent-pet-walk');
+                  this.tweens.add({
+                    targets: attacker,
+                    x: attacker.x + 100,
+                    duration: 500,
+                    onComplete: () => {
+                      attacker.play('opponent-pet-idle');
+                      setMyHp((prevHp) => Math.max(prevHp - damage, 0));
+                      // 체력 바 업데이트
+                      updateHpBars();
+                      resolve(); // 공격이 완료되면 Promise를 해결
+                    }
+                  });
+                });
+              }
+            });
+          }
+        });
+      };
+
+      // 공격이 모두 선택되었을 때 동작
+      if (selectedAttack && opponentAttack) {
+        (async () => {
+          await executeAttack(myPet, opponentPet, selectedAttack.damage, true)
+          await executeAttack(opponentPet, myPet, opponentAttack.damage, false)
+          setSelectedAttack(null);
+          setOpponentAttack(null);
+        })()
+      }
     }
 
     function update() {}
@@ -164,10 +241,9 @@ const BattlePage: React.FC = () => {
     return () => {
       game.destroy(true);
     };
-  }, [dvw, dvh, selectedAttack]); // 뷰포트 크기 변경 시 재렌더링
+  }, [dvw, dvh, selectedAttack, opponentAttack]); // 뷰포트 크기 변경 시 재렌더링
   
   const handleAttackSelect = (attackName: string) => {
-    console.log(1)
     const selected = attackOptions.find((attack) => attack.name === attackName);
     if (selected) {
       setSelectedAttack(selected);
