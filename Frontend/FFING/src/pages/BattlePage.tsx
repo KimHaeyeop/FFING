@@ -5,13 +5,22 @@ import myPetSpriteSheet from '/pets/crab.png';
 import opponentPetSpriteSheet from '/pets/oldman.png';
 import battleBackground from '/backgrounds/battle-background.png';
 import AttackSelection from '../../src/components/Game/AttackSelection';
-import AttackResult from '.../../src/components/Game/AttackResult'
+import AttackResult from '../../src/components/Game/AttackResult'
 import GameBar from '../components/Game/GameBar';
 import NavBar from '../components/Common/Navbar';
+
+const attackOptions = [
+  { name: '금융', damage: Math.floor(Math.random() * 10) + 1 },
+  { name: '식비', damage: Math.floor(Math.random() * 10) + 1 },
+  { name: '생활/문화', damage: Math.floor(Math.random() * 10) + 1 },
+  { name: '교통', damage: Math.floor(Math.random() * 10) + 1 },
+  { name: '쇼핑', damage: Math.floor(Math.random() * 10) + 1 },
+];
 
 const BattlePage: React.FC = () => {
   const gameContainerRef = useRef<HTMLDivElement>(null);
   const { dvw, dvh } = useViewportStore(); // Zustand에서 동적 뷰포트 크기 가져오기
+  const [selectedAttack, setSelectedAttack] = useState<{ name: string; damage: number } | null>(null);
 
   useEffect(() => {
     const config: Phaser.Types.Core.GameConfig = {
@@ -82,6 +91,14 @@ const BattlePage: React.FC = () => {
       game.destroy(true);
     };
   }, [dvw, dvh]); // 뷰포트 크기 변경 시 재렌더링
+  
+  const handleAttackSelect = (attackName: string) => {
+    console.log(1)
+    const selected = attackOptions.find((attack) => attack.name === attackName);
+    if (selected) {
+      setSelectedAttack(selected);
+    }
+  }
 
   return (
     <div className="flex justify-center items-center">
@@ -89,18 +106,22 @@ const BattlePage: React.FC = () => {
         <header>
           <GameBar />
         </header>
-
         {/* 닉네임 */}
-        <div className="flex justify-center items-center text-xl font-bold mt-4">
+        <div className="flex justify-center items-center text-xl font-bold my-2">
           <span className='mr-4'>USER123</span>
           <span className='mx-4'>vs</span>
           <span className='ml-4'>USER456</span>
         </div>
         {/* Phaser 게임 컨테이너 */}
-        <div ref={gameContainerRef} style={{ position: 'relative', width: '100%', height: '40vh'}} />
+        <div ref={gameContainerRef} className='border-4 border-black round-lg' style={{ position: 'relative', width: '100%', height: '40vh'}} />
         {/* 공격 선택 컴포넌트 */}
-        <div>
-          <AttackSelection />
+        <div className='mt-2'>
+          {selectedAttack ? (
+            <AttackResult selectedAttack={selectedAttack}/>
+          ) : (
+            <AttackSelection onSelectAttack={handleAttackSelect}/>
+          )
+        }
         </div>
         <footer>
           <NavBar />
