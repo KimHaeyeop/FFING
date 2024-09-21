@@ -21,6 +21,8 @@ const BattlePage: React.FC = () => {
   const gameContainerRef = useRef<HTMLDivElement>(null);
   const { dvw, dvh } = useViewportStore(); // Zustand에서 동적 뷰포트 크기 가져오기
   const [selectedAttack, setSelectedAttack] = useState<{ name: string; damage: number } | null>(null);
+  const [myHp, setMyHp] = useState<number>(100)
+  const [opponentHp, setOpponentHp] = useState<number>(100)
 
   useEffect(() => {
     const config: Phaser.Types.Core.GameConfig = {
@@ -67,6 +69,21 @@ const BattlePage: React.FC = () => {
       const opponentPet = this.add.sprite(this.scale.width - 100, this.scale.height - 100, 'opponentpet');
       opponentPet.flipX = true;
       opponentPet.setScale(1);
+      
+      // 체력 바 추가
+      const myHpBar = this.add.graphics();
+      myHpBar.fillStyle(0x000000, 1); // 검은색 배경
+      myHpBar.fillRoundedRect(50, 50, 100, 20, 10); // 위치와 크기 설정
+      const myHpFill = this.add.graphics();
+      myHpFill.fillStyle(0xff0000, 1); // 빨간색 현재 체력
+      myHpFill.fillRoundedRect(50, 50, 100 * (myHp / 100), 20, 10); // 체력에 따른 너비 조절
+
+      const opponentHpBar = this.add.graphics();
+      opponentHpBar.fillStyle(0x000000, 1); // 검은색 배경
+      opponentHpBar.fillRoundedRect(this.scale.width - 100, 50, 100, 20, 10);
+      const opponentHpFill = this.add.graphics();
+      opponentHpFill.fillStyle(0xff0000, 1); // 빨간색 현재 체력
+      opponentHpFill.fillRoundedRect(this.scale.width - 100, 50, 100 * (opponentHp / 100), 20, 10);
 
       this.anims.create({
         key: 'my-pet-idle',
@@ -83,6 +100,63 @@ const BattlePage: React.FC = () => {
         repeat: -1
       });
       opponentPet.play('opponent-pet-idle');
+
+      // 공격을 위한 이동
+      this.anims.create({
+        key: 'my-pet-walk',
+        frames: this.anims.generateFrameNumbers('mypet', { start: 1, end: 8 }),
+        frameRate: 10,
+        repeat: -1,
+      });
+
+      this.anims.create({
+        key: 'opponent-pet-walk',
+        frames: this.anims.generateFrameNumbers('opponentpet', { start: 1, end: 8 }),
+        frameRate: 10,
+        repeat: -1,
+      });
+
+      // 공격 
+      this.anims.create({
+        key: 'my-pet-attack',
+        frames: this.anims.generateFrameNumbers('mypet', { start: 48, end: 55 }),
+        frameRate: 10,
+        repeat: 0,
+      });
+
+      this.anims.create({
+        key: 'opponent-pet-attack',
+        frames: this.anims.generateFrameNumbers('opponentpet', { start: 48, end: 55 }),
+        frameRate: 10,
+        repeat: 0,
+      });
+
+      // 공격 선택 시 walk 상태로 변경
+      if (selectedAttack) {
+        myPet.play('my-pet-walk');
+        opponentPet.play('opponent-pet-walk');
+      }
+
+      // 근접 공격 틀 추가
+      this.tweens.add({
+        targets: myPet,
+        x: opponentPet.x - 200, // 상대방 앞까지 이동
+        duration: 500,
+        onComplete: () => {
+          // 펫이 공격 모션을 취함
+          myPet.play('my-pet-attack');
+          this.time.delayedCall(500, () => {
+            this.tweens.add({
+              targets: myPet,
+              x: myPet.x + 200, // 원래 위치로 복귀
+              duration: 500,
+              onComplete: () => {
+                myPet.play('my-pet-idle');
+              }
+            });
+          })
+        },
+      });
     }
 
     function update() {}
@@ -90,7 +164,7 @@ const BattlePage: React.FC = () => {
     return () => {
       game.destroy(true);
     };
-  }, [dvw, dvh]); // 뷰포트 크기 변경 시 재렌더링
+  }, [dvw, dvh, selectedAttack]); // 뷰포트 크기 변경 시 재렌더링
   
   const handleAttackSelect = (attackName: string) => {
     console.log(1)
