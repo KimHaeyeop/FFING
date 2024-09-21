@@ -1,9 +1,9 @@
 import Phaser from 'phaser';
 import { useEffect, useRef, useState } from 'react';
 import useViewportStore from '../../store/useViewportStore'; // Zustand 저장소 사용
+import petSpriteSheet from '/pets/penguin.png';
+import petIdleBackground from '/backgrounds/pet-idle-background.png';
 import SpeechBubble from '../Common/SpeechBubble';
-import petSpriteSheet from '/basic-pet-sprite-sheet.png';
-import petIdleBackground from '/pet-idle-background.png';
 
 const PetIdle: React.FC = () => {
   const gameContainerRef = useRef<HTMLDivElement>(null);
@@ -67,7 +67,7 @@ const PetIdle: React.FC = () => {
 
       this.anims.create({
         key: 'idle',
-        frames: this.anims.generateFrameNumbers('pet', { start: 0, end: 8 }),
+        frames: this.anims.generateFrameNumbers('pet', { start: 224, end: 231 }),
         frameRate: 10,
         repeat: -1
       });
