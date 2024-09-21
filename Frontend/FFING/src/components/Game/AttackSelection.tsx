@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { mdiTriangle } from '@mdi/js';
-import Icon from '@mdi/react';
 
 interface AttackOption {
   name: string;
@@ -16,11 +14,12 @@ const attackOptions: AttackOption[] = [
   { name: '쇼핑', damage: Math.floor(Math.random() * 10) + 1 },
 ];
 
-const PetAttackChoice: React.FC = () => {
+const AttackSelection: React.FC = ({ onSelectAttack }) => {
   const [selectedAttack, setSelectedAttack] = useState<string | null>(null);
 
   const handleAttackSelect = (attackName: string) => {
     setSelectedAttack(attackName);
+    onSelectAttack(attackName)
   };
 
   return (
@@ -35,11 +34,7 @@ const PetAttackChoice: React.FC = () => {
           onClick={() => handleAttackSelect(attack.name)}
         >
           <div className="flex items-center">
-            {/* 선택된 공격 왼쪽에 삼각형 표시 */}
-            {selectedAttack === attack.name && (
-              <Icon path={mdiTriangle} size={1} className="rotate-90"/>
-              // <div className="mr-2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-black"></div>
-            )}
+            &emsp;&emsp;
             <span className="text-lg">{attack.name}</span>
           </div>
           {/* 공격 데미지 표시 */}
@@ -52,4 +47,4 @@ const PetAttackChoice: React.FC = () => {
   );
 };
 
-export default PetAttackChoice;
+export default AttackSelection;
