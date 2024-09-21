@@ -5,6 +5,9 @@ import myPetSpriteSheet from '/pets/crab.png';
 import opponentPetSpriteSheet from '/pets/oldman.png';
 import battleBackground from '/backgrounds/battle-background.png';
 import AttackSelection from '../../src/components/Game/AttackSelection';
+import AttackResult from '.../../src/components/Game/AttackResult'
+import GameBar from '../components/Game/GameBar';
+import NavBar from '../components/Common/Navbar';
 
 const BattlePage: React.FC = () => {
   const gameContainerRef = useRef<HTMLDivElement>(null);
@@ -81,13 +84,27 @@ const BattlePage: React.FC = () => {
   }, [dvw, dvh]); // 뷰포트 크기 변경 시 재렌더링
 
   return (
-    <div className="w-full h-screen flex flex-col justify-center items-center">
-      {/* Phaser 게임 컨테이너 */}
-      <div ref={gameContainerRef} className="w-full h-1/2" />
+    <div className="flex justify-center items-center">
+      <div className="w-screen h-screen">
+        <header>
+          <GameBar />
+        </header>
 
-      {/* 공격 선택 컴포넌트 */}
-      <div className="w-full h-1/2">
-        <AttackSelection />
+        {/* 닉네임 */}
+        <div className="flex justify-center items-center text-xl font-bold mt-4">
+          <span className='mr-4'>USER123</span>
+          <span className='mx-4'>vs</span>
+          <span className='ml-4'>USER456</span>
+        </div>
+        {/* Phaser 게임 컨테이너 */}
+        <div ref={gameContainerRef} style={{ position: 'relative', width: '100%', height: '40vh'}} />
+        {/* 공격 선택 컴포넌트 */}
+        <div>
+          <AttackSelection />
+        </div>
+        <footer>
+          <NavBar />
+        </footer>
       </div>
     </div>
   );
