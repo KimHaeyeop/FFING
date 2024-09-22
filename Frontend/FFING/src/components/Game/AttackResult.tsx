@@ -1,10 +1,4 @@
-import React, { useState, useEffect } from 'react';
-
-// 임의의 공격 데이터를 설정합니다.
-const mockOpponentAttack = {
-  name: '쇼핑',
-  damage: 1,
-};
+import React, { useEffect } from 'react';
 
 interface AttackResultProps {
   selectedAttack: {

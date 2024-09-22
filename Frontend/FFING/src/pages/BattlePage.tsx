@@ -6,6 +6,11 @@ import AttackSelection from '../components/Game/AttackSelection';
 import AttackResult from '../components/Game/AttackResult';
 import DisplayWinner from '../components/Game/DisplayWinner';
 
+interface AttackOption {
+  name: string;
+  damage: number;
+}
+
 const BattlePage: React.FC = () => {
   const [selectedAttack, setSelectedAttack] = useState<{ name: string; damage: number } | null>(null);
   const [opponentAttack, setOpponentAttack] = useState<{ name: string; damage: number } | null>(null);
@@ -18,18 +23,19 @@ const BattlePage: React.FC = () => {
     };
   };
 
+  const attackOptions: AttackOption[] = [
+    { name: '금융', damage: 0 },
+    { name: '식비', damage: 1 },
+    { name: '생활/문화', damage: 5 },
+    { name: '교통', damage: 7 },
+    { name: '쇼핑', damage: 10 },
+  ];
+
   const handleAttackSelect = (attackName: string) => {
-    const attackOptions = [
-      { name: '금융', damage: 0 },
-      { name: '식비', damage: 1 },
-      { name: '생활/문화', damage: 5 },
-      { name: '교통', damage: 7 },
-      { name: '쇼핑', damage: 10 },
-    ];
     const selected = attackOptions.find((attack) => attack.name === attackName);
     if (selected) {
       setSelectedAttack(selected);
-      setOpponentAttack(setOpponentAttackRandomly());
+      setTimeout(() => setOpponentAttack(setOpponentAttackRandomly()), 1500);
     }
   };
 
@@ -54,7 +60,7 @@ const BattlePage: React.FC = () => {
           ) : selectedAttack ? (
             <AttackResult selectedAttack={selectedAttack} opponentAttack={opponentAttack}/>
           ) : (
-            <AttackSelection onSelectAttack={handleAttackSelect} />
+            <AttackSelection attackOptions={attackOptions} onSelectAttack={handleAttackSelect} />
           )}
         </div>
         <footer>
