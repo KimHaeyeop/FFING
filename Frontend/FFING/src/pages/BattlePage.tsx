@@ -6,6 +6,7 @@ import opponentPetSpriteSheet from '/pets/oldman.png';
 import battleBackground from '/backgrounds/battle-background.png';
 import AttackSelection from '../../src/components/Game/AttackSelection';
 import AttackResult from '../../src/components/Game/AttackResult'
+import DisplayWinner from '../components/Game/DisplayWinner';
 import GameBar from '../components/Game/GameBar';
 import NavBar from '../components/Common/Navbar';
 
@@ -28,10 +29,11 @@ const mockOpponentAttack = {
 const BattlePage: React.FC = () => {
   const gameContainerRef = useRef<HTMLDivElement>(null);
   const { dvw, dvh } = useViewportStore(); // Zustand에서 동적 뷰포트 크기 가져오기
-  const [myHp, setMyHp] = useState<number>(100)
-  const [opponentHp, setOpponentHp] = useState<number>(100)
+  const [myHp, setMyHp] = useState<number>(10)
+  const [opponentHp, setOpponentHp] = useState<number>(10)
   const [selectedAttack, setSelectedAttack] = useState<{ name: string; damage: number } | null>(null);
   const [opponentAttack, setOpponentAttack] = useState<{ name: string; damage: number } | null>(null);
+  const [winner, setWinner] = useState<string | null>(null);
 
   useEffect(() => {
     // 상대방의 공격을 임의로 설정 (2초 후 opponentAttack 설정)
@@ -93,7 +95,7 @@ const BattlePage: React.FC = () => {
       const myHpFill = this.add.graphics();
       myHpFill.clear();
       myHpFill.fillStyle(0xff0000, 1);
-      myHpFill.fillRoundedRect(myPet.x - 50, myPet.y - 100, 100 * (myHp / 100), 20, 10);
+      myHpFill.fillRoundedRect(myPet.x - 50, myPet.y - 100, 100 * (myHp / 10), 20, 10);
 
       const opponentHpBar = this.add.graphics();
       opponentHpBar.fillStyle(0x000000, 1);
@@ -101,7 +103,7 @@ const BattlePage: React.FC = () => {
       const opponentHpFill = this.add.graphics();
       opponentHpFill.clear();
       opponentHpFill.fillStyle(0xff0000, 1);
-      opponentHpFill.fillRoundedRect(opponentPet.x - 50, opponentPet.y - 100, 100 * (opponentHp / 100), 20, 10);
+      opponentHpFill.fillRoundedRect(opponentPet.x - 50, opponentPet.y - 100, 100 * (opponentHp / 10), 20, 10);
 
       // 체력 변화에 따른 실시간 업데이트
       const updateHpBars = () => {
@@ -228,8 +230,15 @@ const BattlePage: React.FC = () => {
       // 공격이 모두 선택되었을 때 동작
       if (selectedAttack && opponentAttack) {
         (async () => {
+          // 지금은 내가 무조건 선빵을 친다.
           await executeAttack(myPet, opponentPet, selectedAttack.damage, true)
+          if (opponentHp <= 0) {
+            setWinner('User');
+          }
           await executeAttack(opponentPet, myPet, opponentAttack.damage, false)
+          if (myHp <= 0) {
+            setWinner('Opponent');
+          } 
           setSelectedAttack(null);
           setOpponentAttack(null);
         })()
@@ -266,7 +275,9 @@ const BattlePage: React.FC = () => {
         <div ref={gameContainerRef} className='border-4 border-black round-lg' style={{ position: 'relative', width: '100%', height: '40vh'}} />
         {/* 공격 선택 컴포넌트 */}
         <div className='mt-2'>
-          {selectedAttack ? (
+          {winner ? (
+            <DisplayWinner winner={winner} />
+          ) : selectedAttack ? (
             <AttackResult selectedAttack={selectedAttack}/>
           ) : (
             <AttackSelection onSelectAttack={handleAttackSelect}/>
