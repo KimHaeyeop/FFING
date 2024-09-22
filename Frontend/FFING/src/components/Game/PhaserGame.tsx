@@ -67,12 +67,6 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
 };
 
   useEffect(() => {
-    if (selectedAttack && opponentAttack) {
-      executeAttack(); // selectedAttack, opponentAttack 값이 변경될 때마다 전투 수행
-    }
-  }, [selectedAttack, opponentAttack]);
-
-  useEffect(() => {
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,
       width: dvw * 100,
@@ -145,6 +139,57 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         repeat: -1
       });
       opponentPet.play('opponent-pet-idle');
+
+    }
+
+    const executeAttack = () => {
+      if (!selectedAttack || !opponentAttack) return;
+
+      const mySpeed = 10;
+      const opponentSpeed = 5;
+
+      if (mySpeed >= opponentSpeed) {
+        // 내 공격
+        setOpponentHp((prevHp) => Math.max(prevHp - selectedAttack.damage, 0));
+        setSelectedAttack(null)
+        if (opponentHp - selectedAttack.damage <= 0) {
+          setWinner('USER123');
+          return;
+        }
+
+        // 상대방의 반격
+        setTimeout(() => {
+          setMyHp((prevHp) => Math.max(prevHp - opponentAttack.damage, 0));
+          setOpponentAttack(null)
+          if (myHp - opponentAttack.damage <= 0) {
+            setWinner('USER456');
+            return;
+          }
+        }, 1000)
+      } else {
+        // 상대방 먼저 공격
+        setTimeout(() => {
+          setMyHp((prevHp) => Math.max(prevHp - opponentAttack.damage, 0));
+          setOpponentAttack(null)
+          if (myHp - opponentAttack.damage <= 0) {
+            setWinner('USER456');
+            return;
+          }
+
+          // 내 펫의 반격
+          setTimeout(() => {
+            setOpponentHp((prevHp) => Math.max(prevHp - selectedAttack.damage, 0));
+            if (opponentHp - selectedAttack.damage <= 0) {
+              setWinner('USER123');
+              return
+            }
+          })
+        }, 1000);
+      }
+    }
+
+    if (selectedAttack && opponentAttack) {
+      executeAttack()
     }
 
     function update() {}
@@ -152,7 +197,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     return () => {
       game.destroy(true);
     };
-  }, [dvw, dvh, myHp, opponentHp, isBattleInProgress, selectedAttack, opponentAttack, setWinner]);
+  }, [dvw, dvh, myHp, opponentHp, isBattleInProgress, selectedAttack, opponentAttack, setWinner, setSelectedAttack, setOpponentAttack]);
 
   return <div ref={gameContainerRef} className="border-4 border-black round-lg" style={{ width: '100%', height: '40vh' }} />;
 };
