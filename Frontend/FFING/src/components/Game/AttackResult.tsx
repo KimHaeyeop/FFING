@@ -3,29 +3,25 @@ import React, { useState, useEffect } from 'react';
 // 임의의 공격 데이터를 설정합니다.
 const mockOpponentAttack = {
   name: '쇼핑',
-  damage: Math.floor(Math.random() * 10) + 1,
+  damage: 1,
 };
 
 interface AttackResultProps {
   selectedAttack: {
     name: string;
     damage: number;
-  };
-}
-
-const AttackResult: React.FC<AttackResultProps> = ({ selectedAttack }) => {
-  const [opponentAttack, setOpponentAttack] = useState<{
+  },
+  opponentAttack: {
     name: string;
     damage: number;
-  } | null>(null);
+  } | null;
+}
+
+const AttackResult: React.FC<AttackResultProps> = ({ selectedAttack, opponentAttack }) => {
 
   useEffect(() => {
     // WebSocket 구독을 통해 상대방의 공격 데이터를 받아오는 로직이 들어갈 부분입니다.
     // 현재는 임의로 데이터를 설정합니다.
-    setTimeout(() => {
-      // 상대방이 공격을 선택한 경우
-      setOpponentAttack(mockOpponentAttack);
-    }, 2000);
 
     // 주석으로 WebSocket 연결 로직 설명
     /*
