@@ -52,7 +52,13 @@ const BattlePage: React.FC = () => {
           <span className="ml-4">USER456</span>
         </div>
         {/* Phaser 게임 컨테이너 */}
-        <PhaserGame selectedAttack={selectedAttack} opponentAttack={opponentAttack} setWinner={setWinner} />
+        <PhaserGame 
+          selectedAttack={selectedAttack}
+          opponentAttack={opponentAttack}
+          setSelectedAttack={setSelectedAttack}
+          setOpponentAttack={setOpponentAttack}
+          setWinner={setWinner}
+        />
         {/* 공격 선택 컴포넌트 */}
         <div className="mt-2">
           {winner ? (
