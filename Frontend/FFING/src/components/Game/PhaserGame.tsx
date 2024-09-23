@@ -2,8 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
 import useViewportStore from '../../store/useViewportStore';
 // 우선 펫 시트는 임의로 지정, 나중에 연동해야겠지?
-import myPetSpriteSheet from '/pets/crab.png';
-import opponentPetSpriteSheet from '/pets/oldman.png';
+import myPetSpriteSheet from '/pets/penguin.png';
+import opponentPetSpriteSheet from '/pets/metamong-purple.png';
 import battleBackground from '/backgrounds/battle-background.png';
 
 interface PhaserGameProps {
@@ -86,30 +86,30 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
 
       this.anims.create({
         key: 'my-pet-idle',
-        frames: this.anims.generateFrameNumbers('mypet', { start: 128, end: 142 }),
-        frameRate: 5,
+        frames: this.anims.generateFrameNumbers('mypet', { start: 128, end: 129 }),
+        frameRate: 1,
         repeat: -1
       });
       myPet.play('my-pet-idle');
 
       this.anims.create({
         key: 'opponent-pet-idle',
-        frames: this.anims.generateFrameNumbers('opponentpet', { start: 128, end: 142 }),
-        frameRate: 5,
+        frames: this.anims.generateFrameNumbers('opponentpet', { start: 128, end: 129 }),
+        frameRate: 1,
         repeat: -1
       });
       opponentPet.play('opponent-pet-idle');
 
       this.anims.create({
         key: 'my-pet-walk',
-        frames: this.anims.generateFrameNumbers('mypet', { start: 1, end: 8 }),
+        frames: this.anims.generateFrameNumbers('mypet', { start: 0, end: 8 }),
         frameRate: 5,
         repeat: -1,
       });
 
       this.anims.create({
         key: 'opponent-pet-walk',
-        frames: this.anims.generateFrameNumbers('opponentpet', { start: 1, end: 8 }),
+        frames: this.anims.generateFrameNumbers('opponentpet', { start: 0, end: 8 }),
         frameRate: 5,
         repeat: -1,
       });
@@ -117,7 +117,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       this.anims.create({
         key: 'my-pet-attack',
         frames: this.anims.generateFrameNumbers('mypet', { start: 48, end: 55 }),
-        frameRate: 10,
+        frameRate: 1,
         repeat: 0,
       });
       
@@ -130,8 +130,8 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
 
       this.anims.create({
         key: 'my-pet-attack-motion',
-        frames: this.anims.generateFrameNumbers('mypet', { start: 204, end: 205 }),
-        frameRate: 5,
+        frames: this.anims.generateFrameNumbers('mypet', { start: 202, end: 207 }),
+        frameRate: 1,
         repeat: 0,
       })
 
@@ -155,7 +155,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
             onComplete: () => {
               pet.play('my-pet-attack')
               myPetAttackEffect.setVisible(true); // 팔 보이게 하기
-              myPetAttackEffect.setPosition(opponent.x, opponent.y); // 팔의 위치를 상대 펫에 맞추기
+              myPetAttackEffect.setPosition(pet.x, pet.y); // 팔의 위치를 상대 펫에 맞추기
               myPetAttackEffect.setDepth(opponent.depth + 1); // z-index 설정
               myPetAttackEffect.play('my-pet-attack-motion'); // 팔 애니메이션 재생
 
