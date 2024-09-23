@@ -14,8 +14,8 @@ ENV TZ=Asia/Seoul
 COPY /build/libs/ffing-0.0.1-SNAPSHOT.jar app.jar
 COPY /env-develop.env env-develop.env
 
-# Expose port 9000
-EXPOSE 9000
+# Expose port 8000
+EXPOSE 8000
 
 # Set the entry point to run the application
 ENTRYPOINT ["java", "-Dspring.profiles.active=develop", "-Duser.timezone=Asia/Seoul", "-jar", "app.jar"]
