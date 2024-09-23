@@ -5,16 +5,12 @@ interface AttackOption {
   damage: number;
 }
 
-const attackOptions: AttackOption[] = [
-  // 지금은 데미지 임의로 설정
-  { name: '금융', damage: Math.floor(Math.random() * 10) + 1 },
-  { name: '식비', damage: Math.floor(Math.random() * 10) + 1 },
-  { name: '생활/문화', damage: Math.floor(Math.random() * 10) + 1 },
-  { name: '교통', damage: Math.floor(Math.random() * 10) + 1 },
-  { name: '쇼핑', damage: Math.floor(Math.random() * 10) + 1 },
-];
+interface AttackSelectionProps {
+  attackOptions: AttackOption[];
+  onSelectAttack: (attackName: string) => void;
+}
 
-const AttackSelection: React.FC = ({ onSelectAttack }) => {
+const AttackSelection: React.FC<AttackSelectionProps> = ({ attackOptions, onSelectAttack }) => {
   const [selectedAttack, setSelectedAttack] = useState<string | null>(null);
 
   const handleAttackSelect = (attackName: string) => {
