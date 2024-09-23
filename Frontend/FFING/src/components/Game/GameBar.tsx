@@ -14,8 +14,10 @@ const GameBar: React.FC = () => {
       padding: '10px',
       borderBottom: '1px solid #ccc' 
     }}>
+      {/* 게임 이름 */}
       <h1>Pet Fight</h1> 
       <div style={{ position: 'relative' }}> {/* 아이콘 위치 설정 */}
+        {/* 종 아이콘 */}
         <Icon path={mdiBell} size={1} /> 
         {hasUnreadNotifications && ( // 보지 않은 알림이 있을 경우 점 표시
           <span style={{ 
@@ -26,7 +28,6 @@ const GameBar: React.FC = () => {
             height: '10px',
             backgroundColor: '#D8B9C3',
             borderRadius: '50%'
-            
           }} />
         )}
       </div>
