@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
 import useViewportStore from '../../store/useViewportStore';
+// 우선 펫 시트는 임의로 지정, 나중에 연동해야겠지?
 import myPetSpriteSheet from '/pets/crab.png';
 import opponentPetSpriteSheet from '/pets/oldman.png';
 import battleBackground from '/backgrounds/battle-background.png';
@@ -19,52 +20,6 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
   const [myHp, setMyHp] = React.useState<number>(10);
   const [opponentHp, setOpponentHp] = React.useState<number>(10);
   const [isBattleInProgress, setIsBattleInProgress] = React.useState<boolean>(false);
-
-  // 공격을 수행하는 함수
-  const executeAttack = () => {
-    if (!selectedAttack || !opponentAttack) return;
-
-    // 공격 순서 정의
-    const mySpeed = 10; // 아직 속도 값이 정의되어 있지 않으므로 임시로 10으로 설정
-    const opponentSpeed = 5; // 상대방 속도도 임시로 설정
-
-    if (mySpeed >= opponentSpeed) {
-      // 내 펫이 먼저 공격
-      setOpponentHp((prevHp) => Math.max(prevHp - selectedAttack.damage, 0));
-      // 공격을 선택한 후에는 null로 초기화
-      setSelectedAttack(null)
-      if (opponentHp - selectedAttack.damage <= 0) {
-        setWinner('USER123');
-        return;
-      }
-    // 상대방의 반격
-    setTimeout(() => {
-      setMyHp((prevHp) => Math.max(prevHp - opponentAttack.damage, 0));
-      setOpponentAttack(null)
-      if (myHp - opponentAttack.damage <= 0) {
-        setWinner('USER456');
-        return
-      }
-    }, 1000);
-  } else {
-    // 상대방이 먼저 공격
-    setMyHp((prevHp) => Math.max(prevHp - opponentAttack.damage, 0));
-    setOpponentAttack(null)
-    if (myHp - opponentAttack.damage <= 0) {
-      setWinner('USER456');
-      return;
-    }
-    // 내 펫의 반격
-    setTimeout(() => {
-      setSelectedAttack(null)
-      setOpponentHp((prevHp) => Math.max(prevHp - selectedAttack.damage, 0));
-      if (opponentHp - selectedAttack.damage <= 0) {
-        setWinner('USER123');
-        return
-      }
-    }, 1000);
-  }
-};
 
   useEffect(() => {
     if (!gameContainerRef.current) return;
@@ -107,6 +62,9 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
 
       const myPet = this.add.sprite(this.scale.width - 300, this.scale.height - 100, 'mypet');
       myPet.setScale(1);
+      // 공격 팔 설정
+      const myPetAttackEffect = this.add.sprite(myPet.x, myPet.y, 'mypet')
+      myPetAttackEffect.setVisible(false);
       const opponentPet = this.add.sprite(this.scale.width - 100, this.scale.height - 100, 'opponentpet');
       opponentPet.flipX = true;
       opponentPet.setScale(1);
@@ -142,23 +100,75 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       });
       opponentPet.play('opponent-pet-idle');
 
+      this.anims.create({
+        key: 'my-pet-walk',
+        frames: this.anims.generateFrameNumbers('mypet', { start: 1, end: 8 }),
+        frameRate: 5,
+        repeat: -1,
+      });
+
+      this.anims.create({
+        key: 'opponent-pet-walk',
+        frames: this.anims.generateFrameNumbers('opponentpet', { start: 1, end: 8 }),
+        frameRate: 5,
+        repeat: -1,
+      });
+
+      this.anims.create({
+        key: 'my-pet-attack',
+        frames: this.anims.generateFrameNumbers('mypet', { start: 48, end: 55 }),
+        frameRate: 10,
+        repeat: 0,
+      });
+      
+      this.anims.create({
+        key: 'opponent-pet-attack',
+        frames: this.anims.generateFrameNumbers('opponentpet', { start: 48, end: 55 }),
+        frameRate: 10,
+        repeat: 0,
+      });
+
+      this.anims.create({
+        key: 'my-pet-attack-motion',
+        frames: this.anims.generateFrameNumbers('mypet', { start: 204, end: 205 }),
+        frameRate: 5,
+        repeat: 0,
+      })
+
+      this.anims.create({
+        key: 'opponent-pet-attack-motion',
+        frames: this.anims.generateFrameNumbers('opponentpet', { start: 202, end: 207 }),
+        frameRate: 5,
+        repeat: 0,
+      })
+
       const moveToOpponent = (pet: Phaser.GameObjects.Sprite, opponent: Phaser.GameObjects.Sprite): Promise<void> => {
         return new Promise((resolve) => {
           pet.play('my-pet-walk')
-
           const tween = pet.scene.tweens.add({
             targets: pet,
             x: opponent.x - 100,
             y: opponent.y,
+            // tween 애니메이션의 속도
             ease: 'power2',
             duration: 1000,
             onComplete: () => {
               pet.play('my-pet-attack')
-              resolve()
+              myPetAttackEffect.setVisible(true); // 팔 보이게 하기
+              myPetAttackEffect.setPosition(opponent.x, opponent.y); // 팔의 위치를 상대 펫에 맞추기
+              myPetAttackEffect.setDepth(opponent.depth + 1); // z-index 설정
+              myPetAttackEffect.play('my-pet-attack-motion'); // 팔 애니메이션 재생
+
+              pet.on('animationcomplete-my-pet-attack', () => {
+                myPetAttackEffect.setVisible(false);
+                pet.play('my-pet-walk')
+                resolve();
+              })
             }
           })
         })
       }
+
 
 
       const executeAttack = async () => {
