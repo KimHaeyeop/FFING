@@ -5,8 +5,6 @@ import GamePage from './pages/GamePage';
 import BattlePage from './pages/BattlePage';
 import MainPage from './pages/MainPage';
 import NotFoundPage from './pages/NotFoundPage';
-// 이규석 테스트 페이지
-import LGSTestPage from './pages/LGSTestPage';
 
 const App: React.FC = () => {
   return (
