@@ -5,8 +5,6 @@ import GamePage from './pages/GamePage';
 import BattlePage from './pages/BattlePage';
 import MainPage from './pages/MainPage';
 import NotFoundPage from './pages/NotFoundPage';
-// 이규석 테스트 페이지
-import LGSTestPage from './pages/LGSTestPage';
 
 const App: React.FC = () => {
   return (
@@ -20,8 +18,6 @@ const App: React.FC = () => {
         <Route path="/battle" element={<BattlePage />} />
         {/* 404 페이지 */}
         <Route path="*" element={<NotFoundPage />} />
-        {/* 이규석 테스트 */}
-        <Route path="/test" element={<LGSTestPage />} />
       </Routes>
     </Router> 
   );
