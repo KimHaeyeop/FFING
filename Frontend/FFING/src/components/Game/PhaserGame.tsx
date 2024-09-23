@@ -67,6 +67,8 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
 };
 
   useEffect(() => {
+    if (!gameContainerRef.current) return;
+
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,
       width: dvw * 100,
@@ -140,23 +142,41 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       });
       opponentPet.play('opponent-pet-idle');
 
-    }
+      const moveToOpponent = (pet: Phaser.GameObjects.Sprite, opponent: Phaser.GameObjects.Sprite): Promise<void> => {
+        return new Promise((resolve) => {
+          pet.play('my-pet-walk')
 
-    const executeAttack = () => {
+          const tween = pet.scene.tweens.add({
+            targets: pet,
+            x: opponent.x - 100,
+            y: opponent.y,
+            ease: 'power2',
+            duration: 1000,
+            onComplete: () => {
+              pet.play('my-pet-attack')
+              resolve()
+            }
+          })
+        })
+      }
+
+
+      const executeAttack = async () => {
       if (!selectedAttack || !opponentAttack) return;
-
+      
       const mySpeed = 10;
       const opponentSpeed = 5;
-
+      
       if (mySpeed >= opponentSpeed) {
         // 내 공격
+        await moveToOpponent(myPet, opponentPet)
         setOpponentHp((prevHp) => Math.max(prevHp - selectedAttack.damage, 0));
         setSelectedAttack(null)
         if (opponentHp - selectedAttack.damage <= 0) {
           setWinner('USER123');
           return;
         }
-
+        
         // 상대방의 반격
         setTimeout(() => {
           setMyHp((prevHp) => Math.max(prevHp - opponentAttack.damage, 0));
@@ -168,16 +188,16 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         }, 1000)
       } else {
         // 상대방 먼저 공격
-        setTimeout(() => {
+        setTimeout(async () => {
           setMyHp((prevHp) => Math.max(prevHp - opponentAttack.damage, 0));
           setOpponentAttack(null)
           if (myHp - opponentAttack.damage <= 0) {
             setWinner('USER456');
             return;
           }
-
+          
           // 내 펫의 반격
-          setTimeout(() => {
+          setTimeout(async () => {
             setOpponentHp((prevHp) => Math.max(prevHp - selectedAttack.damage, 0));
             if (opponentHp - selectedAttack.damage <= 0) {
               setWinner('USER123');
@@ -187,10 +207,11 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         }, 1000);
       }
     }
-
+    
     if (selectedAttack && opponentAttack) {
       executeAttack()
     }
+  }
 
     function update() {}
 
