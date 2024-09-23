@@ -67,7 +67,7 @@ button:focus-visible {
   }
 }
 
-/* src/index.css */
+/* 태일윈드 css 적용하기 */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -128,9 +128,12 @@ button:focus-visible {
   font-style: normal;
 }
 
+/* 굵은 폰트 클래스 */
 .font-galmuri-11-bold {
   font-family: 'Galmuri11-bold', sans-serif;
 }
+
+/* 기본 폰트로 적용하기 */
 html body {
   font-family: 'Galmuri11', sans-serif;
 }
