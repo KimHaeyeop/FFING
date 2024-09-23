@@ -20,8 +20,6 @@ const App: React.FC = () => {
         <Route path="/battle" element={<BattlePage />} />
         {/* 404 페이지 */}
         <Route path="*" element={<NotFoundPage />} />
-        {/* 이규석 테스트 */}
-        <Route path="/test" element={<LGSTestPage />} />
       </Routes>
     </Router> 
   );
