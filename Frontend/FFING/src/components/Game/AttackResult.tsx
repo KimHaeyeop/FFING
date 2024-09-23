@@ -56,6 +56,7 @@ const AttackResult: React.FC<AttackResultProps> = ({ selectedAttack, opponentAtt
             <span className="text-lg text-gray-700">{opponentAttack.damage}</span>
           </div>
         ) : (
+          // 상대방이 아직 선택하지 않았을 때
           <div className="text-center text-lg">waiting...</div>
         )}
       </div>

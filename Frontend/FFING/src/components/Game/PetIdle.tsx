@@ -67,8 +67,8 @@ const PetIdle: React.FC = () => {
 
       this.anims.create({
         key: 'idle',
-        frames: this.anims.generateFrameNumbers('pet', { start: 224, end: 231 }),
-        frameRate: 10,
+        frames: this.anims.generateFrameNumbers('pet', { start: 1, end: 2 }),
+        frameRate: 1,
         repeat: -1
       });
       pet.play('idle');
@@ -83,6 +83,7 @@ const PetIdle: React.FC = () => {
 
   return (
     <div ref={gameContainerRef} style={{ position: 'relative', width: '100%', height: '40vh'}}>
+      {/* 펫 말풍선 */}
       <SpeechBubble
         text="안녕! 난 펫이야!"
         x={petPosition.x}
