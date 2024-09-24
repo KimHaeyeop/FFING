@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import Phaser from 'phaser';
+import Phaser, { NONE } from 'phaser';
 import useViewportStore from '../../store/useViewportStore';
 // 우선 펫과 배경 시트는 임의로 지정, 나중에 연동해야겠지?
 import myPetSpriteSheet from '/pets/char_red.png';
@@ -31,7 +31,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       type: Phaser.AUTO,  // Phaser가 CANVAS나 WEBGL 중 자동으로 선택함
       width: dvw * 100, // 뷰포트 너비에 맞춰 게임 캔버스 크기 설정
       height: '100%',
-      backgroundColor: '#000',  // 배경색을 검정색으로 설정
+      backgroundColor: "#FFFFFF",  // 배경색을 검정색으로 설정
       parent: gameContainerRef.current || undefined, // Phaser 게임이 렌더링될 HTML DOM 요소 (gameContainerRef)
       // Phaser 씬(Scene)을 정의하는 부분
       scene: {
@@ -277,7 +277,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     // 아래의 배열의 요소의 변수 값이 변하면 다시 렌더링한다.
   }, [dvw, dvh, myHp, opponentHp, isBattleInProgress, selectedAttack, opponentAttack, setWinner, setSelectedAttack, setOpponentAttack]);
 
-  return <div ref={gameContainerRef} className="round-lg" style={{ width: '100vw', height: '40vh' }} />;
+  return <div ref={gameContainerRef} className="round-lg" style={{ width: '100vw', height: '45vh' }} />;
 };
 
 export default PhaserGame;
