@@ -30,8 +30,8 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,  // Phaser가 CANVAS나 WEBGL 중 자동으로 선택함
       width: dvw * 100, // 뷰포트 너비에 맞춰 게임 캔버스 크기 설정
-      height: dvh * 100,
-      backgroundColor: '#000',  // 배경색을 검정색으로 설정
+      height: '100%',
+      backgroundColor: '#FFF',  // 배경색을 검정색으로 설정
       parent: gameContainerRef.current || undefined, // Phaser 게임이 렌더링될 HTML DOM 요소 (gameContainerRef)
       // Phaser 씬(Scene)을 정의하는 부분
       scene: {
@@ -40,7 +40,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         update: update, // 씬이 매 프레임마다 호출되는 함수 (게임 루프에서 지속적으로 실행)
       },
       scale: {
-        mode: Phaser.Scale.RESIZE,  // 뷰포트 크기에 맞춰 자동으로 리사이즈됨
+        // mode: Phaser.Scale.RESIZE,  // 뷰포트 크기에 맞춰 자동으로 리사이즈됨
         autoCenter: Phaser.Scale.CENTER_BOTH, // 화면 중앙에 Phaser 캔버스를 배치
       },
     };
@@ -78,8 +78,8 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       myPetRope.setVisible(false);  // 채찍은 공격할 때만 보이게 기본적으로 숨긴다.
 
       // 내 펫 기절 시 기절 아이콘 생성
-      const myPetStun = this.add.sprite(myPet.x, myPet.y - 50, 'mypet')
-      myPetStun.setVisible(false) // 기절 모션은 기절할 때만 보여야 한다.
+      const myPetStunMark = this.add.sprite(myPet.x, myPet.y - 50, 'mypet')
+      myPetStunMark.setVisible(false) // 기절 모션은 기절할 때만 보여야 한다.
 
       // 상대 펫 스프라이트 추가
       const opponentPet = this.add.sprite(this.scale.width - 100, this.scale.height - 100, 'opponentpet');
@@ -92,9 +92,9 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       opponentPetRope.setVisible(false);
       
       // 상대 펫 기절 시 기절 아이콘 생성
-      const opponentPetStun = this.add.sprite(opponentPet.x, opponentPet.y - 50, 'opponentpet')
-      opponentPetStun.flipX = true;
-      opponentPetStun.setVisible(false);
+      const opponentPetStunMark = this.add.sprite(opponentPet.x, opponentPet.y - 50, 'opponentpet')
+      opponentPetStunMark.flipX = true;
+      opponentPetStunMark.setVisible(false);
 
       // 내 펫 체력바 생성
       const myHpBar = this.add.graphics();
@@ -125,7 +125,6 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         frameRate: 1, // 1초에 1프레임 재생 속도
         repeat: -1  // 무한 반복
       });
-
       // 전투 기본 상태 실행
       myPet.play('my-pet-idle');
 
@@ -157,13 +156,6 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         frameRate: 10,
         repeat: 0,  // 한 번만 재생
       });
-      
-      this.anims.create({
-        key: 'opponent-pet-attack',
-        frames: this.anims.generateFrameNumbers('opponentpet', { start: 64, end: 69 }),
-        frameRate: 10,
-        repeat: 0,
-      });
 
       this.anims.create({
         key: 'my-pet-attack-motion',
@@ -173,6 +165,13 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       })
 
       this.anims.create({
+        key: 'opponent-pet-attack',
+        frames: this.anims.generateFrameNumbers('opponentpet', { start: 202, end: 207 }),
+        frameRate: 10,
+        repeat: 0,
+      })
+      
+      this.anims.create({
         key: 'opponent-pet-attack-motion',
         frames: this.anims.generateFrameNumbers('opponentpet', { start: 202, end: 207 }),
         frameRate: 10,
@@ -180,17 +179,17 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       })
 
       this.anims.create({
-        key: 'my-pet-stun',
+        key: 'my-pet-stun-bird',
         frames: this.anims.generateFrameNumbers('mypet', { start: 208, end: 219 }),
         frameRate: 10,
-        repeat: -1,
+        repeat: 5,
       })
 
       this.anims.create({
-        key: 'opponent-pet-stun',
+        key: 'opponent-pet-stun-bird',
         frames: this.anims.generateFrameNumbers('opponentpet', { start: 208, end: 219 }),
         frameRate: 10,
-        repeat: -1,
+        repeat: 5,
       })
 
       // 상대방을 공격하는 함수
@@ -251,7 +250,15 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
           setSelectedAttack(null)
           // 상대방이 쓰러지면 승자 표시
           if (opponentHp - selectedAttack.damage <= 0) {
-            setWinner('USER123');
+            // 여기에 이제 상대방 기절로 바꿈
+            // opponentPet.frame()
+            console.log('기절 떠야지')
+            opponentPetStunMark.setVisible(true)  // 기절 마크 표시
+            opponentPetStunMark.play('opponent-pet-stun-bird')  // 상대방 머리 위에 기절 표시
+            // 애니메이션 완료 후 승자 설정
+            myPetStunMark.on('animationcomplete', () => {
+              setWinner('USER456');  // 내 기절 애니메이션 완료 후 승자 설정
+            });
             return; // 상대방은 반격을 못 함
           }
           // 상대방의 반격
@@ -261,6 +268,11 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
             setOpponentAttack(null)
             // 내 체력이 다 해서 쓰러지면
             if (myHp - opponentAttack.damage <= 0) {
+              // 여기에 내 기절 프레임으로 변경
+              // myPet.frame()
+              console.log('여기도 기절 떠야지')
+              myPetStunMark.setVisible(true)  // 기절 마크 표시
+              myPetStunMark.play('my-pet-stun-bird')  // 내 머리 위에 기절 표시
               setWinner('USER456');
               return;
             }
@@ -271,6 +283,9 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
             setMyHp((prevHp) => Math.max(prevHp - opponentAttack.damage, 0));
             setOpponentAttack(null)
             if (myHp - opponentAttack.damage <= 0) {
+              // 여기에 내 기절 프레임으로 변경
+              // myPet.frame()
+              myPetStunMark.play('my-pet-stun-bird')
               setWinner('USER456');
               return;
             }
@@ -278,6 +293,8 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
             setTimeout(async () => {
               setOpponentHp((prevHp) => Math.max(prevHp - selectedAttack.damage, 0));
               if (opponentHp - selectedAttack.damage <= 0) {
+                // opponentPet.frame()
+                opponentPetStunMark.play('opponent-pet-stun-bird')
                 setWinner('USER123');
                 return
               }
