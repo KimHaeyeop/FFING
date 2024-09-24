@@ -69,7 +69,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       background.setDisplaySize(this.scale.width, this.scale.height); // 배경 이미지를 화면 크기에 맞춤
 
       // 내 펫 스프라이트 추가
-      const myPet = this.add.sprite(this.scale.width - 300, this.scale.height - 100, 'mypet');
+      const myPet = this.add.sprite(dvw*20, this.scale.height - 100, 'mypet');
       myPet.setScale(1);
       myPet.setDepth(1)
 
@@ -82,7 +82,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       myPetStunMark.setVisible(false) // 기절 모션은 기절할 때만 보여야 한다.
 
       // 상대 펫 스프라이트 추가
-      const opponentPet = this.add.sprite(this.scale.width - 100, this.scale.height - 100, 'opponentpet');
+      const opponentPet = this.add.sprite(dvw*80, this.scale.height - 100, 'opponentpet');
       opponentPet.flipX = true; // 스프라이트 좌우 반전
       opponentPet.setScale(1);
       
@@ -153,7 +153,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       this.anims.create({
         key: 'my-pet-attack',
         frames: this.anims.generateFrameNumbers('mypet', { start: 64, end: 69 }),
-        frameRate: 10,
+        frameRate: 1,
         repeat: 0,  // 한 번만 재생
       });
 
@@ -164,13 +164,6 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         repeat: 0,
       })
 
-      this.anims.create({
-        key: 'opponent-pet-attack',
-        frames: this.anims.generateFrameNumbers('opponentpet', { start: 202, end: 207 }),
-        frameRate: 10,
-        repeat: 0,
-      })
-      
       this.anims.create({
         key: 'opponent-pet-attack-motion',
         frames: this.anims.generateFrameNumbers('opponentpet', { start: 202, end: 207 }),
@@ -223,7 +216,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
                 })
               // 내 펫의 공격 애니메이션이 완료하면 실행
               pet.on('animationcomplete-my-pet-attack', () => {
-                myPetRope.setVisible(false);
+                myPetRope.setVisible(true);
                 pet.play('my-pet-walk') // 펫은 다시 걷는 모션
                 resolve();  // 공격이 완료되었음을 알림
               })
@@ -319,7 +312,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     // 아래의 배열의 요소의 변수 값이 변하면 다시 렌더링한다.
   }, [dvw, dvh, myHp, opponentHp, isBattleInProgress, selectedAttack, opponentAttack, setWinner, setSelectedAttack, setOpponentAttack]);
 
-  return <div ref={gameContainerRef} className="border-4 border-black round-lg" style={{ width: '100%', height: '40vh' }} />;
+  return <div ref={gameContainerRef} className="round-lg" style={{ width: '100vw', height: '40vh' }} />;
 };
 
 export default PhaserGame;
