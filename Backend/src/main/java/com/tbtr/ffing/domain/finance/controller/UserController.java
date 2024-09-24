@@ -1,6 +1,6 @@
-package com.tbtr.ffing.domain.user.controller;
+package com.tbtr.ffing.domain.finance.controller;
 
-import com.tbtr.ffing.domain.user.service.UserService;
+import com.tbtr.ffing.domain.finance.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

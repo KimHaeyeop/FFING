@@ -1,5 +1,6 @@
-package com.tbtr.ffing.domain.user.repository;
+package com.tbtr.ffing.domain.admin.repository;
 
+import com.tbtr.ffing.domain.admin.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

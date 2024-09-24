@@ -1,4 +1,4 @@
-package com.tbtr.ffing.domain.user.dto;
+package com.tbtr.ffing.domain.finance.dto;
 
 import lombok.Data;
 

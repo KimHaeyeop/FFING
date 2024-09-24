@@ -1,5 +1,6 @@
-package com.tbtr.ffing.domain.user.dto;
+package com.tbtr.ffing.domain.admin.dto;
 
+import com.tbtr.ffing.domain.admin.entity.UserEntity;
 import lombok.Data;
 
 @Data

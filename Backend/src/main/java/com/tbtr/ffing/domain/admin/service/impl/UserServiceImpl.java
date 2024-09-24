@@ -1,8 +1,9 @@
-package com.tbtr.ffing.domain.user.service.impl;
+package com.tbtr.ffing.domain.admin.service.impl;
 
 
-import com.tbtr.ffing.domain.user.repository.UserJpaRepository;
-import com.tbtr.ffing.domain.user.service.UserService;
+import com.tbtr.ffing.domain.admin.entity.UserEntity;
+import com.tbtr.ffing.domain.admin.repository.UserJpaRepository;
+import com.tbtr.ffing.domain.admin.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
