@@ -1,0 +1,59 @@
+package com.tbtr.ffing.domain.finance.service.impl;
+
+import com.tbtr.ffing.domain.finance.dto.request.card.CreateCardTransactionReq;
+import com.tbtr.ffing.domain.finance.dto.request.card.SsafyCreateCardTransactionReq;
+import com.tbtr.ffing.domain.finance.dto.request.card.cHeader;
+import com.tbtr.ffing.domain.finance.dto.response.card.SsafyCreateCardTransactionRes;
+import com.tbtr.ffing.domain.finance.entity.Card;
+import com.tbtr.ffing.domain.finance.entity.CardTransaction;
+import com.tbtr.ffing.domain.finance.entity.Expense;
+import com.tbtr.ffing.domain.finance.repository.CardRepository;
+import com.tbtr.ffing.domain.finance.repository.CardTransactionRepository;
+import com.tbtr.ffing.domain.finance.repository.ExpenseRepository;
+import com.tbtr.ffing.domain.finance.service.CardService;
+import com.tbtr.ffing.domain.user.entity.User;
+import com.tbtr.ffing.global.openfeign.SsafyDeveloperClient;
+import com.tbtr.ffing.global.util.InstitutionTransactionNoGenerator;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+public class CardServiceImpl implements CardService {
+
+    private final CardRepository cardRepository;
+    private final ExpenseRepository expenseRepository;
+    private final SsafyDeveloperClient ssafyDeveloperClient;
+    private final CardTransactionRepository cardTransactionRepository;
+
+    @Value("${SSAFY_DEVELOPER_API_KEY}")
+    private String apiKey;
+
+    @Override
+    @Transactional
+    public void addCardTransaction(CreateCardTransactionReq createCardTransactionReq) {
+        User user = createCardTransactionReq.getUser();
+        String userKey = createCardTransactionReq.getUserKey();
+        String category = createCardTransactionReq.getCategory();
+        SsafyCreateCardTransactionReq ssafyCreateCardTransactionReq = createCardTransactionReq.getSsafyCreateCardTransactionReq();
+
+        String random = InstitutionTransactionNoGenerator.generateInstitutionTransactionUniqueNo();
+
+        SsafyCreateCardTransactionRes res = ssafyDeveloperClient.createCreditCardTransaction(ssafyCreateCardTransactionReq);
+
+        // cardNo로 card찾기
+        Card card = cardRepository.findByCardNo(ssafyCreateCardTransactionReq.getCardNo());
+
+        if(card != null) {
+            // cardTransaction 추가
+            CardTransaction newCardTransaction = res.toEntity(card);
+            cardTransactionRepository.save(newCardTransaction);
+
+            // expense 추가
+            Expense newExpense = newCardTransaction.toEntity(user);
+            expenseRepository.save(newExpense);
+        }
+    }
+}

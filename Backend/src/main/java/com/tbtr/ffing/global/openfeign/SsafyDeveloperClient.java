@@ -1,5 +1,7 @@
 package com.tbtr.ffing.global.openfeign;
 
+import com.tbtr.ffing.domain.finance.dto.request.card.SsafyCreateCardTransactionReq;
+import com.tbtr.ffing.domain.finance.dto.response.card.SsafyCreateCardTransactionRes;
 import com.tbtr.ffing.global.config.FeignClientConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,4 +60,8 @@ public interface SsafyDeveloperClient {
 //	// 수시입출금 거래내역조회
 //	@PostMapping(path = "/edu/demandDeposit/inquireTransactionHistoryList")
 //	SsafyInquireHistoryRes inquireDmdDepTransactionHistory(SsafyInquireHistoryReq ssafyInquireHistoryReq);
+
+	// 카드 결제
+	@PostMapping(path = "/edu/creditCard/createCreditCardTransaction")
+	SsafyCreateCardTransactionRes createCreditCardTransaction(SsafyCreateCardTransactionReq ssafyCreateCardTransactionReq);
 }
