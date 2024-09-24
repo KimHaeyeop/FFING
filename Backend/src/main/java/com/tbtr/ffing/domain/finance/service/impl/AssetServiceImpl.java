@@ -17,6 +17,6 @@ public class AssetServiceImpl implements AssetService {
     @Override
     @Transactional
     public Asset getAsset(long userId) {
-        return assetRepository.findOneByUserId(userId);
+        return assetRepository.findCurrentAssetByUserId(userId);
     }
 }
