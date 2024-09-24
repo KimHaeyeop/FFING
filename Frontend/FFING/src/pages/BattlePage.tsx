@@ -46,11 +46,11 @@ const BattlePage: React.FC = () => {
     <div className="flex justify-center items-center">
       <div className="w-screen h-screen">
         {/* 게임 상단의 petfight와 알람을 표시하는 header */}
-        <header>
+        {/* <header>
           <GameBar />
-        </header>
+        </header> */}
         {/* 닉네임 */}
-        <div className="flex justify-center items-center text-xl font-bold my-2">
+        <div className="flex justify-center items-center text-xm font-bold my-2 h-[5dvh]">
           <span className="mr-4">USER123</span>
           <span className="mx-4">vs</span>
           <span className="ml-4">USER456</span>
@@ -74,9 +74,9 @@ const BattlePage: React.FC = () => {
           )}
         </div>
         {/* 경로 이동을 제공하는 footer */}
-        <footer>
+        {/* <footer>
           <NavBar />
-        </footer>
+        </footer> */}
       </div>
     </div>
   );
