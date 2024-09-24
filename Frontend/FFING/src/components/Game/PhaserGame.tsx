@@ -90,7 +90,6 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     return new Promise<void> ((resolve) => {
       setOpponentHp((prevHp) => {
         const newHp = Math.max(prevHp - selectedAttack!.damage, 0);
-        console.log(newHp)
         // 새로운 체력이 0이 되면
         if (newHp === 0) {
           setWinner('USER456')  // 실제 사용자의 닉네임으로 추후 수정해야 함
