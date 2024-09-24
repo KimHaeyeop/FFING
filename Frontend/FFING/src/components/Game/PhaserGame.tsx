@@ -31,7 +31,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       type: Phaser.AUTO,  // Phaser가 CANVAS나 WEBGL 중 자동으로 선택함
       width: dvw * 100, // 뷰포트 너비에 맞춰 게임 캔버스 크기 설정
       height: '100%',
-      backgroundColor: '#FFF',  // 배경색을 검정색으로 설정
+      backgroundColor: '#FFF',  // 배경색을 흰색으로 설정
       parent: gameContainerRef.current || undefined, // Phaser 게임이 렌더링될 HTML DOM 요소 (gameContainerRef)
       // Phaser 씬(Scene)을 정의하는 부분
       scene: {
@@ -153,13 +153,20 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       this.anims.create({
         key: 'my-pet-attack',
         frames: this.anims.generateFrameNumbers('mypet', { start: 64, end: 69 }),
-        frameRate: 1,
+        frameRate: 10,
         repeat: 0,  // 한 번만 재생
       });
 
       this.anims.create({
         key: 'my-pet-attack-motion',
         frames: this.anims.generateFrameNumbers('mypet', { start: 202, end: 207 }),
+        frameRate: 10,
+        repeat: 0,
+      })
+
+      this.anims.create({
+        key: 'opponent-pet-attack',
+        frames: this.anims.generateFrameNumbers('opponentpet', { start: 64, end: 69 }),
         frameRate: 10,
         repeat: 0,
       })
@@ -184,6 +191,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         frameRate: 10,
         repeat: 5,
       })
+      
 
       // 상대방을 공격하는 함수
       const AttackOpponent = (pet: Phaser.GameObjects.Sprite, opponent: Phaser.GameObjects.Sprite): Promise<void> => {
@@ -225,7 +233,11 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         })
       }
 
+      // 기절 애니메이션 이후 승자를 표시하는 함수
+      // const handleOpponentKnockOut = 
+
       // 공격 명령을 실행하는 함수
+      // 여기에 인자가 없어서 그럴 지도
       const executeAttack = async () => {
         // 한 명이라도 공격이 선택되지 않으면 실행하지 않는다.
         if (!selectedAttack || !opponentAttack) return;
@@ -246,13 +258,13 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
             // 여기에 이제 상대방 기절로 바꿈
             // opponentPet.frame()
             console.log('기절 떠야지')
+            opponentPet.setFrame(9)
             opponentPetStunMark.setVisible(true)  // 기절 마크 표시
             opponentPetStunMark.play('opponent-pet-stun-bird')  // 상대방 머리 위에 기절 표시
-            // 애니메이션 완료 후 승자 설정
-            myPetStunMark.on('animationcomplete', () => {
-              setWinner('USER456');  // 내 기절 애니메이션 완료 후 승자 설정
-            });
+            setWinner('USER456');  // 승자 설정
             return; // 상대방은 반격을 못 함
+            // 애니메이션 완료 후 승자 설정
+            // setWinner('USER456');
           }
           // 상대방의 반격
           setTimeout(() => {
@@ -303,14 +315,14 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     }
     
     // 프레임별 업데이트 함수 (현재는 빈 상태)
-    function update() {}
+    function update(this: Phaser.Scene) {}
 
     return () => {
       // 씬을 파괴할 때 메모리 해제를 위해 true 사용
       game.destroy(true); 
     };
     // 아래의 배열의 요소의 변수 값이 변하면 다시 렌더링한다.
-  }, [dvw, dvh, myHp, opponentHp, isBattleInProgress, selectedAttack, opponentAttack, setWinner, setSelectedAttack, setOpponentAttack]);
+  }, [selectedAttack, opponentAttack]);
 
   return <div ref={gameContainerRef} className="round-lg" style={{ width: '100vw', height: '40vh' }} />;
 };
