@@ -1,6 +1,7 @@
-package com.tbtr.ffing.domain.user.service;
+package com.tbtr.ffing.domain.admin.service;
 
 
+import com.tbtr.ffing.domain.admin.entity.UserEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

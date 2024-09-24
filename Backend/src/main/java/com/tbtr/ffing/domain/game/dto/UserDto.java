@@ -1,4 +1,4 @@
-package com.tbtr.ffing.domain.user.dto;
+package com.tbtr.ffing.domain.game.dto;
 
 import lombok.Data;
 
