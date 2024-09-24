@@ -18,6 +18,10 @@ const PetIdle: React.FC = () => {
       height: dvh * 100,  // 뷰포트 높이를 100%로 제한
       backgroundColor: '#000',
       parent: gameContainerRef.current || undefined,
+      // 오디오 차단
+      audio: {
+        disableWebAudio: true,
+      },
       scene: {
         preload: preload,
         create: create,
