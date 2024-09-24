@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -29,9 +30,14 @@ public class SecurityConfig {
 
         // admin 경로는 admin 권한 소유자만 접근
         http.authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/ffing/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated());
+                .requestMatchers("/ffing/admin/**").hasRole("ADMIN")
+                .anyRequest().authenticated());
 
         return http.build();
+    }
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
