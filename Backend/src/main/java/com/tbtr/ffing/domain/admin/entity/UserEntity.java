@@ -1,9 +1,9 @@
-package com.tbtr.ffing.domain.user.entity;
+package com.tbtr.ffing.domain.admin.entity;
 
+import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import jakarta.persistence.*;
 import java.io.Serializable;
 
 /**

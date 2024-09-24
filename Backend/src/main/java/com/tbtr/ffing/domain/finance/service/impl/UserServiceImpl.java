@@ -1,8 +1,8 @@
-package com.tbtr.ffing.domain.user.service.impl;
+package com.tbtr.ffing.domain.finance.service.impl;
 
 
-import com.tbtr.ffing.domain.user.repository.UserJpaRepository;
-import com.tbtr.ffing.domain.user.service.UserService;
+import com.tbtr.ffing.domain.finance.repository.UserJpaRepository;
+import com.tbtr.ffing.domain.finance.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
