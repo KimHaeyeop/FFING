@@ -1,5 +1,6 @@
 package com.tbtr.ffing.domain.finance.entity;
 
+import com.tbtr.ffing.domain.user.entity.SsafyUser;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,9 +37,13 @@ public class Card {
     @Column(nullable = false, length = 16)
     private String withdrawalAccountNo;
 
-    @Column(nullable = false)
-    private Long cardProductId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "card_product_id", nullable = false)
+    private CardProduct cardProduct;
 
-    @Column(nullable = false)
-    private Long ssafyUserId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ssafy_user_id", nullable = false)
+    private SsafyUser ssafyUser;
+
+
 }
