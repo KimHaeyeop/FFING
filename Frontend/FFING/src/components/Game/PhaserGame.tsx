@@ -58,7 +58,8 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       myPetRef.current?.play('my-pet-attack');  // 휘두르는 모션
       myPetRopeRef.current?.setPosition(myPetRef.current!.x, myPetRef.current!.y);
       myPetRopeRef.current?.setVisible(true); // 채찍이 보이고
-      myPetRopeRef.current?.play('my-pet-attack-motion'); // 채찍의 모션
+      myPetRopeRef.current?.play('my-pet-rope-motion'); // 채찍의 모션
+      // 휘두르는 모션이 끝나면 종료
       myPetRef.current?.on('animationcomplete', () => {
         resolve()
       })
@@ -79,7 +80,6 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         onComplete: () => {
           myPetRef.current?.play('my-pet-idle');  // 다시 기본폼으로
           setSelectedAttack(null);  // 내 공격 삭제
-          setOpponentHp(Math.max(opponentHp - selectedAttack!.damage, 0))  // 피해 계산
           resolve()
         }
       })
@@ -90,8 +90,10 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     return new Promise<void> ((resolve) => {
       setOpponentHp((prevHp) => {
         const newHp = Math.max(prevHp - selectedAttack!.damage, 0);
+        console.log(newHp)
+        // 새로운 체력이 0이 되면
         if (newHp === 0) {
-          setWinner('USER456')
+          setWinner('USER456')  // 실제 사용자의 닉네임으로 추후 수정해야 함
         }
         return newHp
       })
@@ -104,6 +106,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     // 이미 전투가 진행 중이면 함수 종료
     if (isBattleInProgress) return
     setIsBattleInProgress(true)
+    // 단계적으로 함수를 수행하고 모두 완료하면 전투 상태 해제
     try {
       await moveToOpponent()
       await attackOpponent()
@@ -259,7 +262,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       });
 
       this.anims.create({
-        key: 'my-pet-attack-motion',
+        key: 'my-pet-rope-motion',
         frames: this.anims.generateFrameNumbers('mypet', { start: 202, end: 207 }),
         frameRate: 10,
         repeat: 0,
@@ -273,7 +276,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       })
 
       this.anims.create({
-        key: 'opponent-pet-attack-motion',
+        key: 'opponent-pet-rope-motion',
         frames: this.anims.generateFrameNumbers('opponentpet', { start: 202, end: 207 }),
         frameRate: 10,
         repeat: 0,
