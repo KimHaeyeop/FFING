@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.tbtr.ffing.domain.finance.constants.financeConstants;
 import com.tbtr.ffing.global.openfeign.constants.CommonConstants;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

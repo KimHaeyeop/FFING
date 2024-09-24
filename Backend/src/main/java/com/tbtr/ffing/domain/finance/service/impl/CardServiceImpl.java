@@ -12,6 +12,7 @@ import com.tbtr.ffing.domain.finance.repository.CardTransactionRepository;
 import com.tbtr.ffing.domain.finance.repository.ExpenseRepository;
 import com.tbtr.ffing.domain.finance.service.CardService;
 import com.tbtr.ffing.domain.user.entity.User;
+import com.tbtr.ffing.domain.user.repository.UserRepository;
 import com.tbtr.ffing.global.openfeign.SsafyDeveloperClient;
 import com.tbtr.ffing.global.util.InstitutionTransactionNoGenerator;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class CardServiceImpl implements CardService {
     private final ExpenseRepository expenseRepository;
     private final SsafyDeveloperClient ssafyDeveloperClient;
     private final CardTransactionRepository cardTransactionRepository;
+    private final UserRepository userRepository;
 
     @Value("${SSAFY_DEVELOPER_API_KEY}")
     private String apiKey;
@@ -34,13 +36,21 @@ public class CardServiceImpl implements CardService {
     @Override
     @Transactional
     public void addCardTransaction(CreateCardTransactionReq createCardTransactionReq) {
-        User user = createCardTransactionReq.getUser();
+
         String userKey = createCardTransactionReq.getUserKey();
         String category = createCardTransactionReq.getCategory();
-        SsafyCreateCardTransactionReq ssafyCreateCardTransactionReq = createCardTransactionReq.getSsafyCreateCardTransactionReq();
 
         String random = InstitutionTransactionNoGenerator.generateInstitutionTransactionUniqueNo();
 
+        cHeader header = cHeader.of(
+                apiKey,
+                userKey,
+                random
+        );
+
+        User user = userRepository.findByUserId(createCardTransactionReq.getUserId());
+
+        SsafyCreateCardTransactionReq ssafyCreateCardTransactionReq = SsafyCreateCardTransactionReq.of(header, createCardTransactionReq.getCardNo(), createCardTransactionReq.getCvc(), createCardTransactionReq.getMerchantId(), createCardTransactionReq.getPaymentBalance());
         SsafyCreateCardTransactionRes res = ssafyDeveloperClient.createCreditCardTransaction(ssafyCreateCardTransactionReq);
 
         // cardNo로 card찾기
