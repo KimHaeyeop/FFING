@@ -14,9 +14,6 @@ spring:
       max-file-size: 100MB
       max-request-size: 100MB
 
-jwt:
-  secret: ${JWT_SECRET}
-
 server:
   port: 8000
 #  ssl:
@@ -26,7 +23,7 @@ spring:
   config:
     activate:
       on-profile: "develop"
-    import: optional:file:.env-develop.env[.properties]
+    import: optional:file:env-develop.env[.properties]
   datasource:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&serverTimeZone=Asia/Seoul&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -47,7 +44,7 @@ spring:
   config:
     activate:
       on-profile: "local"
-    import: optional:file:.env-local[.properties]
+    import: optional:file:env-local.env[.properties]
   datasource:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&serverTimeZone=Asia/Seoul&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -57,3 +54,5 @@ spring:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
+jwt:
+  secret: ${JWT_SECRET}
