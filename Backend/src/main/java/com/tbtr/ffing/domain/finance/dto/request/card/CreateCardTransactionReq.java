@@ -13,8 +13,13 @@ import lombok.*;
 public class CreateCardTransactionReq {
 
     private String userKey;
-    private User user;
+//    private User user;
+    private Long userId;
     private String category;
-    private SsafyCreateCardTransactionReq ssafyCreateCardTransactionReq;
+    private String cardNo; // 카드번호
+    private String cvc; // 카드보안번호
+    private Long merchantId; // 가맹점ID
+    private Long paymentBalance; // 거래금액
+
 
 }

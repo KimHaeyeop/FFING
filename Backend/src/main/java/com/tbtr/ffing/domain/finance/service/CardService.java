@@ -7,6 +7,7 @@ import com.tbtr.ffing.domain.user.entity.SsafyUser;
 import com.tbtr.ffing.domain.user.entity.User;
 import org.springframework.transaction.annotation.Transactional;
 
+
 public interface CardService {
 
     @Transactional

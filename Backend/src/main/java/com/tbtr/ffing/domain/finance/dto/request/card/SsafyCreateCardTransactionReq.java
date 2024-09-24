@@ -19,5 +19,15 @@ public class SsafyCreateCardTransactionReq {
     private Long merchantId; // 가맹점ID
     private Long paymentBalance; // 거래금액
 
+    public static SsafyCreateCardTransactionReq of(cHeader header, String cardNo, String cvc, Long merchantId, Long paymentBalance) {
+        return SsafyCreateCardTransactionReq.builder()
+                .header(header)
+                .cardNo(cardNo)
+                .cvc(cvc)
+                .merchantId(merchantId)
+                .paymentBalance(paymentBalance)
+                .build();
+    }
+
 
 }
