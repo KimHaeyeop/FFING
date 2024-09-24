@@ -1,4 +1,4 @@
-package com.tbtr.ffing.domain.user.service;
+package com.tbtr.ffing.domain.finance.service;
 
 
 import org.springframework.stereotype.Service;
