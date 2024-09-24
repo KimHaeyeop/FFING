@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
 import useViewportStore from '../../store/useViewportStore';
 // 우선 펫과 배경 시트는 임의로 지정, 나중에 연동해야겠지?
-import myPetSpriteSheet from '/pets/penguin.png';
+import myPetSpriteSheet from '/pets/pikachu.png';
 import opponentPetSpriteSheet from '/pets/metamong-purple.png';
 import battleBackground from '/backgrounds/battle-background.png';
 
@@ -77,6 +77,10 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       const myPetRope = this.add.sprite(myPet.x, myPet.y, 'mypet')
       myPetRope.setVisible(false);  // 채찍은 공격할 때만 보이게 기본적으로 숨긴다.
 
+      // 내 펫 기절 시 기절 아이콘 생성
+      const myPetStun = this.add.sprite(myPet.x, myPet.y - 50, 'mypet')
+      myPetStun.setVisible(false) // 기절 모션은 기절할 때만 보여야 한다.
+
       // 상대 펫 스프라이트 추가
       const opponentPet = this.add.sprite(this.scale.width - 100, this.scale.height - 100, 'opponentpet');
       opponentPet.flipX = true; // 스프라이트 좌우 반전
@@ -84,7 +88,13 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       
       // 상대 펫의 채찍 생성
       const opponentPetRope = this.add.sprite(opponentPet.x, opponentPet.y, 'opponentpet')
+      opponentPetRope.flipX = true;
       opponentPetRope.setVisible(false);
+      
+      // 상대 펫 기절 시 기절 아이콘 생성
+      const opponentPetStun = this.add.sprite(opponentPet.x, opponentPet.y - 50, 'opponentpet')
+      opponentPetStun.flipX = true;
+      opponentPetStun.setVisible(false);
 
       // 내 펫 체력바 생성
       const myHpBar = this.add.graphics();
@@ -115,6 +125,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         frameRate: 1, // 1초에 1프레임 재생 속도
         repeat: -1  // 무한 반복
       });
+
       // 전투 기본 상태 실행
       myPet.play('my-pet-idle');
 
@@ -166,6 +177,20 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         frames: this.anims.generateFrameNumbers('opponentpet', { start: 202, end: 207 }),
         frameRate: 10,
         repeat: 0,
+      })
+
+      this.anims.create({
+        key: 'my-pet-stun',
+        frames: this.anims.generateFrameNumbers('mypet', { start: 208, end: 219 }),
+        frameRate: 10,
+        repeat: -1,
+      })
+
+      this.anims.create({
+        key: 'opponent-pet-stun',
+        frames: this.anims.generateFrameNumbers('opponentpet', { start: 208, end: 219 }),
+        frameRate: 10,
+        repeat: -1,
       })
 
       // 상대방을 공격하는 함수
