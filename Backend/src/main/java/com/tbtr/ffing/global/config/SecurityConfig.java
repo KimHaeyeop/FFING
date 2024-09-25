@@ -25,8 +25,8 @@ public class SecurityConfig {
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests((auth) -> auth
-                    .requestMatchers("/api/v1/**", "/api/v1/signup/**", "/api/v1/test/**").permitAll()
-                    .requestMatchers("/api/v1/admin").hasRole("ADMIN")
+                    .requestMatchers("/", "/signup", "/test").permitAll()
+                    .requestMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated())
             .sessionManagement(session -> session
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 관리 설정
