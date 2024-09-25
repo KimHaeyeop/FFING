@@ -20,7 +20,7 @@ const BattlePage: React.FC = () => {
   const setOpponentAttackRandomly = () => {
     return {
       name: '쇼핑',
-      damage: 1,
+      damage: 5,
     };
   };
 
