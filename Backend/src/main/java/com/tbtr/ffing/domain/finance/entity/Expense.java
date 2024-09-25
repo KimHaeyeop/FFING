@@ -34,9 +34,6 @@ public class Expense {
     @Column(nullable = false, length = 6)
     private String expenseTime;
 
-    @Column(nullable = false, length = 255)
-    private String expenseMethod;
-
     @Column(nullable = false, precision = 16, scale = 2)
     private BigDecimal expenseBalance;
 
