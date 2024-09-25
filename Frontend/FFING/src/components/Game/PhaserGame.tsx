@@ -5,7 +5,6 @@ import useViewportStore from '../../store/useViewportStore';
 import myPetSpriteSheet from '/pets/pikachu.png';
 import opponentPetSpriteSheet from '/pets/metamong-purple.png';
 import battleBackground from '/backgrounds/battle-background.png';
-import { resolve } from 'chart.js/helpers';
 
 // battlePage에서 받는 props 요소
 interface PhaserGameProps {
@@ -43,7 +42,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         targets: myPetRef.current, // 애니메이션 타겟 설정
         x: opponentPetRef.current!.x - 150,  // 상대방 앞으로 이동
         y: opponentPetRef.current!.y,
-        ease: 'Power2', // tween 애니메이션의 속도 제어
+        ease: 'Power1 ', // tween 애니메이션의 속도 제어
         duration: 1000, // 이동 시간 (1초)
         onComplete: () => {
           resolve()
@@ -75,7 +74,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         targets: myPetRef.current, // 애니메이션 타겟 설정
         x: dvw*20,  // 내 원래 위치로 이동
         y: opponentPetRef.current!.y,
-        ease: 'Power1', // tween 애니메이션의 속도 제어
+        ease: 'Linear', // tween 애니메이션의 속도 제어
         duration: 1000, // 이동 시간 (1초)
         onComplete: () => {
           myPetRef.current?.play('my-pet-idle');  // 다시 기본폼으로
@@ -90,11 +89,16 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     return new Promise<void> ((resolve) => {
       setOpponentHp((prevHp) => {
         const newHp = Math.max(prevHp - selectedAttack!.damage, 0);
-        // 새로운 체력이 0이 되면
-        if (newHp === 0) {
-          setWinner('USER456')  // 실제 사용자의 닉네임으로 추후 수정해야 함
-        }
         return newHp
+        // 새로운 체력이 0이 되면
+        // if (newHp === 0) {
+        //   console.log(11)
+        //   opponentPetRef.current?.setFrame(9) // 펫은 납작 엎드리기
+        //   opponentPetStunMarkRef.current?.setVisible(true)  // 스턴 모션이 모이고
+        //   opponentPetStunMarkRef.current?.play('opponent-pet-stun-bird')  // 기절 애니메이션 반복
+        //   setWinner('USER456')  // 실제 사용자의 닉네임으로 추후 수정해야 함
+        // }
+        // return newHp
       })
       resolve()
     })
@@ -228,8 +232,11 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         frameRate: 1, // 1초에 1프레임 재생 속도
         repeat: -1  // 무한 반복
       });
-      // 전투 기본 상태 실행
-      myPet.play('my-pet-idle');
+
+      // 전투가 가능할 때만 전투 기본 상태 실행
+      if (myHp > 0) {
+        myPet.play('my-pet-idle');        
+      }
 
       this.anims.create({
         key: 'opponent-pet-idle',
@@ -237,7 +244,12 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         frameRate: 1,
         repeat: -1
       });
-      opponentPet.play('opponent-pet-idle');
+
+      // 전투가 가능할 때만 전투 기본 상태 실행
+      if (opponentHp > 0) {
+        console.log('뭐고')
+        opponentPet.play('opponent-pet-idle');     
+      }
 
       this.anims.create({
         key: 'my-pet-walk',
@@ -285,14 +297,14 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         key: 'my-pet-stun-bird',
         frames: this.anims.generateFrameNumbers('mypet', { start: 208, end: 219 }),
         frameRate: 10,
-        repeat: 5,
+        repeat: -1,
       })
 
       this.anims.create({
         key: 'opponent-pet-stun-bird',
         frames: this.anims.generateFrameNumbers('opponentpet', { start: 208, end: 219 }),
         frameRate: 10,
-        repeat: 5,
+        repeat: -1,
       })
     }
     
@@ -304,7 +316,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       game.destroy(true); 
     };
     // 아래의 배열의 요소의 변수 값이 변하면 다시 렌더링한다.
-  }, [myHp, opponentHp]);
+  }, []);
   
   // 공격을 수행하는 함수
   useEffect(() => {
@@ -315,6 +327,17 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     }
   }, [selectedAttack, opponentAttack]);
   
+  // 전투 종료를 검정하는 함수
+  useEffect(() => {
+    if (opponentHp === 0) {
+      opponentPetStunMarkRef.current?.setVisible(true)  // 스턴 모션이 모이고
+      opponentPetStunMarkRef.current?.play('opponent-pet-stun-bird')  // 기절 애니메이션 반복
+      opponentPetRef.current?.stop()  // 기존 애니메이션 중지
+      opponentPetRef.current?.setFrame(9) // 펫은 납작 엎드리기
+      setWinner('USER456')  // 실제 사용자의 닉네임으로 추후 수정해야 함
+    }
+  }, [opponentHp])
+
   return <div ref={gameContainerRef} className="round-lg" style={{ width: '100vw', height: '45vh' }} />;
 }
 
