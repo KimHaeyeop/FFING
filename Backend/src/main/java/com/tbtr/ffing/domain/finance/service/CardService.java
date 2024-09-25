@@ -10,6 +10,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface CardService {
 
-    @Transactional
     void addCardTransaction(CreateCardTransactionReq createCardTransactionReq);
 }

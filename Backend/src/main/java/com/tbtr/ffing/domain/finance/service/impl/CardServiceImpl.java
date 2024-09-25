@@ -11,6 +11,7 @@ import com.tbtr.ffing.domain.finance.repository.CardRepository;
 import com.tbtr.ffing.domain.finance.repository.CardTransactionRepository;
 import com.tbtr.ffing.domain.finance.repository.ExpenseRepository;
 import com.tbtr.ffing.domain.finance.service.CardService;
+import com.tbtr.ffing.domain.finance.service.ExpenseService;
 import com.tbtr.ffing.domain.user.entity.User;
 import com.tbtr.ffing.domain.user.repository.UserRepository;
 import com.tbtr.ffing.global.openfeign.SsafyDeveloperClient;
@@ -25,14 +26,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class CardServiceImpl implements CardService {
 
     private final CardRepository cardRepository;
-    private final ExpenseRepository expenseRepository;
     private final SsafyDeveloperClient ssafyDeveloperClient;
     private final CardTransactionRepository cardTransactionRepository;
     private final UserRepository userRepository;
+    private final ExpenseService expenseService;
 
     @Value("${SSAFY_DEVELOPER_API_KEY}")
     private String apiKey;
 
+    /**
+     * 카드 지출 발생
+     */
     @Override
     @Transactional
     public void addCardTransaction(CreateCardTransactionReq createCardTransactionReq) {
@@ -62,8 +66,8 @@ public class CardServiceImpl implements CardService {
             cardTransactionRepository.save(newCardTransaction);
 
             // expense 추가
-            Expense newExpense = newCardTransaction.toEntity(user);
-            expenseRepository.save(newExpense);
+            expenseService.addCardTransactionToExpense(newCardTransaction, user);
         }
     }
+
 }

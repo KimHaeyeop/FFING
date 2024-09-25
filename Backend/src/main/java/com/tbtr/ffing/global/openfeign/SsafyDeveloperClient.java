@@ -1,11 +1,12 @@
 package com.tbtr.ffing.global.openfeign;
 
 import com.tbtr.ffing.domain.finance.dto.request.card.SsafyCreateCardTransactionReq;
+import com.tbtr.ffing.domain.finance.dto.request.account.SsafyTransferDmdDepAccReq;
 import com.tbtr.ffing.domain.finance.dto.response.card.SsafyCreateCardTransactionRes;
+import com.tbtr.ffing.domain.finance.dto.response.account.SsafyTransferDmdDepAccRes;
 import com.tbtr.ffing.global.config.FeignClientConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "ssafy-developer-client",
 	url = "https://finopenapi.ssafy.io/ssafy/api/v1",
@@ -28,9 +29,9 @@ public interface SsafyDeveloperClient {
 //	@PostMapping(path = "/edu/savings/createAccount")
 //	SsafyCreateMemSavingsAccRes createAccount(@RequestBody SsafyCreateMemSavingsAccReq ssafyCreateMemSavingsAccReq);
 //
-//	// 수시입출금 계좌이체
-//	@PostMapping(path = "/edu/demandDeposit/updateDemandDepositAccountTransfer")
-//	SsafyTransferDmdDepAccRes updateDemandDepositAccountTransfer(SsafyTransferDmdDepAccReq ssafyTransferDmdDepAccReq);
+	// 수시입출금 계좌이체
+	@PostMapping(path = "/edu/demandDeposit/updateDemandDepositAccountTransfer")
+	SsafyTransferDmdDepAccRes updateDemandDepositAccountTransfer(SsafyTransferDmdDepAccReq ssafyTransferDmdDepAccReq);
 //
 //	// 수시입출금 계좌목록조회
 //	@PostMapping(path = "/edu/demandDeposit/inquireDemandDepositAccountList")
