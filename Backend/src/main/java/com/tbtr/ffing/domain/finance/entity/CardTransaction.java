@@ -45,7 +45,6 @@ public class CardTransaction {
                 .expenseMemo(null)
                 .expenseDate(this.transactionDate)
                 .expenseTime(this.transactionTime)
-                .expenseMethod("Card")
                 .expenseBalance(this.paymentBalance)
                 .user(user)
                 .build();
