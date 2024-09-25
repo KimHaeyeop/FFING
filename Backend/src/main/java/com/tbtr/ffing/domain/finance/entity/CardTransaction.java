@@ -1,5 +1,6 @@
 package com.tbtr.ffing.domain.finance.entity;
 
+import com.tbtr.ffing.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,15 +34,20 @@ public class CardTransaction {
     @Column(nullable = false, precision = 16, scale = 2)
     private BigDecimal paymentBalance;
 
-    @Column(nullable = false, length = 20)
-    private String transactionStatus;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "card_id", nullable = false)
+    private Card card;
 
-    @Column(nullable = false, length = 16)
-    private String cardNo;
-
-    @Column(nullable = false)
-    private Long ssafyUserId;
-
-    @Column(nullable = false)
-    private Long cardProductId;
+    public Expense toEntity(User user) {
+        return Expense.builder()
+                .expenseName(this.merchant)
+                .expenseCategory(this.category)
+                .expenseMemo(null)
+                .expenseDate(this.transactionDate)
+                .expenseTime(this.transactionTime)
+                .expenseMethod("Card")
+                .expenseBalance(this.paymentBalance)
+                .user(user)
+                .build();
+    }
 }
