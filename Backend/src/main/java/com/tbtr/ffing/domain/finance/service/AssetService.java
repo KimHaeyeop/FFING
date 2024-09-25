@@ -11,5 +11,5 @@ public interface AssetService {
 
     List<Asset> getAssetHistory(long userId);
 
-    List<Asset> getAssetList(long userId);
+//    List<Asset> getAssetList(long userId);
 }

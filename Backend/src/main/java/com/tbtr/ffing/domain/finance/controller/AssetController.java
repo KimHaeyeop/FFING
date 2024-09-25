@@ -26,7 +26,8 @@ public class AssetController {
 
     @GetMapping("/asset/list")
     public ResponseEntity<Object> selectAssetList(long userId) {
-        List<Asset> assets = assetService.getAssetList(userId);
-        return new ResponseEntity<>(assets, HttpStatus.OK);
+//        List<Asset> assets = assetService.getAssetList(userId);
+//        return new ResponseEntity<>(assets, HttpStatus.OK);
+        return null;
     }
 }
