@@ -33,6 +33,9 @@ public class CardServiceImpl implements CardService {
     @Value("${SSAFY_DEVELOPER_API_KEY}")
     private String apiKey;
 
+    /**
+     * 카드 지출 발생
+     */
     @Override
     @Transactional
     public void addCardTransaction(CreateCardTransactionReq createCardTransactionReq) {
@@ -62,8 +65,17 @@ public class CardServiceImpl implements CardService {
             cardTransactionRepository.save(newCardTransaction);
 
             // expense 추가
-            Expense newExpense = newCardTransaction.toEntity(user);
-            expenseRepository.save(newExpense);
+            addCardTransactionToExpense(newCardTransaction, user);
         }
+    }
+
+    /**
+     * 카드 지출 -> 전체 지출에 반영
+     */
+    private void addCardTransactionToExpense(CardTransaction newCardTransaction, User user) {
+
+        Expense newExpense = newCardTransaction.toEntity(user);
+        expenseRepository.save(newExpense);
+
     }
 }
