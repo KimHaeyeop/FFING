@@ -4,7 +4,7 @@ import com.tbtr.ffing.domain.user.entity.User;
 import lombok.*;
 
 /**
- * ffing 카드결제
+ * ffing 카드결제 요청에 사용되는 DTO
  */
 @Builder
 @Getter
@@ -13,7 +13,6 @@ import lombok.*;
 public class CreateCardTransactionReq {
 
     private String userKey;
-//    private User user;
     private Long userId;
     private String category;
     private String cardNo; // 카드번호
