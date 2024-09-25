@@ -25,7 +25,7 @@ public class SsafyCreateCardTransactionRes {
 	public CardTransaction toEntity(Card card) {
 		cREC rec = this.rec;
 
-		// 카테고리 로직 추가
+		// 카테고리 로직 추가 확인 필요
 
 		return CardTransaction.builder()
 				.category(rec.getCategoryName())
@@ -33,7 +33,7 @@ public class SsafyCreateCardTransactionRes {
 				.transactionDate(rec.getTransactionDate())
 				.transactionTime(rec.getTransactionTime())
 				.paymentBalance(BigDecimal.valueOf(rec.getPaymentBalance()))
-				.card(card)  // Set the Card object directly
+				.card(card)
 				.build();
 	}
 
