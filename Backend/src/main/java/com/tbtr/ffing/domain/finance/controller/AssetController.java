@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class AssetController {
     private final AssetService assetService;
@@ -17,7 +19,14 @@ public class AssetController {
 
     @GetMapping("/asset")
     public ResponseEntity<Object> selectAsset(long userId) {
-        Asset asset = assetService.getAsset(userId);
-        return new ResponseEntity<>(asset, HttpStatus.OK);
+        Asset asset = assetService.getCurrentAsset(userId);
+        List<Asset> assets = assetService.getAssetHistory(userId);
+        return new ResponseEntity<>(assets, HttpStatus.OK);
+    }
+
+    @GetMapping("/asset/list")
+    public ResponseEntity<Object> selectAssetList(long userId) {
+        List<Asset> assets = assetService.getAssetList(userId);
+        return new ResponseEntity<>(assets, HttpStatus.OK);
     }
 }
