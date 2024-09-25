@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 /**
- * ssafy 카드결제
+ * ssafy 카드결제 요청에 사용되는 DTO
  */
 @Builder
 @Getter
