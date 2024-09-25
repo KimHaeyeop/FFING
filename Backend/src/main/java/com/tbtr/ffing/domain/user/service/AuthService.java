@@ -1,9 +1,9 @@
 package com.tbtr.ffing.domain.user.service;
 
-import com.tbtr.ffing.domain.user.dto.UserInfoDto.Request;
+import com.tbtr.ffing.domain.user.dto.UserInfoDto;
 
 public interface AuthService {
 
-    void signup(Request requestDTO);
+    UserInfoDto.Response signup(UserInfoDto.Request requestDTO);
 
 }
