@@ -2,6 +2,7 @@ package com.tbtr.ffing.domain.finance.service;
 
 import com.tbtr.ffing.domain.finance.dto.response.expense.ExpenseRes;
 import com.tbtr.ffing.domain.finance.dto.response.expense.CategoryExpenseRes;
+import com.tbtr.ffing.domain.finance.dto.response.expense.MonthlySummaryRes;
 import com.tbtr.ffing.domain.finance.entity.AccountTransaction;
 import com.tbtr.ffing.domain.finance.entity.CardTransaction;
 import com.tbtr.ffing.domain.finance.entity.ExpenseCategory;
@@ -20,4 +21,6 @@ public interface ExpenseService {
     List<CategoryExpenseRes> getWeeklyCategoryExpenses(boolean aThis);
 
     List<CategoryExpenseRes> getThisMonthCategoryExpenses();
+
+    MonthlySummaryRes getMonthlySummary(String yearMonth);
 }
