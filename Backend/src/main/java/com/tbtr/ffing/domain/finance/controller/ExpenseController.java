@@ -43,4 +43,12 @@ public class ExpenseController {
         return ResponseEntity.ok(expenses);
     }
 
+    @GetMapping("/monthly/category")
+    public ResponseEntity<List<CategoryExpenseRes>> getThisMonthCategoryExpenses() {
+
+        List<CategoryExpenseRes> expenses = expenseService.getThisMonthCategoryExpenses();
+        return ResponseEntity.ok(expenses);
+    }
+    
+
 }
