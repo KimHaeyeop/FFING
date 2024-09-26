@@ -34,9 +34,8 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
   const [myHp, setMyHp] = React.useState<number>(myMaxHp); // 내 펫의 현재 체력, 기본값 10(임시)
   const [opponentMaxHp, setOpponentMaxHp] = React.useState<number>(10); // 상대 펫의 최대 체력, 기본값 10(임시)
   const [opponentHp, setOpponentHp] = React.useState<number>(opponentMaxHp); // 상대 펫의 현재 체력, 기본값 10(임시)
-  const [isBattleInProgress, setIsBattleInProgress] = React.useState<boolean>(true); // 전투 진행 여부를 관리 (전투를 종료하기 위한 신호로 사용)
 
-  // 속도는 임시로 정함
+  // 속도는 임시로 정함(추후에 선공 계산 로직 추가)
   const mySpeed = 10
   const opponentSpeed = 5
 
@@ -122,14 +121,10 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
 
   // 전투(한 턴)을 수행하는 함수
   async function petFight (attacker: PetRefs, defender: PetRefs, damage: number, setHp: Dispatch<SetStateAction<number>>) {
-    if (isBattleInProgress) {
       // 단계적으로 함수를 수행하고 모두 완료하면 전투 상태 해제
       await moveToOpponent(attacker, defender)  // 접근
       await attackOpponent(attacker, damage, setHp)  // 공격
       await moveToBase(attacker)  // 복귀
-      } else {
-      return
-      }
     }
     
   useEffect(() => {
@@ -345,9 +340,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
           if (mySpeed > opponentSpeed) {
             // 내 공격 -> 상대 공격
             await petFight(myPetRefs, opponentPetRefs, selectedAttack.damage, setOpponentHp)
-            // console.log('내 공격', opponentHp - selectedAttack.damage)
-            if (opponentHp - selectedAttack.damage > 0 && isBattleInProgress) {
-              // console.log('상대 공격', myHp - opponentAttack.damage)
+            if (opponentHp - selectedAttack.damage > 0) {
               await petFight(opponentPetRefs, myPetRefs, opponentAttack.damage, setMyHp)
             }
             setSelectedAttack(null) // 내 공격 삭제
@@ -355,7 +348,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
           } else {
           // 상대 공격 -> 내 공격
             await petFight(opponentPetRefs, myPetRefs, opponentAttack.damage, setOpponentHp)
-            if (myHp - opponentAttack.damage > 0 && isBattleInProgress) {
+            if (myHp - opponentAttack.damage > 0) {
               await petFight(myPetRefs, opponentPetRefs, selectedAttack.damage, setMyHp)
             }
             setOpponentAttack(null)
@@ -367,7 +360,6 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
   
   // 체력 계산 및 전투 종료를 검정하는 함수
   useEffect(() => {
-    console.log(myHp)
     // myHp가 변경될 때마다 체력바 업데이트
     if (myPetRefs.hpFill.current && myPetRefs.pet.current) {
       myPetRefs.hpFill.current.clear();  // 체력 초기화
@@ -376,7 +368,6 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     }
     // 내 체력이 0일 때
     if (myHp === 0) {
-      setIsBattleInProgress(false)
       myPetRefs.hpFill.current?.clear()  // 깔끔한 디자인을 위해 삭제
       myPetRefs.stunMark.current?.setVisible(true)  // 스턴 모션이 모이고
       myPetRefs.stunMark.current?.play(`${myPetRefs.name}-stun-bird`)  // 기절 애니메이션 반복
@@ -388,7 +379,6 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
 
   // 체력 계산 및 전투 종료를 검정하는 함수
   useEffect(() => {
-    console.log(opponentHp)
     // opponentHp가 변경될 때마다 체력바 업데이트
     if (opponentPetRefs.hpFill.current && opponentPetRefs.pet.current) {
       opponentPetRefs.hpFill.current.clear();  // 체력 초기화
@@ -397,7 +387,6 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     }
     // 상대 체력이 0일 때
     if (opponentHp === 0) {
-      setIsBattleInProgress(false)
       opponentPetRefs.hpFill.current?.clear()  // 깔끔한 디자인을 위해 삭제
       opponentPetRefs.stunMark.current?.setVisible(true)  // 스턴 모션이 모이고
       opponentPetRefs.stunMark.current?.play(`${opponentPetRefs.name}-stun-bird`)  // 기절 애니메이션 반복
