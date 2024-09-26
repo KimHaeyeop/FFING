@@ -6,6 +6,7 @@ import myPetSpriteSheet from '/pets/cat-green.png';
 import opponentPetSpriteSheet from '/pets/man-arab.png';
 import battleBackground from '/backgrounds/battle-background.png';
 
+
 // battlePage에서 받는 props 요소
 interface PhaserGameProps {
   selectedAttack: { name: string; damage: number } | null;
