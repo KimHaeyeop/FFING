@@ -2,7 +2,6 @@ import React, { useEffect, useRef, Dispatch, SetStateAction } from 'react';
 import Phaser from 'phaser';
 import useViewportStore from '../../store/useViewportStore';
 // 우선 펫과 배경 시트는 임의로 지정, 나중에 연동해야겠지?
-import battleBackground from '/backgrounds/battle-background.png';
 import myPetSpriteSheet from '/pets/penguin.png';
 import myPetAttackSpriteSheet from '/pets/penguin-attack.png'
 import opponentPetSpriteSheet from '/pets/oni.png';
@@ -159,7 +158,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
 
     // 자원을 미리 로드하는 함수
     function preload(this: Phaser.Scene) {
-      this.load.image('background', battleBackground);  // 아래에서 'background'라는 이름을 통해 참조 가능
+      this.load.image('background', `backgrounds/battle-background-${Math.floor(Math.random() * 35)}.png`); // 랜덤 이미지 로드
 
       this.load.spritesheet('mypet', myPetSpriteSheet, {
         frameWidth: 128,  // 각 프레임의 너비
@@ -253,6 +252,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       opponentPetRefs.hpFill.current = opponentHpFill
 
       // 애니메이션 설정 (펫의 idle 상태)
+      // 내 펫 대기
       this.anims.create({
         key: 'my-pet-idle',
         frames: this.anims.generateFrameNumbers('mypet', { start: 128, end: 129 }), // mypet의 128번 프레임부터 129번 프레임까지 반복
@@ -261,6 +261,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       });
       myPet.play('my-pet-idle');        
 
+      // 상대 펫 대기
       this.anims.create({
         key: 'opponent-pet-idle',
         frames: this.anims.generateFrameNumbers('opponentpet', { start: 128, end: 129 }),
@@ -269,6 +270,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       });
       opponentPet.play('opponent-pet-idle');
 
+      // 내 펫 이동
       this.anims.create({
         key: 'my-pet-walk',
         frames: this.anims.generateFrameNumbers('mypet', { start: 0, end: 8 }),
@@ -276,6 +278,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         repeat: -1,
       });
 
+      // 상대 펫 이동
       this.anims.create({
         key: 'opponent-pet-walk',
         frames: this.anims.generateFrameNumbers('opponentpet', { start: 0, end: 8 }),
@@ -283,6 +286,23 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         repeat: -1,
       });
 
+      // 내 펫 기절 모션
+      this.anims.create({
+        key: 'my-pet-stun',
+        frames: this.anims.generateFrameNumbers('mypet', { frames: [32, 33, 34, 35, 9] }),
+        frameRate: 5,
+        repeat: 0,
+      })
+
+      // 상대 펫 기절 모션
+      this.anims.create({
+        key: 'opponent-pet-stun',
+        frames: this.anims.generateFrameNumbers('opponentpet', { frames: [32, 33, 34, 35, 9] }),
+        frameRate: 5,
+        repeat: 0,
+      })
+
+      // 내 펫 가절 마크
       this.anims.create({
         key: 'my-pet-stun-bird',
         frames: this.anims.generateFrameNumbers('mypet', { start: 208, end: 219 }),
@@ -290,6 +310,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         repeat: -1,
       })
 
+      // 상대 펫 기절 마크
       this.anims.create({
         key: 'opponent-pet-stun-bird',
         frames: this.anims.generateFrameNumbers('opponentpet', { start: 208, end: 219 }),
@@ -297,7 +318,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         repeat: -1,
       })
 
-      // 공격 모션 테스트
+      // 내 펫 공격 모션
       this.anims.create({
         key: 'my-pet-attack',
         frames: this.anims.generateFrameNumbers('mypet-attack', { start: 0, end: 5 }),
@@ -305,7 +326,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         repeat: 0,
       })
 
-      // 공격 모션 테스트
+      // 상대 펫 공격 모션
       this.anims.create({
         key: 'opponent-pet-attack',
         frames: this.anims.generateFrameNumbers('opponentpet-attack', { start: 0, end: 5 }),
@@ -317,7 +338,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     // 프레임별 업데이트 함수 ()
     function update() {
       if (backgroundRef.current) {
-        backgroundRef.current!.tilePositionX -= 0.01  // 배경을 매프레임마다 0.01만큼 좌측으로 이동
+        backgroundRef.current!.tilePositionX -= 1  // 배경을 매프레임마다 0.01만큼 좌측으로 이동
       }
     }
 
@@ -374,9 +395,8 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     if (myHp === 0) {
       myPetRefs.hpFill.current?.clear()  // 깔끔한 디자인을 위해 삭제
       myPetRefs.stunMark.current?.setVisible(true)  // 스턴 모션이 모이고
-      myPetRefs.stunMark.current?.play(`${myPetRefs.name}-stun-bird`)  // 기절 애니메이션 반복
-      myPetRefs.pet.current?.stop()  // 기존 애니메이션 중지
-      myPetRefs.pet.current?.setFrame(9) // 펫은 납작 엎드리기
+      myPetRefs.stunMark.current?.play(`${myPetRefs.name}-stun-bird`)  // 기절 마크 애니메이션 반복
+      myPetRefs.pet.current?.play(`${myPetRefs.name}-stun`) // 기절 애니메이션 실행
       setWinner('opponent')
     }
   }, [myHp])
@@ -394,8 +414,8 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       opponentPetRefs.hpFill.current?.clear()  // 깔끔한 디자인을 위해 삭제
       opponentPetRefs.stunMark.current?.setVisible(true)  // 스턴 모션이 모이고
       opponentPetRefs.stunMark.current?.play(`${opponentPetRefs.name}-stun-bird`)  // 기절 애니메이션 반복
-      opponentPetRefs.pet.current?.stop()  // 기존 애니메이션 중지
-      opponentPetRefs.pet.current?.setFrame(9) // 펫은 납작 엎드리기
+      // opponentPetRefs.pet.current?.stop()  // 기존 애니메이션 중지
+      opponentPetRefs.pet.current?.play(`${opponentPetRefs.name}-stun`) // 기절 애니메이션 실행
       setWinner('me')
     }
   }, [opponentHp])
