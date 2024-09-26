@@ -13,7 +13,7 @@ import java.util.Map;
 @ToString
 public class GetStockAccountSCInfosRes {
 
-    private List<GetStockAccountSCInfoRes> stockAccountInfos;
+    private List<GetStockAccountSCInfoRes> stockAccountSCInfos;
 
     public static GetStockAccountSCInfosRes of(Map<Long, GetStockAccountSCInfoRes> stockAccountMap) {
         List<GetStockAccountSCInfoRes> toStockAccountInfoList = new ArrayList<>(stockAccountMap.values());
