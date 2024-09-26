@@ -34,7 +34,7 @@ public class User {
     @Column(nullable = false, length = 40)
     private String email;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 100)
     private String password;
 
     @Column(nullable = false, length = 20)
@@ -54,7 +54,7 @@ public class User {
     private String nickname;
 
     @Column
-    private Integer pin;
+    private int pin;
 
     @Column(nullable = false)
     private LocalDate createdAt;
