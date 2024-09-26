@@ -6,7 +6,7 @@ import PhaserGame from '../components/Game/PhaserGame';
 import AttackSelection from '../components/Game/AttackSelection';
 import AttackResult from '../components/Game/AttackResult';
 import DisplayWinner from '../components/Game/DisplayWinner';
-import GameResult from '../components/Game/GameResult';
+import GameResult from '../components/Game/DisplayResult';
 
 interface AttackOption {
   name: string;

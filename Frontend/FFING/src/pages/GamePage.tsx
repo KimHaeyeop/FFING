@@ -34,7 +34,7 @@ const GamePage: React.FC = () => {
           {/* 랭킹 버튼 */}
           <button
             className="flex-grow-[3] bg-[#FFA1A1] text-black py-2 rounded-r-lg font-galmuri-11-bold"
-          onClick={() => { console.log('랭킹 이동 클릭됨') }} // 랭킹 라우팅 추가 필요
+          onClick={() => { navigate('/ranking')}} // 랭킹 페이지로 이동
           >
             랭킹
           </button>
