@@ -1,14 +1,12 @@
 package com.tbtr.ffing.domain.finance.controller;
 
 import com.tbtr.ffing.domain.finance.dto.response.expense.ExpenseRes;
+import com.tbtr.ffing.domain.finance.dto.response.expense.CategoryExpenseRes;
 import com.tbtr.ffing.domain.finance.entity.ExpenseCategory;
 import com.tbtr.ffing.domain.finance.service.ExpenseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,6 +30,16 @@ public class ExpenseController {
         }
 
         List<ExpenseRes> expenses = expenseService.getMonthlyExpenses(category);
+        return ResponseEntity.ok(expenses);
+    }
+
+    @GetMapping("/weekly/category/{week}")
+    public ResponseEntity<List<CategoryExpenseRes>> getWeeklyCategoryExpenses(@PathVariable String week) {
+        if (!week.equals("this") && !week.equals("last")) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        List<CategoryExpenseRes> expenses = expenseService.getWeeklyCategoryExpenses(week.equals("this"));
         return ResponseEntity.ok(expenses);
     }
 
