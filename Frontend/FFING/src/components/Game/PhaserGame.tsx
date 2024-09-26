@@ -3,10 +3,10 @@ import Phaser from 'phaser';
 import useViewportStore from '../../store/useViewportStore';
 // 우선 펫과 배경 시트는 임의로 지정, 나중에 연동해야겠지?
 import battleBackground from '/backgrounds/battle-background.png';
-import myPetSpriteSheet from '/pets/oni.png';
-import myPetAttackSpriteSheet from '/pets/oni-attack.png'
-import opponentPetSpriteSheet from '/pets/penguin.png';
-import opponentPetAttackSpriteSheet from '/pets/penguin-attack.png';
+import myPetSpriteSheet from '/pets/penguin.png';
+import myPetAttackSpriteSheet from '/pets/penguin-attack.png'
+import opponentPetSpriteSheet from '/pets/oni.png';
+import opponentPetAttackSpriteSheet from '/pets/oni-attack.png';
 
 // battlePage에서 받는 props 요소
 interface PhaserGameProps {
@@ -26,7 +26,6 @@ interface PetRefs {
   attackMotion: React.MutableRefObject<Phaser.GameObjects.Sprite | null>; // 펫의 공격 모션
   stunMark: React.MutableRefObject<Phaser.GameObjects.Sprite | null>;
   hpFill: React.MutableRefObject<Phaser.GameObjects.Graphics | null>; 
-  // 공격 모션 테스트
 }
 
 // 게임판 객체
@@ -51,11 +50,9 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     x: dvw * 20,
     range: -100,
     pet: useRef<Phaser.GameObjects.Sprite | null>(null),
-    rope: useRef<Phaser.GameObjects.Sprite | null>(null),
+    attackMotion: useRef<Phaser.GameObjects.Sprite | null>(null),
     stunMark: useRef<Phaser.GameObjects.Sprite | null>(null),
     hpFill: useRef<Phaser.GameObjects.Graphics | null>(null),
-    // 공격 모션 테스트
-    attack: useRef<Phaser.GameObjects.Sprite | null>(null)
   }
   
   // 상대 펫 관련 요소를 참조하는 딕셔너리
@@ -64,11 +61,10 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     x: dvw * 80,
     range: 100,
     pet: useRef<Phaser.GameObjects.Sprite | null>(null),
-    rope: useRef<Phaser.GameObjects.Sprite | null>(null),
+    attackMotion: useRef<Phaser.GameObjects.Sprite | null>(null),
     stunMark: useRef<Phaser.GameObjects.Sprite | null>(null),
     hpFill: useRef<Phaser.GameObjects.Graphics | null>(null),
     // 공격 모션 테스트
-    attack: useRef<Phaser.GameObjects.Sprite | null>(null)
   }
 
   // 상대방으로 이동하는 함수
@@ -79,7 +75,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         targets: attacker.pet.current, // 애니메이션 타겟 설정
         x: defender.pet.current!.x + attacker.range,  // 상대방 앞으로 이동
         y: defender.pet.current!.y,
-        ease: 'Power1 ', // tween 애니메이션의 속도 제어
+        ease: 'Power1 ', // tween 애니메이션의 속도는 가속도가 존재하게
         duration: 1000, // 이동 시간 (1초)
         onComplete: () => {
           resolve()
@@ -94,28 +90,27 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       // 애니메이션 완료마다 체력을 계산하고 이벤트 리스너를 제거하여 턴이 지날 때마다 중복 호출을 제어하는 함수
       const onAnimationComplete = () => {
         setHp((prevHp) => Math.max(prevHp - damage, 0)) // 체력 계산하기
-        attacker.attack.current?.setVisible(false)  // 공격 모션 숨기기
+        attacker.attackMotion.current?.setVisible(false)  // 공격 모션 숨기기
         attacker.pet.current?.setVisible(true)  // 펫 보이게 하기
         resolve()
       }
-      attacker.attack.current?.setX(attacker.pet.current?.x)  // 현재 펫 위치로 공격 모션을 이동
+      attacker.attackMotion.current?.setX(attacker.pet.current?.x)  // 현재 펫 위치로 공격 모션을 이동
       attacker.pet.current?.setVisible(false) // 기존 펫 숨기기
-      attacker.attack.current?.setVisible(true);  // 공격 모션 펫 보이기
-      attacker.attack.current?.play(`${attacker.name}-attack`);  // 공격 애니메이션 수행하기
-      attacker.attack.current?.once('animationcomplete', onAnimationComplete);  // onAnimationComplete 함수를 한 번만 실행하게 설정
+      attacker.attackMotion.current?.setVisible(true);  // 공격 모션 펫 보이기
+      attacker.attackMotion.current?.play(`${attacker.name}-attack`);  // 공격 애니메이션 수행하기
+      attacker.attackMotion.current?.once('animationcomplete', onAnimationComplete);  // onAnimationComplete 함수를 한 번만 실행하게 설정
     })
   }
     
   // 전투에서 복귀하는 함수
   function moveToBase (attacker: PetRefs) {
     return new Promise<void> ((resolve) => {
-      attacker.rope.current?.setVisible(false);
       attacker.pet.current?.play(`${attacker.name}-walk`);
       const tween = attacker.pet.current?.scene.tweens.add({
         targets: attacker.pet.current, // 애니메이션 타겟 설정
         x: attacker.x,  // 내 원래 위치로 이동
         y: attacker.pet.current!.y,
-        ease: 'Linear', // tween 애니메이션의 속도 제어
+        ease: 'Linear', // tween 애니메이션의 속도를 일정하게
         duration: 1000, // 이동 시간 (1초)
         onComplete: () => {
           attacker.pet.current?.play(`${attacker.name}-idle`);  // 다시 기본폼으로
@@ -165,10 +160,12 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     // 자원을 미리 로드하는 함수
     function preload(this: Phaser.Scene) {
       this.load.image('background', battleBackground);  // 아래에서 'background'라는 이름을 통해 참조 가능
+
       this.load.spritesheet('mypet', myPetSpriteSheet, {
         frameWidth: 128,  // 각 프레임의 너비
         frameHeight: 128, // 각 프레임의 높이
       });
+
       this.load.spritesheet('opponentpet', opponentPetSpriteSheet, {
         frameWidth: 128,
         frameHeight: 128,
@@ -201,18 +198,13 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       // 내 펫 스프라이트 추가
       const myPet = this.add.sprite(dvw * 20, this.scale.height - 100, 'mypet');
       myPet.setScale(1);
-      myPet.setDepth(1)
       myPetRefs.pet.current = myPet  // 외부에서 참조할 수 있게 할당
 
-      // 공격 모션 테스트
+      // 내 펫 공격 모션 스프라이트 추가
       const myPetAttack = this.add.sprite(myPet.x, myPet.y, 'mypet-attack')
       myPetAttack.setVisible(false)
-      myPetRefs.attack.current = myPetAttack
-
-      // 내 펫의 채찍(무기) 생성
-      const myPetRope = this.add.sprite(myPet.x, myPet.y, 'mypet')
-      myPetRope.setVisible(false);  // 채찍은 공격할 때만 보이게 기본적으로 숨긴다.
-      myPetRefs.rope.current = myPetRope
+      myPetAttack.setDepth(1)
+      myPetRefs.attackMotion.current = myPetAttack
 
       // 내 펫 기절 시 기절 아이콘 생성
       const myPetStunMark = this.add.sprite(myPet.x, myPet.y - 50, 'mypet')
@@ -225,17 +217,12 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       opponentPet.setScale(1);
       opponentPetRefs.pet.current = opponentPet
 
-      // 공격 모션 테스트
+      // 상대 펫 공격 모션 스프라이트 추가
       const opponentPetAttack = this.add.sprite(opponentPet.x, opponentPet.y, 'opponentpet-attack')
       opponentPetAttack.flipX = true; // 스프라이트 좌우 반전
       opponentPetAttack.setVisible(false)
-      opponentPetRefs.attack.current = opponentPetAttack
-
-      // 상대 펫의 채찍 생성
-      const opponentPetRope = this.add.sprite(opponentPet.x, opponentPet.y, 'opponentpet')
-      opponentPetRope.flipX = true;
-      opponentPetRope.setVisible(false);
-      opponentPetRefs.rope.current = opponentPetRope
+      opponentPetAttack.setDepth(1);
+      opponentPetRefs.attackMotion.current = opponentPetAttack
 
       // 상대 펫 기절 시 기절 아이콘 생성
       const opponentPetStunMark = this.add.sprite(opponentPet.x, opponentPet.y - 50, 'opponentpet')
@@ -268,7 +255,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       // 애니메이션 설정 (펫의 idle 상태)
       this.anims.create({
         key: 'my-pet-idle',
-        frames: this.anims.generateFrameNumbers('mypet', { start: 128, end: 129 }),
+        frames: this.anims.generateFrameNumbers('mypet', { start: 128, end: 129 }), // mypet의 128번 프레임부터 129번 프레임까지 반복
         frameRate: 1, // 1초에 1프레임 재생 속도
         repeat: -1  // 무한 반복
       });
@@ -297,34 +284,6 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       });
 
       this.anims.create({
-        key: 'my-pet-attack',
-        frames: this.anims.generateFrameNumbers('mypet', { start: 64, end: 69 }),
-        frameRate: 10,
-        repeat: 0,  // 한 번만 재생
-      });
-
-      this.anims.create({
-        key: 'my-pet-rope-motion',
-        frames: this.anims.generateFrameNumbers('mypet', { start: 202, end: 207 }),
-        frameRate: 10,
-        repeat: 0,
-      })
-
-      this.anims.create({
-        key: 'opponent-pet-attack',
-        frames: this.anims.generateFrameNumbers('opponentpet', { start: 64, end: 69 }),
-        frameRate: 10,
-        repeat: 0,
-      })
-
-      this.anims.create({
-        key: 'opponent-pet-rope-motion',
-        frames: this.anims.generateFrameNumbers('opponentpet', { start: 202, end: 207 }),
-        frameRate: 10,
-        repeat: 0,
-      })
-
-      this.anims.create({
         key: 'my-pet-stun-bird',
         frames: this.anims.generateFrameNumbers('mypet', { start: 208, end: 219 }),
         frameRate: 10,
@@ -340,7 +299,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
 
       // 공격 모션 테스트
       this.anims.create({
-        key: 'my-pet-attack-test',
+        key: 'my-pet-attack',
         frames: this.anims.generateFrameNumbers('mypet-attack', { start: 0, end: 5 }),
         frameRate: 10,
         repeat: 0,
@@ -348,17 +307,17 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
 
       // 공격 모션 테스트
       this.anims.create({
-        key: 'opponent-pet-attack-test',
+        key: 'opponent-pet-attack',
         frames: this.anims.generateFrameNumbers('opponentpet-attack', { start: 0, end: 5 }),
         frameRate: 10,
         repeat: 0,
       })
     }
     
-    // 프레임별 업데이트 함수 (현재는 빈 상태)
+    // 프레임별 업데이트 함수 ()
     function update() {
       if (backgroundRef.current) {
-        backgroundRef.current!.tilePositionX -= 0.01
+        backgroundRef.current!.tilePositionX -= 0.01  // 배경을 매프레임마다 0.01만큼 좌측으로 이동
       }
     }
 
@@ -366,7 +325,6 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       // 씬을 파괴할 때 메모리 해제를 위해 true 사용
       game.destroy(true); 
     };
-    // 아래의 배열의 요소의 변수 값이 변하면 다시 렌더링한다.
   }, []);
   
   // 공격을 수행하는 함수
@@ -376,8 +334,8 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     opponentAttack &&
     myPetRefs.pet.current &&
     opponentPetRefs.pet.current &&
-    myPetRefs.rope.current &&
-    opponentPetRefs.rope.current &&
+    myPetRefs.attackMotion.current &&
+    opponentPetRefs.attackMotion.current &&
     myPetRefs.stunMark.current &&
     opponentPetRefs.stunMark.current
   ) {
@@ -385,6 +343,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
           if (mySpeed > opponentSpeed) {
             // 내 공격 -> 상대 공격
             await petFight(myPetRefs, opponentPetRefs, selectedAttack.damage, setOpponentHp)
+            // 상대가 전투 지속이 가능하면
             if (opponentHp - selectedAttack.damage > 0) {
               await petFight(opponentPetRefs, myPetRefs, opponentAttack.damage, setMyHp)
             }
@@ -401,7 +360,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
           } 
         }) ()
       }
-    }, [selectedAttack, opponentAttack]);
+    }, [selectedAttack, opponentAttack]); // selectedAttack, opponentAttack 값이 변하면 useEffect 함수를 실행한다..
   
   // 체력 계산 및 전투 종료를 검정하는 함수
   useEffect(() => {
@@ -418,7 +377,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       myPetRefs.stunMark.current?.play(`${myPetRefs.name}-stun-bird`)  // 기절 애니메이션 반복
       myPetRefs.pet.current?.stop()  // 기존 애니메이션 중지
       myPetRefs.pet.current?.setFrame(9) // 펫은 납작 엎드리기
-      setWinner('opponent')  // 실제 사용자의 닉네임으로 추후 수정해야 함
+      setWinner('opponent')
     }
   }, [myHp])
 
@@ -437,7 +396,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       opponentPetRefs.stunMark.current?.play(`${opponentPetRefs.name}-stun-bird`)  // 기절 애니메이션 반복
       opponentPetRefs.pet.current?.stop()  // 기존 애니메이션 중지
       opponentPetRefs.pet.current?.setFrame(9) // 펫은 납작 엎드리기
-      setWinner('me')  // 실제 사용자의 닉네임으로 추후 수정해야 함
+      setWinner('me')
     }
   }, [opponentHp])
   
