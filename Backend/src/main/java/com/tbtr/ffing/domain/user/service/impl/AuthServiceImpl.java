@@ -1,6 +1,6 @@
 package com.tbtr.ffing.domain.user.service.impl;
 
-import com.tbtr.ffing.domain.user.dto.UserInfoDto;
+import com.tbtr.ffing.domain.user.dto.UserInfoDTO;
 import com.tbtr.ffing.domain.user.entity.User;
 import com.tbtr.ffing.domain.user.repository.UserRepository;
 import com.tbtr.ffing.domain.user.service.AuthService;
@@ -20,7 +20,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
 
     @Override
-    public UserInfoDto.Response signup(UserInfoDto.Request requestDTO) {
+    public UserInfoDTO.Response signup(UserInfoDTO.Request requestDTO) {
         // ! 1. email 중복 체크
         if (userRepository.existsByEmail(requestDTO.getEmail())) {
             throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
@@ -32,9 +32,9 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
         }
 
-        User userInfoDto = UserInfoDto.Request.toEntity(requestDTO, bCryptPasswordEncoder);
+        User userInfoDto = UserInfoDTO.Request.toEntity(requestDTO, bCryptPasswordEncoder);
         userRepository.save(userInfoDto);
 
-        return UserInfoDto.Response.of(userInfoDto);
+        return UserInfoDTO.Response.of(userInfoDto);
     }
 }

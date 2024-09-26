@@ -1,6 +1,6 @@
 package com.tbtr.ffing.domain.user.controller;
 
-import com.tbtr.ffing.domain.user.dto.UserInfoDto;
+import com.tbtr.ffing.domain.user.dto.UserInfoDTO;
 import com.tbtr.ffing.global.common.dto.Response;
 import com.tbtr.ffing.domain.user.service.AuthService;
 import jakarta.validation.Valid;
@@ -10,19 +10,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@Valid @RequestBody UserInfoDto.Request requestDTO) {
+    public ResponseEntity<?> signup(@Valid @RequestBody UserInfoDTO.Request requestDTO) {
 
         try {
-            UserInfoDto.Response signupResponse = authService.signup(requestDTO);
+            UserInfoDTO.Response signupResponse = authService.signup(requestDTO);
             Response<Object> response = Response.builder()
                                                 .isSuccess(true)
                                                 .code(200L)
@@ -38,7 +40,6 @@ public class AuthController {
 
             return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
         }
-
     }
 
     @GetMapping("/test")
