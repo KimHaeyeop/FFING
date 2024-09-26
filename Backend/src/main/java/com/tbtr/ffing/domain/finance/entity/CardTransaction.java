@@ -19,8 +19,8 @@ public class CardTransaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cardTransactionId;
 
-    @Column(nullable = false, length = 255)
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private ExpenseCategory category;
 
     @Column(nullable = false, length = 100)
     private String merchant;
