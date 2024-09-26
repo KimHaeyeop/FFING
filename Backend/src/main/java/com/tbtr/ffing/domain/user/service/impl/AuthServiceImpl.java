@@ -4,6 +4,8 @@ import com.tbtr.ffing.domain.user.dto.UserInfoDto;
 import com.tbtr.ffing.domain.user.entity.User;
 import com.tbtr.ffing.domain.user.repository.UserRepository;
 import com.tbtr.ffing.domain.user.service.AuthService;
+import com.tbtr.ffing.global.error.code.ErrorCode;
+import com.tbtr.ffing.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,13 +25,13 @@ public class AuthServiceImpl implements AuthService {
     public UserInfoDto.Response signup(UserInfoDto.Request requestDTO) {
         // ! 1. email 중복 체크
         if (userRepository.existsByEmail(requestDTO.getEmail())) {
-            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+            throw new CustomException(ErrorCode.NICKNAME_ALREADY_EXISTS);
 
         }
 
         // ! 2. nickname 중복 체크
         if (userRepository.existsByNickname(requestDTO.getNickname())) {
-            throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
+            throw new CustomException(ErrorCode.NICKNAME_ALREADY_EXISTS);
         }
 
         User userInfoDto = UserInfoDto.Request.toEntity(requestDTO, bCryptPasswordEncoder);
