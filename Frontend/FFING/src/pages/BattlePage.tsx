@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 // import GameBar from '../components/Game/GameBar';
 // import NavBar from '../components/Common/Navbar';
 import PhaserGame from '../components/Game/PhaserGame';
@@ -17,6 +18,8 @@ const BattlePage: React.FC = () => {
   const [opponentAttack, setOpponentAttack] = useState<{ name: string; damage: number } | null>(null);  // 상대가 선택한 공격
   const [winner, setWinner] = useState<string | null>(null);  // 승리자
   const [showGameResult, setShowGameResult] = useState<boolean>(false);  // GameResult 표시 여부
+
+  const navigate = useNavigate();
 
   // 상대의 공격은 임시로 쇼핑과 데미지 1로만
   const setOpponentAttackRandomly = () => {
@@ -93,8 +96,8 @@ const BattlePage: React.FC = () => {
                 winner={winner} 
                 score={score} 
                 rank={rank} 
-                onRestart={() => console.log('다시하기 클릭됨')} 
-                onMain={() => console.log('메인으로 클릭됨')} 
+                onRestart={() => console.log('다시하기 클릭됨')}  // 대전 큐 탐색 페이지로 이동
+                onMain={() => navigate('/')}  // 게임 메인 페이지로 이동
               />
             ) : (
               <div onClick={handleDisplayWinnerClick}>

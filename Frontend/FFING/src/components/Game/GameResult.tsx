@@ -26,15 +26,15 @@ const GameResult: React.FC<GameResultProps> = ({ winner, score, rank, onRestart,
         <div className="w-1/2 flex flex-col items-center">
           <button
             className="w-full mb-2 p-2 bg-blue-500 text-white rounded"
-            onClick={onRestart}
-          >
-            다시하기
-          </button>
-          <button
-            className="w-full p-2 bg-green-500 text-white rounded"
             onClick={onMain}
           >
             메인으로
+          </button>
+          <button
+            className="w-full p-2 bg-green-500 text-white rounded"
+            onClick={onRestart}
+          >
+            다시하기
           </button>
         </div>
       </div>
