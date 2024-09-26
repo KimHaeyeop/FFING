@@ -36,6 +36,8 @@ public class SavingsTransaction {
     @Column(length = 255)
     private String failureReason;
 
-    @Column(nullable = false)
-    private Long savingsAccountId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "savings_account_id", nullable = false)
+    private SavingsAccount savingsAccount;
+
 }
