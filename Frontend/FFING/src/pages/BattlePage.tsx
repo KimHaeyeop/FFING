@@ -87,6 +87,7 @@ const BattlePage: React.FC = () => {
         />
        {/* 공격 선택 컴포넌트 */}
        <div className="mt-2">
+        {/* 랭킹 변동, 네이게이터를 보여주는 컴포넌트 */}
           {winner ? (
             showGameResult ? (
               <GameResult 
@@ -95,13 +96,16 @@ const BattlePage: React.FC = () => {
                 rank={rank}                 
               />
             ) : (
+              // 승자를 보여주는 컴포넌트
               <div onClick={handleDisplayWinnerClick}>
                 <DisplayWinner winner={winner} />
               </div>
             )
           ) : selectedAttack ? (
+            // 선택 결과를 보여주는 컴포넌트
             <AttackResult selectedAttack={selectedAttack} opponentAttack={opponentAttack}/> // 승자가 결정되지 않고, 모두 공격을 선택했을 때
           ) : (
+            // 공격을 결정하는 컴포넌트
             <AttackSelection attackOptions={attackOptions} onSelectAttack={handleAttackSelect} /> // 승자가 결정되지 않고, 모두 공격을 선택하지 않았을 때
           )}
         </div>
