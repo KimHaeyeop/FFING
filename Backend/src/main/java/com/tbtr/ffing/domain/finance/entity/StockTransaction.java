@@ -18,18 +18,24 @@ public class StockTransaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long stockTransactionId;
 
-    @Column(nullable = false, length = 50)
-    private String stockName;
+    @Column(nullable = false, length = 5)
+    private String transactionType;
 
-    @Column(nullable = false, length = 3)
-    private String stockCode;
-
-    @Column(nullable = false, precision = 16, scale = 2)
-    private BigDecimal evaluationAmount;
-
-    @Column(nullable = false, precision = 16, scale = 2)
-    private BigDecimal purchaseAmount;
+    @Column(precision = 16, scale = 2, nullable = true, columnDefinition = "decimal(16, 2) default 0")
+    private BigDecimal transactionBalance;
 
     @Column(nullable = false)
-    private Long stockId;
+    private Long transactionQuantity;
+
+    @Column(nullable = false, length = 8)
+    private String transactionDate;
+
+    @Column(nullable = false, length = 6)
+    private String transactionTime;
+
+    @Column(nullable = false)
+    private Long stockAccountId;
+
+    @Column(nullable = false)
+    private Long stockInfoId;
 }

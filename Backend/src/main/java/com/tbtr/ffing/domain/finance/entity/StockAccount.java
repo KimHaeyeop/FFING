@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -12,26 +11,26 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "stock")
-public class Stock {
+@Table(name = "stock_account")
+public class StockAccount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long stockId;
+    private Long stockAccountId;
 
     @Column(nullable = false, length = 3)
     private String securitiesCompanyCode;
 
-    @Column(nullable = false)
-    private LocalDate stockAccountCreatedAt; // 없어도 될거같음
+    @Column(nullable = false, length = 50)
+    private String securitiesCompanyName;
 
-    @Column(nullable = false)
-    private LocalDate stockAccountLastTransactionDate; // 없어도 될거같음
+    @Column(precision = 16, scale = 2, nullable = true, columnDefinition = "decimal(16, 2) default 0")
+    private BigDecimal stockAccountBalance;
 
-    @Column(nullable = false, precision = 16, scale = 2)
+    @Column(precision = 16, scale = 2, nullable = true, columnDefinition = "decimal(16, 2) default 0")
     private BigDecimal totalEvaluationAmount;
 
-    @Column(nullable = false, precision = 16, scale = 2)
+    @Column(precision = 16, scale = 2, nullable = true, columnDefinition = "decimal(16, 2) default 0")
     private BigDecimal totalPurchaseAmount;
 
     @Column(nullable = false)
