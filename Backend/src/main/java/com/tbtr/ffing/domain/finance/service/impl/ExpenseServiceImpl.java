@@ -1,5 +1,6 @@
 package com.tbtr.ffing.domain.finance.service.impl;
 
+import com.tbtr.ffing.domain.finance.dto.response.expense.ExpenseRes;
 import com.tbtr.ffing.domain.finance.entity.AccountTransaction;
 import com.tbtr.ffing.domain.finance.entity.CardTransaction;
 import com.tbtr.ffing.domain.finance.entity.Expense;
@@ -9,6 +10,9 @@ import com.tbtr.ffing.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -41,5 +45,20 @@ public class ExpenseServiceImpl implements ExpenseService {
 
 
     }
+
+    /**
+     * 당월 지출내역
+     * @param category
+     * @return
+     */
+    @Override
+    public List<ExpenseRes> getMonthlyExpenses(String category) {
+        LocalDate now = LocalDate.now();
+        LocalDate startOfMonth = now.withDayOfMonth(1);
+        LocalDate endOfMonth = now.withDayOfMonth(now.lengthOfMonth());
+
+        return expenseRepository.findMonthlyExpenses(startOfMonth, endOfMonth, category);
+    }
+
 
 }
