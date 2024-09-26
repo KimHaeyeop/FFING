@@ -18,4 +18,6 @@ public interface ExpenseService {
     List<ExpenseRes> getMonthlyExpenses(ExpenseCategory category);
 
     List<CategoryExpenseRes> getWeeklyCategoryExpenses(boolean aThis);
+
+    List<CategoryExpenseRes> getThisMonthCategoryExpenses();
 }
