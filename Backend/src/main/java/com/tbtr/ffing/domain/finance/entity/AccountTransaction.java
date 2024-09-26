@@ -1,5 +1,6 @@
 package com.tbtr.ffing.domain.finance.entity;
 
+import com.tbtr.ffing.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -45,6 +46,20 @@ public class AccountTransaction {
     @Column(nullable = false, length = 255)
     private String transactionMemo;
 
-    @Column(nullable = false)
-    private Long accountId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id", nullable = false)
+    private Account account;
+
+    public Expense toEntity(User user) {
+
+    return Expense.builder()
+            .expenseName(transactionSummary)
+            .expenseCategory(ExpenseCategory.FINANCE)
+            .expenseMemo(transactionMemo)
+            .expenseDate(transactionDate)
+            .expenseTime(transactionTime)
+            .expenseBalance(transactionBalance)
+            .user(user)
+            .build();
+    }
 }

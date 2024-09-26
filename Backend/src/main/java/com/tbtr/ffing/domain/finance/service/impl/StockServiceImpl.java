@@ -46,7 +46,7 @@ public class StockServiceImpl implements StockService {
     @Transactional(readOnly = true)
     public GetStockAccountSCInfosRes getStockAccountSCInfos(Long ssafyUserId, Long stockAccountId) {
         List<StockTransaction> transactions = stockTransactionRepository.findByStockAccountIdWithFetchJoin(stockAccountId);
-        System.out.println(transactions);
+//        System.out.println(transactions);
 
         Map<Long, GetStockAccountSCInfoRes> stockAccountMap = new HashMap<>();
         for (StockTransaction transaction : transactions) {

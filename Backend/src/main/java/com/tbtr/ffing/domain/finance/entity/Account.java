@@ -1,5 +1,6 @@
 package com.tbtr.ffing.domain.finance.entity;
 
+import com.tbtr.ffing.domain.user.entity.SsafyUser;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,9 +38,11 @@ public class Account {
     @Column(nullable = false)
     private LocalDate lastTransactionDate;
 
-    @Column(nullable = false)
-    private Long ssafyUserId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ssafy_user_id", nullable = false)
+    private SsafyUser ssafyUser;
 
-    @Column(nullable = false)
-    private Long demandDepositId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "demand_deposit_id", nullable = false)
+    private AccountProduct accountProduct;
 }
