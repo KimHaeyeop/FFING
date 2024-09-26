@@ -11,12 +11,8 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import lombok.*;
 
 @Getter
 @Setter
@@ -24,6 +20,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Entity
+@ToString
 @Table(name = "user")
 public class User {
 
@@ -34,7 +31,7 @@ public class User {
     @Column(nullable = false, length = 40)
     private String email;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 100)
     private String password;
 
     @Column(nullable = false, length = 20)
@@ -54,7 +51,7 @@ public class User {
     private String nickname;
 
     @Column
-    private Integer pin;
+    private int pin;
 
     @Column(nullable = false)
     private LocalDate createdAt;

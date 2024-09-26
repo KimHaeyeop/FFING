@@ -12,6 +12,11 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     /*
+    User, Auth 관련 오류
+     */
+    NICKNAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "USER-001", "이미 사용 중인 이메일입니다."),
+
+    /*
     Stock 관련 오류
      */
     STOCK_ACCOUNT_NOT_FOUND(HttpStatus.NOT_FOUND, "STOCK-001", "사용자의 주식 계좌가 없습니다."),

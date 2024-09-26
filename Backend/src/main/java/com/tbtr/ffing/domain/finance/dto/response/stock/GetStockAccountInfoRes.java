@@ -26,7 +26,7 @@ public class GetStockAccountInfoRes {
             totalPLRate = totalPLBalance.multiply(new BigDecimal("100"))
                     .divide(account.getTotalPurchaseAmount(), 2, RoundingMode.HALF_EVEN);
         }
-        System.out.println(totalPLRate);
+//        System.out.println(totalPLRate);
 
         return new GetStockAccountInfoRes(
                 account.getStockAccountId(),

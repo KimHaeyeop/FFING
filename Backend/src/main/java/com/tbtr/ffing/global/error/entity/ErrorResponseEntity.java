@@ -1,12 +1,14 @@
 package com.tbtr.ffing.global.error.entity;
 
 import com.tbtr.ffing.global.error.code.ErrorCode;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.http.ResponseEntity;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class ErrorResponseEntity {
     private int status;
     private String code;
