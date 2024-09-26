@@ -1,6 +1,7 @@
 package com.tbtr.ffing.domain.finance.service;
 
-import com.tbtr.ffing.domain.finance.dto.AssetDto;
+import com.tbtr.ffing.domain.finance.dto.response.asset.AssetRes;
+import com.tbtr.ffing.domain.finance.dto.response.asset.DepositAssetRes;
 import com.tbtr.ffing.domain.finance.entity.Asset;
 import org.springframework.stereotype.Service;
 
@@ -8,9 +9,9 @@ import java.util.List;
 
 @Service
 public interface AssetService {
-    Asset getCurrentAsset(long userId);
+    AssetRes getCurrentAsset(long userId);
 
-    List<Asset> getAssetHistory(long userId);
+    List<AssetRes> getAssetHistory(long userId);
 
-//    List<Asset> getAssetList(long userId);
+    List<DepositAssetRes> getDepositList(long userId);
 }
