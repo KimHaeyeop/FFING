@@ -2,6 +2,7 @@ package com.tbtr.ffing.domain.finance.controller;
 
 import com.tbtr.ffing.domain.finance.dto.response.expense.ExpenseRes;
 import com.tbtr.ffing.domain.finance.dto.response.expense.CategoryExpenseRes;
+import com.tbtr.ffing.domain.finance.dto.response.expense.MonthlySummaryRes;
 import com.tbtr.ffing.domain.finance.entity.ExpenseCategory;
 import com.tbtr.ffing.domain.finance.service.ExpenseService;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,12 @@ public class ExpenseController {
 
         List<CategoryExpenseRes> expenses = expenseService.getThisMonthCategoryExpenses();
         return ResponseEntity.ok(expenses);
+    }
+
+    @GetMapping("/monthly/{yearMonth}")
+    public ResponseEntity<MonthlySummaryRes> getMonthlyExpenseSummary(@PathVariable String yearMonth) {
+        MonthlySummaryRes response = expenseService.getMonthlySummary(yearMonth);
+        return ResponseEntity.ok(response);
     }
     
 
