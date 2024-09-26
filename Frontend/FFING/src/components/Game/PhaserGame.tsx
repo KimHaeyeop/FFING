@@ -2,8 +2,8 @@ import React, { useEffect, useRef, Dispatch, SetStateAction } from 'react';
 import Phaser from 'phaser';
 import useViewportStore from '../../store/useViewportStore';
 // 우선 펫과 배경 시트는 임의로 지정, 나중에 연동해야겠지?
-import myPetSpriteSheet from '/pets/cookie-blossom.png';
-import opponentPetSpriteSheet from '/pets/pigeon.png';
+import myPetSpriteSheet from '/pets/cat-green.png';
+import opponentPetSpriteSheet from '/pets/man-arab.png';
 import battleBackground from '/backgrounds/battle-background.png';
 
 // battlePage에서 받는 props 요소
@@ -373,7 +373,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       myPetRefs.stunMark.current?.play(`${myPetRefs.name}-stun-bird`)  // 기절 애니메이션 반복
       myPetRefs.pet.current?.stop()  // 기존 애니메이션 중지
       myPetRefs.pet.current?.setFrame(9) // 펫은 납작 엎드리기
-      setWinner('USER456')  // 실제 사용자의 닉네임으로 추후 수정해야 함
+      setWinner('opponent')  // 실제 사용자의 닉네임으로 추후 수정해야 함
     }
   }, [myHp])
 
@@ -392,7 +392,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       opponentPetRefs.stunMark.current?.play(`${opponentPetRefs.name}-stun-bird`)  // 기절 애니메이션 반복
       opponentPetRefs.pet.current?.stop()  // 기존 애니메이션 중지
       opponentPetRefs.pet.current?.setFrame(9) // 펫은 납작 엎드리기
-      setWinner('USER123')  // 실제 사용자의 닉네임으로 추후 수정해야 함
+      setWinner('me')  // 실제 사용자의 닉네임으로 추후 수정해야 함
     }
   }, [opponentHp])
   

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import GameBar from '../components/Game/GameBar';
-import NavBar from '../components/Common/Navbar';
+// import GameBar from '../components/Game/GameBar';
+// import NavBar from '../components/Common/Navbar';
 import PhaserGame from '../components/Game/PhaserGame';
 import AttackSelection from '../components/Game/AttackSelection';
 import AttackResult from '../components/Game/AttackResult';
