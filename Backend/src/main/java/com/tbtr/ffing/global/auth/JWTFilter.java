@@ -3,14 +3,15 @@ package com.tbtr.ffing.global.auth;
 import com.tbtr.ffing.domain.user.dto.CustomUserDetails;
 import com.tbtr.ffing.domain.user.entity.User;
 import com.tbtr.ffing.domain.user.repository.UserRepository;
+import com.tbtr.ffing.global.redis.component.RedisRefreshToken;
 import com.tbtr.ffing.global.redis.repository.RedisRefreshTokenRepository;
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -59,24 +60,58 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        try {
-            System.out.println("JWTFilter : Checking if the token is expired..."); // 추가
-            jwtUtil.isExpired(accessToken); // 토큰 유효성 검사
-            System.out.println("Token is valid."); // 추가
-        } catch (ExpiredJwtException e) {
-            System.out.println("Access token expired"); // 추가
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().print("Access token expired");
-            return;
+        // accessToken 만료됐을 경우
+        if (jwtUtil.isExpired(accessToken)) {
+            System.out.println("Access Token has expired."); // Access Token 만료 확인
+
+            // Redis에서 Access Token으로 Refresh Token 조회
+            Optional<RedisRefreshToken> redisRefreshTokenOpt = redisRefreshTokenRepository.findByAccessToken(accessToken);
+            if (redisRefreshTokenOpt.isPresent()) {
+                String refreshToken = redisRefreshTokenOpt.get().getRefreshToken();
+                System.out.println("Refresh Token retrieved from Redis: " + refreshToken); // Redis에서 가져온 Refresh Token
+
+                Long userId = Long.parseLong(redisRefreshTokenOpt.get().getId());
+                System.out.println("User ID extracted from Access Token: " + userId); // User ID 추출 확인
+
+                User user = userRepository.findById(userId)
+                                          .orElseThrow(() -> new RuntimeException("User not found"));
+
+                // Redis에서 Refresh Token 확인
+                Optional<RedisRefreshToken> redisRefreshToken = redisRefreshTokenRepository.findById(String.valueOf(userId));
+                if (redisRefreshToken.isPresent()) {
+                    System.out.println("Refresh Token found in Redis for User ID: " + userId); // Redis에서 Refresh Token 확인
+
+                    // Redis에 저장된 Refresh Token과 클라이언트에서 받은 Refresh Token 비교
+                    if (redisRefreshToken.get().getRefreshToken().equals(refreshToken)) {
+                        System.out.println("Refresh Token is valid."); // Refresh Token 유효성 확인
+
+                        // 새로운 Access Token 발급
+                        String newAccessToken = jwtUtil.createJwt("access", userId, user.getRole().toString());
+                        response.setHeader("Authorization", "Bearer " + newAccessToken);
+                        System.out.println("New Access Token issued: " + newAccessToken); // 새로운 Access Token 발급 확인
+
+                        accessToken = newAccessToken;
+                    } else {
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.getWriter().print("Invalid refresh token");
+                        System.out.println("Invalid Refresh Token received."); // 유효하지 않은 Refresh Token 확인
+                        return;
+                    }
+                } else {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().print("Refresh token is missing");
+                    System.out.println("No Refresh Token found in Redis for User ID: " + userId); // Redis에 Refresh Token 없음 확인
+                    return;
+                }
+            } else {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().print("Refresh token is missing");
+                System.out.println("Refresh Token is null or not found."); // Refresh Token이 null이거나 없음 확인
+                return;
+            }
         }
 
-        // 토큰의 카테고리 확인
-        String category = jwtUtil.getCategory(accessToken);
-        if (!category.equals("access")) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().print("Invalid access token");
-            return;
-        }
+
 
         // 사용자 정보 가져오기
         Long userId = Long.parseLong(jwtUtil.getUserId(accessToken));
@@ -105,4 +140,5 @@ public class JWTFilter extends OncePerRequestFilter {
         // 필터 체인 계속 진행
         filterChain.doFilter(request, response);
     }
+
 }
