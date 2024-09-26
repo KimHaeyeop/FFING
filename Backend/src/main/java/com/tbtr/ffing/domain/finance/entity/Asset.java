@@ -1,5 +1,6 @@
 package com.tbtr.ffing.domain.finance.entity;
 
+import com.tbtr.ffing.domain.finance.dto.AssetDto;
 import com.tbtr.ffing.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -44,4 +45,18 @@ public class Asset {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    public AssetDto of(Asset asset) {
+        return AssetDto.builder()
+                .assetId(asset.assetId)
+                .totalAsset(asset.totalAsset)
+                .accountBalance(asset.accountBalance)
+                .depositSavingsBalance(asset.depositSavingsBalance)
+                .stockBalance(asset.stockBalance)
+                .othersBalance(asset.othersBalance)
+                .updatedAt(asset.updatedAt)
+                .userId(asset.user.getUserId())
+                .build();
+
+    }
 }
