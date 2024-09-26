@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tbtr.ffing.domain.finance.dto.response.asset.AssetRes;
 import com.tbtr.ffing.domain.finance.dto.response.asset.DepositAssetRes;
+import com.tbtr.ffing.domain.finance.dto.response.asset.SavingsAssetRes;
 import com.tbtr.ffing.domain.finance.entity.Asset;
 import com.tbtr.ffing.domain.finance.entity.QAsset;
 import com.tbtr.ffing.domain.finance.entity.QDepositAccount;
@@ -79,11 +80,11 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     }
 
     @Override
-    public List<DepositAssetRes> findSavingsAssetListByUserId(long ssafyUserId) {
+    public List<SavingsAssetRes> findSavingsAssetListByUserId(long ssafyUserId) {
         QSavingsAccount savingsAccount = QSavingsAccount.savingsAccount;
 
         return queryFactory
-                .select(Projections.constructor(DepositAssetRes.class,
+                .select(Projections.constructor(SavingsAssetRes.class,
                         savingsAccount.savingsAccountId,
                         savingsAccount.bankCode,
                         savingsAccount.accountName,

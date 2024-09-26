@@ -36,13 +36,13 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public List<DepositAssetRes> getDepositList(long userId) {
+    public List<Object> getDepositList(long userId) {
         User user = userRepository.findByUserId(userId);
         long ssafyUserId = user.getSsafyUserId();
-        Map<String, List<DepositAssetRes>> resultMap = new HashMap<>();
+        Map<String, List<?>> resultMap = new HashMap<>();
         resultMap.put("deposit", assetRepository.findDepositAssetListByUserId(ssafyUserId));
         resultMap.put("savings", assetRepository.findSavingsAssetListByUserId(ssafyUserId));
-        List<DepositAssetRes> resultList = new ArrayList<>();
+        List<Object> resultList = new ArrayList<>();
         resultMap.forEach((key, depositList) -> {
             for (int i = 0; i < depositList.size(); i++) {
                 resultList.add(depositList.get(i));

@@ -1,9 +1,5 @@
 package com.tbtr.ffing.domain.finance.dto.response.asset;
 
-import com.tbtr.ffing.domain.user.entity.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -12,7 +8,7 @@ import java.math.BigDecimal;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class DepositAssetRes {
+public class SavingsAssetRes {
 
 	private Long depositId;
 	private String bankCode;
@@ -21,13 +17,13 @@ public class DepositAssetRes {
 	private BigDecimal totalBalance;
 	private String type;
 
-	public DepositAssetRes(Long depositId, String bankCode, String accountName, String accountNo, BigDecimal totalBalance) {
+	public SavingsAssetRes(Long depositId, String bankCode, String accountName, String accountNo, BigDecimal totalBalance) {
 		this.depositId = depositId;
         this.bankCode = bankCode;
         this.accountName = accountName;
         this.accountNo = accountNo;
         this.totalBalance = totalBalance;
-        this.type = "Deposit";
+        this.type = "Savings";
 	}
 
 }
