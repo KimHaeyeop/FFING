@@ -74,8 +74,8 @@ public class StockServiceImpl implements StockService {
             if (scInfo == null) {
                 scInfo = GetStockAccountSCInfoRes.builder()
                         .stockAccountId(transaction.getStockAccount().getStockAccountId())
-                        .securitiesCompanyCode(transaction.getStockInfo().getStockCode())
-                        .securitiesCompanyName(transaction.getStockInfo().getStockName())
+                        .stockCode(transaction.getStockInfo().getStockCode())
+                        .stockName(transaction.getStockInfo().getStockName())
                         .totalSumEvaluationAmount(curEvaluationAmount)
                         .totalStockQuantity(purchaseQuantity)
                         .totalSumPurchaseAmount(sumPurchasePrice)

@@ -15,8 +15,8 @@ import java.util.List;
 public class GetStockAccountSCInfoRes {
 
     private Long stockAccountId;
-    private String securitiesCompanyCode;
-    private String securitiesCompanyName;
+    private String stockCode;
+    private String stockName;
     private BigDecimal totalSumEvaluationAmount;
     private Long totalStockQuantity;
     private BigDecimal totalSumPurchaseAmount;
