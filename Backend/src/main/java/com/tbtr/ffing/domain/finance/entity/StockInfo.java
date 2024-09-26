@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,6 +26,8 @@ public class StockInfo {
     private String stockName;
 
     @Column(nullable = false)
-    private Long currentEvaluationPrice;
+    private BigDecimal currentEvaluationPrice;
 
+    @OneToMany(mappedBy = "stockInfo")
+    private List<StockTransaction> stockTransactions;
 }

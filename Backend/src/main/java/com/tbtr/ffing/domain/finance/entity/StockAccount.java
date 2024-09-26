@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -35,4 +37,7 @@ public class StockAccount {
 
     @Column(nullable = false)
     private Long ssafyUserId;
+
+    @OneToMany(mappedBy = "stockAccount")
+    private List<StockTransaction> stockTransactions;
 }

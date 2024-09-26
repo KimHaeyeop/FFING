@@ -1,6 +1,6 @@
 package com.tbtr.ffing.domain.finance.dto.response.stock;
 
-import jakarta.persistence.Column;
+import com.tbtr.ffing.domain.finance.entity.StockAccount;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -8,18 +8,19 @@ import java.util.List;
 
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @ToString
-public class GetStockAccountInfoDetailsRes {
+public class GetStockAccountSCInfoRes {
 
     private Long stockAccountId;
     private String securitiesCompanyCode;
     private String securitiesCompanyName;
-    private Long stockAccountBalance;
-    private Long totalEvaluationAmount;
-    private Long totalPurchaseAmount;
-
-    private List<GetStockTransactionInfoRes> stockTransactionInfos;
+    private BigDecimal totalSumEvaluationAmount;
+    private Long totalStockQuantity;
+    private BigDecimal totalSumPurchaseAmount;
+    private BigDecimal totalPLBalance;
+    private BigDecimal totalPLRate;
 
 }

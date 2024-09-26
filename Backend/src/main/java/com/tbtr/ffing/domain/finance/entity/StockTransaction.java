@@ -33,9 +33,25 @@ public class StockTransaction {
     @Column(nullable = false, length = 6)
     private String transactionTime;
 
-    @Column(nullable = false)
-    private Long stockAccountId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "stock_account_id")
+    private StockAccount stockAccount;
 
-    @Column(nullable = false)
-    private Long stockInfoId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "stock_info_id")
+    private StockInfo stockInfo;
+
+    @Override
+    public String toString() {
+        return "StockTransaction [stockTransactionId=" + stockTransactionId
+                + ", transactionType=" + transactionType
+                + ", transactionBalance=" + transactionBalance
+                + ", transactionQuantity=" + transactionQuantity
+                + ", transactionDate=" + transactionDate
+                + ", transactionTime=" + transactionTime
+                + ", stockAccount=" + stockAccount
+                + ", stockInfo=" + stockInfo
+                + "]"
+                ;
+    }
 }

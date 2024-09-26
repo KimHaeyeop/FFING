@@ -1,7 +1,8 @@
 package com.tbtr.ffing.domain.finance.controller;
 
-import com.tbtr.ffing.domain.finance.dto.response.stock.GetStockAccountInfoRes;
+import com.tbtr.ffing.domain.finance.dto.response.stock.GetStockAccountSCInfoRes;
 import com.tbtr.ffing.domain.finance.dto.response.stock.GetStockAccountInfosRes;
+import com.tbtr.ffing.domain.finance.dto.response.stock.GetStockAccountSCInfosRes;
 import com.tbtr.ffing.domain.finance.service.StockService;
 import com.tbtr.ffing.global.common.dto.Response;
 import lombok.RequiredArgsConstructor;
@@ -26,15 +27,29 @@ public class StockController {
     }
 
     @GetMapping("/{ssafyUserId}")
-    public ResponseEntity<?> getStockAccountInfo(@PathVariable("ssafyUserId") Long ssafyUserId) {
-        GetStockAccountInfosRes getStockAccountInfoResult = stockService.getStockAccountInfoSummary(ssafyUserId);
+    public ResponseEntity<?> getStockAccountsInfo(@PathVariable("ssafyUserId") Long ssafyUserId) {
+        GetStockAccountInfosRes getStockAccountInfosResult = stockService.getStockAccountInfoSummary(ssafyUserId);
 
         Response<Object> response = Response.builder()
                     .code(200L)
                     .message("성공")
-                    .result(getStockAccountInfoResult)
+                    .result(getStockAccountInfosResult)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @GetMapping("/{ssafyUserId}/{stockAccountId}")
+    public ResponseEntity<?> getStockAccountSCInfos(@PathVariable("ssafyUserId") Long ssafyUserId, @PathVariable("stockAccountId") Long stockAccountId) {
+        GetStockAccountSCInfosRes getStockAccountSCInfoResult = stockService.getStockAccountSCInfos(ssafyUserId, stockAccountId);
+
+        Response<Object> response = Response.builder()
+                .code(200L)
+                .message("성공")
+                .result(getStockAccountSCInfoResult)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 }

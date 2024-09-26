@@ -13,11 +13,15 @@ public class GetStockTransactionInfoRes {
 
     private Long stockTransactionId;
     private String transactionType;
-    private Long transactionBalance;
-    private Long transactionQuantity;
+    private BigDecimal transactionBalance;
+    private BigDecimal transactionQuantity;
     private String transactionDate;
     private String transactionTime;
 
     private Long stockAccountId;
+    private String securitiesCompanyName;
+
     private Long stockInfoId;
+    private String stockCode;
+    private String stockName;
 }
