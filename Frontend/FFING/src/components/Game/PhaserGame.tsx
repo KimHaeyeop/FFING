@@ -5,7 +5,9 @@ import useViewportStore from '../../store/useViewportStore';
 import myPetSpriteSheet from '/pets/oni.png';
 // 공격 모션 테스트
 import myPetAttackSpriteSheet from '/pets/oni-attack.png'
-import opponentPetSpriteSheet from '/pets/man-arab.png';
+import opponentPetAttackSpriteSheet from '/pets/penguin-attack.png';
+
+import opponentPetSpriteSheet from '/pets/penguin.png';
 import battleBackground from '/backgrounds/battle-background.png';
 
 // battlePage에서 받는 props 요소
@@ -68,6 +70,8 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     rope: useRef<Phaser.GameObjects.Sprite | null>(null),
     stunMark: useRef<Phaser.GameObjects.Sprite | null>(null),
     hpFill: useRef<Phaser.GameObjects.Graphics | null>(null),
+    // 공격 모션 테스트
+    attack: useRef<Phaser.GameObjects.Sprite | null>(null)
   }
 
   // 상대방으로 이동하는 함수
@@ -96,6 +100,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         attacker.attack.current?.setVisible(false)
         attacker.pet.current?.setVisible(true)
         attacker.pet.current?.off('animationcomplete', onAnimationComplete); // 이벤트 리스너 제거
+        console.log(1)
         resolve()
       }
       // 공격 모션 테스트
@@ -186,11 +191,17 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         frameWidth: 192,
         frameHeight: 192,
       })
+
+      // 공격 모션 테스트
+      this.load.spritesheet('opponentpet-attack', opponentPetAttackSpriteSheet, {
+        frameWidth: 192,
+        frameHeight: 192,
+      })
     }
     
     // 씬이 처음 생성될 때 실행되는 함수
     function create(this: Phaser.Scene) {
-      // 배경 추가
+      // 움직이지 않는 배경 추가
       // const background = this.add.image(this.scale.width / 2, this.scale.height / 2, 'background');
       // background.setOrigin(0.5, 0.5); // 이미지의 중심을 기준으로 배치
       // background.setDisplaySize(this.scale.width, this.scale.height); // 배경 이미지를 화면 크기에 맞춤
@@ -225,7 +236,13 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       opponentPet.flipX = true; // 스프라이트 좌우 반전
       opponentPet.setScale(1);
       opponentPetRefs.pet.current = opponentPet
-      
+
+      // 공격 모션 테스트
+      const opponentPetAttack = this.add.sprite(opponentPet.x, opponentPet.y, 'opponentpet-attack')
+      opponentPetAttack.flipX = true; // 스프라이트 좌우 반전
+      opponentPetAttack.setVisible(false)
+      opponentPetRefs.attack.current = opponentPetAttack
+
       // 상대 펫의 채찍 생성
       const opponentPetRope = this.add.sprite(opponentPet.x, opponentPet.y, 'opponentpet')
       opponentPetRope.flipX = true;
@@ -337,8 +354,16 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       this.anims.create({
         key: 'my-pet-attack-test',
         frames: this.anims.generateFrameNumbers('mypet-attack', { start: 0, end: 5 }),
-        frameRate: 5,
-        repeat: 5,
+        frameRate: 10,
+        repeat: 0,
+      })
+
+      // 공격 모션 테스트
+      this.anims.create({
+        key: 'opponent-pet-attack-test',
+        frames: this.anims.generateFrameNumbers('opponentpet-attack', { start: 0, end: 5 }),
+        frameRate: 10,
+        repeat: 0,
       })
     }
     
