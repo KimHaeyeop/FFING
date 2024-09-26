@@ -54,7 +54,7 @@ public class AccountTransaction {
 
     return Expense.builder()
             .expenseName(transactionSummary)
-            .expenseCategory("금융")
+            .expenseCategory(ExpenseCategory.FINANCE)
             .expenseMemo(transactionMemo)
             .expenseDate(transactionDate)
             .expenseTime(transactionTime)

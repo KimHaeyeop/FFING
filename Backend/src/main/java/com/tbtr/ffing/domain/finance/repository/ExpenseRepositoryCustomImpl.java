@@ -4,6 +4,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tbtr.ffing.domain.finance.dto.response.expense.ExpenseRes;
+import com.tbtr.ffing.domain.finance.entity.ExpenseCategory;
 import com.tbtr.ffing.domain.finance.entity.QExpense;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -21,7 +22,7 @@ public class ExpenseRepositoryCustomImpl implements ExpenseRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<ExpenseRes> findMonthlyExpenses(LocalDate startDate, LocalDate endDate, String category) {
+    public List<ExpenseRes> findMonthlyExpenses(LocalDate startDate, LocalDate endDate, ExpenseCategory category) {
         QExpense expense = QExpense.expense;
 
         BooleanExpression dateCondition = expense.expenseDate.between(
@@ -31,6 +32,8 @@ public class ExpenseRepositoryCustomImpl implements ExpenseRepositoryCustom {
 
         BooleanExpression categoryCondition = category != null ?
                 expense.expenseCategory.eq(category) : null;
+
+        System.out.println(categoryCondition);
 
         return queryFactory
                 .select(Projections.constructor(ExpenseRes.class,
