@@ -4,6 +4,7 @@ import com.tbtr.ffing.domain.finance.dto.response.expense.ExpenseRes;
 import com.tbtr.ffing.domain.finance.entity.AccountTransaction;
 import com.tbtr.ffing.domain.finance.entity.CardTransaction;
 import com.tbtr.ffing.domain.finance.entity.Expense;
+import com.tbtr.ffing.domain.finance.entity.ExpenseCategory;
 import com.tbtr.ffing.domain.finance.repository.ExpenseRepository;
 import com.tbtr.ffing.domain.finance.service.ExpenseService;
 import com.tbtr.ffing.domain.user.entity.User;
@@ -52,7 +53,7 @@ public class ExpenseServiceImpl implements ExpenseService {
      * @return
      */
     @Override
-    public List<ExpenseRes> getMonthlyExpenses(String category) {
+    public List<ExpenseRes> getMonthlyExpenses(ExpenseCategory category) {
         LocalDate now = LocalDate.now();
         LocalDate startOfMonth = now.withDayOfMonth(1);
         LocalDate endOfMonth = now.withDayOfMonth(now.lengthOfMonth());

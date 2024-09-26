@@ -1,5 +1,6 @@
 package com.tbtr.ffing.domain.finance.dto.response.expense;
 
+import com.tbtr.ffing.domain.finance.entity.ExpenseCategory;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -14,7 +15,7 @@ public class ExpenseRes {
 
     private Long expenseId;
     private String expenseName;
-    private String expenseCategory;
+    private ExpenseCategory expenseCategory;
     private String expenseMemo;
     private String expenseDate;
     private String expenseTime;

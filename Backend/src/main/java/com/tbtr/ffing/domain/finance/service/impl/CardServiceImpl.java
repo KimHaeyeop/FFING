@@ -7,6 +7,7 @@ import com.tbtr.ffing.domain.finance.dto.response.card.SsafyCreateCardTransactio
 import com.tbtr.ffing.domain.finance.entity.Card;
 import com.tbtr.ffing.domain.finance.entity.CardTransaction;
 import com.tbtr.ffing.domain.finance.entity.Expense;
+import com.tbtr.ffing.domain.finance.entity.ExpenseCategory;
 import com.tbtr.ffing.domain.finance.repository.CardRepository;
 import com.tbtr.ffing.domain.finance.repository.CardTransactionRepository;
 import com.tbtr.ffing.domain.finance.repository.ExpenseRepository;
@@ -42,7 +43,7 @@ public class CardServiceImpl implements CardService {
     public void addCardTransaction(CreateCardTransactionReq createCardTransactionReq) {
 
         String userKey = createCardTransactionReq.getUserKey();
-        String category = createCardTransactionReq.getCategory();
+        ExpenseCategory category = createCardTransactionReq.getCategory();
 
         String random = InstitutionTransactionNoGenerator.generateInstitutionTransactionUniqueNo();
 
@@ -62,7 +63,7 @@ public class CardServiceImpl implements CardService {
 
         if(card != null) {
             // cardTransaction 추가
-            CardTransaction newCardTransaction = res.toEntity(card, createCardTransactionReq.getCategory());
+            CardTransaction newCardTransaction = res.toEntity(card, category);
             cardTransactionRepository.save(newCardTransaction);
 
             // expense 추가

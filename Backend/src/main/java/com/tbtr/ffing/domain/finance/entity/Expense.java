@@ -23,8 +23,8 @@ public class Expense {
     @Column(nullable = false, length = 255)
     private String expenseName;
 
-    @Column(nullable = false, length = 255)
-    private String expenseCategory;
+    @Enumerated(EnumType.STRING)
+    private ExpenseCategory expenseCategory;
 
     @Column(length = 255)
     private String expenseMemo;
