@@ -11,12 +11,8 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import lombok.*;
 
 @Getter
 @Setter
@@ -24,6 +20,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Entity
+@ToString
 @Table(name = "user")
 public class User {
 

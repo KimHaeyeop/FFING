@@ -22,13 +22,13 @@ public class SsafyCreateCardTransactionRes {
 	@JsonProperty("REC")
 	private cREC rec;
 
-	public CardTransaction toEntity(Card card) {
+	public CardTransaction toEntity(Card card, String categoryName) {
 		cREC rec = this.rec;
 
 		// 카테고리 로직 추가 확인 필요
 
 		return CardTransaction.builder()
-				.category(rec.getCategoryName())
+				.category(categoryName)
 				.merchant(rec.getMerchantName())
 				.transactionDate(rec.getTransactionDate())
 				.transactionTime(rec.getTransactionTime())

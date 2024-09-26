@@ -62,7 +62,7 @@ public class CardServiceImpl implements CardService {
 
         if(card != null) {
             // cardTransaction 추가
-            CardTransaction newCardTransaction = res.toEntity(card);
+            CardTransaction newCardTransaction = res.toEntity(card, createCardTransactionReq.getCategory());
             cardTransactionRepository.save(newCardTransaction);
 
             // expense 추가
