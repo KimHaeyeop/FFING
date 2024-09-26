@@ -1,10 +1,12 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 import GameBar from "../components/Game/GameBar";
 import NavBar from "../components/Common/Navbar";
 import PetIdle from "../components/Game/PetIdle";
 import PetStatusChart from "../components/Game/PetStatusChart";
 
 const GamePage: React.FC = () => {
+  const navigate = useNavigate()
   return (
     <div className="flex justify-center items-center">
       <div className="w-screen h-screen">
@@ -25,14 +27,14 @@ const GamePage: React.FC = () => {
           {/* 게임 시작 버튼 */}
           <button
             className="flex-grow-[7] bg-[#FFD874] text-black py-2 rounded-l-lg font-galmuri-11-bold text-2xl"
-          // onClick={() => { /* 게임 시작 라우팅 */ }}
+          onClick={() => { navigate('/battle') }} // 큐잡는 페이지로 이동 필요
           >
             게임 시작
           </button>
           {/* 랭킹 버튼 */}
           <button
             className="flex-grow-[3] bg-[#FFA1A1] text-black py-2 rounded-r-lg font-galmuri-11-bold"
-          // onClick={() => { /* 랭킹 라우팅 */ }}
+          onClick={() => { console.log('랭킹 이동 클릭됨') }} // 랭킹 라우팅 추가 필요
           >
             랭킹
           </button>
