@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import GameBar from "../components/Game/GameBar";
 import NavBar from "../components/Common/Navbar";
 import PetIdle from "../components/Game/PetIdle";
@@ -23,19 +24,22 @@ const GamePage: React.FC = () => {
         {/* 버튼 영역 */}
         <div className="flex rounded-lg overflow-hidden w-full max-w-screen-md mx-auto mt-6 h-16 text-2xl">
           {/* 게임 시작 버튼 */}
-          <button
+          <Link to="/find">게임시작</Link>
+          <Link to="/battle">게임으로 바로 이동(test)</Link>
+          {/* <button
             className="flex-grow-[7] bg-[#FFD874] text-black py-2 rounded-l-lg font-galmuri-11-bold text-2xl"
-          // onClick={() => { /* 게임 시작 라우팅 */ }}
+            onClick={() => { navigate('/battle') }} 
           >
             게임 시작
-          </button>
+          </button> */}
           {/* 랭킹 버튼 */}
-          <button
+          <Link to="/ranking">랭킹</Link>
+          {/* <button
             className="flex-grow-[3] bg-[#FFA1A1] text-black py-2 rounded-r-lg font-galmuri-11-bold"
-          // onClick={() => { /* 랭킹 라우팅 */ }}
+          onClick={() => { navigate('/ranking')}} 
           >
             랭킹
-          </button>
+          </button> */}
         </div>
         {/* 경로 이동을 제공하는 footer */}
         <footer>

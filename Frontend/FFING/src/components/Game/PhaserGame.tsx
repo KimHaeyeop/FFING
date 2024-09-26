@@ -2,8 +2,12 @@ import React, { useEffect, useRef, Dispatch, SetStateAction } from 'react';
 import Phaser from 'phaser';
 import useViewportStore from '../../store/useViewportStore';
 // 우선 펫과 배경 시트는 임의로 지정, 나중에 연동해야겠지?
-import myPetSpriteSheet from '/pets/cookie-blossom.png';
-import opponentPetSpriteSheet from '/pets/pigeon.png';
+import myPetSpriteSheet from '/pets/oni.png';
+// 공격 모션 테스트
+import myPetAttackSpriteSheet from '/pets/oni-attack.png'
+import opponentPetAttackSpriteSheet from '/pets/penguin-attack.png';
+
+import opponentPetSpriteSheet from '/pets/penguin.png';
 import battleBackground from '/backgrounds/battle-background.png';
 
 // battlePage에서 받는 props 요소
@@ -23,7 +27,9 @@ interface PetRefs {
   pet: React.MutableRefObject<Phaser.GameObjects.Sprite | null>;
   rope: React.MutableRefObject<Phaser.GameObjects.Sprite | null>;
   stunMark: React.MutableRefObject<Phaser.GameObjects.Sprite | null>;
-  hpFill: React.MutableRefObject<Phaser.GameObjects.Graphics | null>;
+  hpFill: React.MutableRefObject<Phaser.GameObjects.Graphics | null>; 
+  // 공격 모션 테스트
+  attack: React.MutableRefObject<Phaser.GameObjects.Sprite | null>;
 }
 
 // 게임판 객체
@@ -46,22 +52,26 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
   const myPetRefs: PetRefs = {
     name: 'my-pet',
     x: dvw * 20,
-    range: -150,
+    range: -100,
     pet: useRef<Phaser.GameObjects.Sprite | null>(null),
     rope: useRef<Phaser.GameObjects.Sprite | null>(null),
     stunMark: useRef<Phaser.GameObjects.Sprite | null>(null),
-    hpFill: useRef<Phaser.GameObjects.Graphics | null>(null)
+    hpFill: useRef<Phaser.GameObjects.Graphics | null>(null),
+    // 공격 모션 테스트
+    attack: useRef<Phaser.GameObjects.Sprite | null>(null)
   }
   
   // 상대 펫 관련 요소를 참조하는 딕셔너리
   const opponentPetRefs: PetRefs = {
     name: 'opponent-pet',
     x: dvw * 80,
-    range: 150,
+    range: 100,
     pet: useRef<Phaser.GameObjects.Sprite | null>(null),
     rope: useRef<Phaser.GameObjects.Sprite | null>(null),
     stunMark: useRef<Phaser.GameObjects.Sprite | null>(null),
-    hpFill: useRef<Phaser.GameObjects.Graphics | null>(null)
+    hpFill: useRef<Phaser.GameObjects.Graphics | null>(null),
+    // 공격 모션 테스트
+    attack: useRef<Phaser.GameObjects.Sprite | null>(null)
   }
 
   // 상대방으로 이동하는 함수
@@ -87,16 +97,24 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       // 애니메이션 완료마다 체력을 계산하고 이벤트 리스너를 제거하여 턴이 지날 때마다 중복 호출을 제어하는 함수
       const onAnimationComplete = () => {
         setHp((prevHp) => Math.max(prevHp - damage, 0))
+        attacker.attack.current?.setVisible(false)
+        attacker.pet.current?.setVisible(true)
         attacker.pet.current?.off('animationcomplete', onAnimationComplete); // 이벤트 리스너 제거
+        console.log(1)
         resolve()
       }
-
-      attacker.pet.current?.play(`${attacker.name}-attack`);  // 휘두르는 모션
-      attacker.rope.current?.setPosition(attacker.pet.current!.x - attacker.range , attacker.pet.current!.y); // 채찍 위치 조정 필요
-      attacker.rope.current?.setVisible(true); // 채찍이 보이고
-      attacker.rope.current?.play(`${attacker.name}-rope-motion`); // 채찍의 모션
-      // 휘두르는 모션이 끝나면 종료
-      attacker.pet.current?.on('animationcomplete', onAnimationComplete); // 이벤트 리스너 제거
+      // 공격 모션 테스트
+      attacker.attack.current?.setX(attacker.pet.current?.x)
+      attacker.pet.current?.setVisible(false)
+      attacker.attack.current?.setVisible(true);
+      attacker.attack.current?.play(`${attacker.name}-attack-test`);
+      attacker.attack.current?.on('animationcomplete', onAnimationComplete);
+      // attacker.pet.current?.play(`${attacker.name}-attack`);  // 휘두르는 모션
+      // attacker.rope.current?.setPosition(attacker.pet.current!.x - attacker.range , attacker.pet.current!.y); // 채찍 위치 조정 필요
+      // attacker.rope.current?.setVisible(true); // 채찍이 보이고
+      // attacker.rope.current?.play(`${attacker.name}-rope-motion`); // 채찍의 모션
+      // // 휘두르는 모션이 끝나면 종료
+      // attacker.pet.current?.on('animationcomplete', onAnimationComplete); // 이벤트 리스너 제거
     })
   }
     
@@ -167,11 +185,23 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         frameWidth: 128,
         frameHeight: 128,
       });
+
+      // 공격 모션 테스트
+      this.load.spritesheet('mypet-attack', myPetAttackSpriteSheet, {
+        frameWidth: 192,
+        frameHeight: 192,
+      })
+
+      // 공격 모션 테스트
+      this.load.spritesheet('opponentpet-attack', opponentPetAttackSpriteSheet, {
+        frameWidth: 192,
+        frameHeight: 192,
+      })
     }
     
     // 씬이 처음 생성될 때 실행되는 함수
     function create(this: Phaser.Scene) {
-      // 배경 추가
+      // 움직이지 않는 배경 추가
       // const background = this.add.image(this.scale.width / 2, this.scale.height / 2, 'background');
       // background.setOrigin(0.5, 0.5); // 이미지의 중심을 기준으로 배치
       // background.setDisplaySize(this.scale.width, this.scale.height); // 배경 이미지를 화면 크기에 맞춤
@@ -181,10 +211,15 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       backgroundRef.current = background
 
       // 내 펫 스프라이트 추가
-      const myPet = this.add.sprite(dvw*20, this.scale.height - 100, 'mypet');
+      const myPet = this.add.sprite(dvw * 20, this.scale.height - 100, 'mypet');
       myPet.setScale(1);
       myPet.setDepth(1)
       myPetRefs.pet.current = myPet  // 외부에서 참조할 수 있게 할당
+
+      // 공격 모션 테스트
+      const myPetAttack = this.add.sprite(myPet.x, myPet.y, 'mypet-attack')
+      myPetAttack.setVisible(false)
+      myPetRefs.attack.current = myPetAttack
 
       // 내 펫의 채찍(무기) 생성
       const myPetRope = this.add.sprite(myPet.x, myPet.y, 'mypet')
@@ -197,11 +232,17 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       myPetRefs.stunMark.current = myPetStunMark
 
       // 상대 펫 스프라이트 추가
-      const opponentPet = this.add.sprite(dvw*80, this.scale.height - 100, 'opponentpet');
+      const opponentPet = this.add.sprite(dvw * 80, this.scale.height - 100, 'opponentpet');
       opponentPet.flipX = true; // 스프라이트 좌우 반전
       opponentPet.setScale(1);
       opponentPetRefs.pet.current = opponentPet
-      
+
+      // 공격 모션 테스트
+      const opponentPetAttack = this.add.sprite(opponentPet.x, opponentPet.y, 'opponentpet-attack')
+      opponentPetAttack.flipX = true; // 스프라이트 좌우 반전
+      opponentPetAttack.setVisible(false)
+      opponentPetRefs.attack.current = opponentPetAttack
+
       // 상대 펫의 채찍 생성
       const opponentPetRope = this.add.sprite(opponentPet.x, opponentPet.y, 'opponentpet')
       opponentPetRope.flipX = true;
@@ -308,6 +349,22 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         frameRate: 10,
         repeat: -1,
       })
+
+      // 공격 모션 테스트
+      this.anims.create({
+        key: 'my-pet-attack-test',
+        frames: this.anims.generateFrameNumbers('mypet-attack', { start: 0, end: 5 }),
+        frameRate: 10,
+        repeat: 0,
+      })
+
+      // 공격 모션 테스트
+      this.anims.create({
+        key: 'opponent-pet-attack-test',
+        frames: this.anims.generateFrameNumbers('opponentpet-attack', { start: 0, end: 5 }),
+        frameRate: 10,
+        repeat: 0,
+      })
     }
     
     // 프레임별 업데이트 함수 (현재는 빈 상태)
@@ -373,7 +430,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       myPetRefs.stunMark.current?.play(`${myPetRefs.name}-stun-bird`)  // 기절 애니메이션 반복
       myPetRefs.pet.current?.stop()  // 기존 애니메이션 중지
       myPetRefs.pet.current?.setFrame(9) // 펫은 납작 엎드리기
-      setWinner('USER456')  // 실제 사용자의 닉네임으로 추후 수정해야 함
+      setWinner('opponent')  // 실제 사용자의 닉네임으로 추후 수정해야 함
     }
   }, [myHp])
 
@@ -392,7 +449,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       opponentPetRefs.stunMark.current?.play(`${opponentPetRefs.name}-stun-bird`)  // 기절 애니메이션 반복
       opponentPetRefs.pet.current?.stop()  // 기존 애니메이션 중지
       opponentPetRefs.pet.current?.setFrame(9) // 펫은 납작 엎드리기
-      setWinner('USER123')  // 실제 사용자의 닉네임으로 추후 수정해야 함
+      setWinner('me')  // 실제 사용자의 닉네임으로 추후 수정해야 함
     }
   }, [opponentHp])
   
