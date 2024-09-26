@@ -3,6 +3,7 @@ package com.tbtr.ffing.domain.user.controller;
 import com.tbtr.ffing.domain.user.dto.UserInfoDto;
 import com.tbtr.ffing.global.common.dto.Response;
 import com.tbtr.ffing.domain.user.service.AuthService;
+import com.tbtr.ffing.global.error.exception.CustomException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,23 +22,12 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody UserInfoDto.Request requestDTO) {
 
-        try {
-            UserInfoDto.Response signupResponse = authService.signup(requestDTO);
-            Response<Object> response = Response.builder()
-                                                .isSuccess(true)
-                                                .code(200L)
-                                                .message("회원가입에 성공하였습니다.")
-                                                .result(signupResponse).build();
-            return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e) {
-            Response<Object> errorResponse = Response.builder()
-                                                     .isSuccess(false)
-                                                     .code(409L)
-                                                     .message(e.getMessage())
-                                                     .result(null).build();
-
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
-        }
+        UserInfoDto.Response signupResponse = authService.signup(requestDTO);
+        Response<Object> response = Response.builder()
+                                            .code(200L)
+                                            .message("회원가입에 성공하였습니다.")
+                                            .result(signupResponse).build();
+        return ResponseEntity.ok(response);
 
     }
 
