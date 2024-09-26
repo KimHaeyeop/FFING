@@ -55,7 +55,7 @@ public class ExpenseRepositoryCustomImpl implements ExpenseRepositoryCustom {
     }
 
     @Override
-    public List<CategoryExpenseRes> findWeeklyCategoryExpenses(LocalDate startDate, LocalDate endDate) {
+    public List<CategoryExpenseRes> findCategoryExpenses(LocalDate startDate, LocalDate endDate) {
         QExpense expense = QExpense.expense;
 
         // 카테고리별 총액 조회
@@ -83,4 +83,5 @@ public class ExpenseRepositoryCustomImpl implements ExpenseRepositoryCustom {
                         .build())
                 .collect(Collectors.toList());
     }
+
 }
