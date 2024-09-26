@@ -1,14 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 interface GameResultProps {
   winner: string;
   score: number;
   rank: number;
-  onRestart: () => void;
-  onMain: () => void;
 }
 
-const GameResult: React.FC<GameResultProps> = ({ winner, score, rank, onRestart, onMain }) => {
+const GameResult: React.FC<GameResultProps> = ({ winner, score, rank }) => {
   const backgroundColor = winner === 'me' ? '#FAF7E1' : '#EEFFF0';
 
   return (
@@ -24,18 +23,8 @@ const GameResult: React.FC<GameResultProps> = ({ winner, score, rank, onRestart,
         </div>
         {/* 버튼들 */}
         <div className="w-1/2 flex flex-col items-center">
-          <button
-            className="w-full mb-2 p-2 bg-blue-500 text-white rounded"
-            onClick={onMain}
-          >
-            메인으로
-          </button>
-          <button
-            className="w-full p-2 bg-green-500 text-white rounded"
-            onClick={onRestart}
-          >
-            다시하기
-          </button>
+          <Link to="/">메인으로</Link>
+          <Link to="/battle">다시하기</Link>
         </div>
       </div>
     </div>
