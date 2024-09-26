@@ -11,5 +11,6 @@ public interface ExpenseRepositoryCustom {
 
     List<ExpenseRes> findMonthlyExpenses(LocalDate startDate, LocalDate endDate, ExpenseCategory category);
 
-    List<CategoryExpenseRes> findWeeklyCategoryExpenses(LocalDate startDate, LocalDate endDate);
+    List<CategoryExpenseRes> findCategoryExpenses(LocalDate startDate, LocalDate endDate);
+
 }
