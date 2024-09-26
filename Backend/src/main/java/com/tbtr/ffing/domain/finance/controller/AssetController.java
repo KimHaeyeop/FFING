@@ -34,7 +34,7 @@ public class AssetController {
 
     @GetMapping("/deposit")
     public ResponseEntity<Object> selectDepositAsset(@RequestParam long userId) {
-        List<DepositAssetRes> assets = assetService.getDepositList(userId);
+        List<Object> assets = assetService.getDepositList(userId);
         return new ResponseEntity<>(assets, HttpStatus.OK);
     }
 }

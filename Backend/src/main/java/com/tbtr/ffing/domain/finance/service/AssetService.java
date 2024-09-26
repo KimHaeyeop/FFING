@@ -13,5 +13,5 @@ public interface AssetService {
 
     List<AssetRes> getAssetHistory(long userId);
 
-    List<DepositAssetRes> getDepositList(long userId);
+    List<Object> getDepositList(long userId);
 }
