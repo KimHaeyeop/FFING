@@ -31,7 +31,7 @@ const BattlePage: React.FC = () => {
     { name: '금융', damage: 0 },
     { name: '식비', damage: 1 },
     { name: '생활/문화', damage: 5 },
-    { name: '교통', damage: 7 },
+    { name: '교통', damage: 8 },
     { name: '쇼핑', damage: 10 },
   ];
 
