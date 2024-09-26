@@ -2,13 +2,11 @@ import React, { useEffect, useRef, Dispatch, SetStateAction } from 'react';
 import Phaser from 'phaser';
 import useViewportStore from '../../store/useViewportStore';
 // 우선 펫과 배경 시트는 임의로 지정, 나중에 연동해야겠지?
-import myPetSpriteSheet from '/pets/oni.png';
-// 공격 모션 테스트
-import myPetAttackSpriteSheet from '/pets/oni-attack.png'
-import opponentPetAttackSpriteSheet from '/pets/penguin-attack.png';
-
-import opponentPetSpriteSheet from '/pets/penguin.png';
 import battleBackground from '/backgrounds/battle-background.png';
+import myPetSpriteSheet from '/pets/oni.png';
+import myPetAttackSpriteSheet from '/pets/oni-attack.png'
+import opponentPetSpriteSheet from '/pets/penguin.png';
+import opponentPetAttackSpriteSheet from '/pets/penguin-attack.png';
 
 // battlePage에서 받는 props 요소
 interface PhaserGameProps {
@@ -25,11 +23,10 @@ interface PetRefs {
   x: number;  // 펫의 x축 위치
   range: number; // 펫이 상대 펫 기준 얼마나 떨어져야 하는지
   pet: React.MutableRefObject<Phaser.GameObjects.Sprite | null>;
-  rope: React.MutableRefObject<Phaser.GameObjects.Sprite | null>;
+  attackMotion: React.MutableRefObject<Phaser.GameObjects.Sprite | null>; // 펫의 공격 모션
   stunMark: React.MutableRefObject<Phaser.GameObjects.Sprite | null>;
   hpFill: React.MutableRefObject<Phaser.GameObjects.Graphics | null>; 
   // 공격 모션 테스트
-  attack: React.MutableRefObject<Phaser.GameObjects.Sprite | null>;
 }
 
 // 게임판 객체
@@ -96,25 +93,16 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     return new Promise<void> ((resolve) => {
       // 애니메이션 완료마다 체력을 계산하고 이벤트 리스너를 제거하여 턴이 지날 때마다 중복 호출을 제어하는 함수
       const onAnimationComplete = () => {
-        setHp((prevHp) => Math.max(prevHp - damage, 0))
-        attacker.attack.current?.setVisible(false)
-        attacker.pet.current?.setVisible(true)
-        attacker.pet.current?.off('animationcomplete', onAnimationComplete); // 이벤트 리스너 제거
-        console.log(1)
+        setHp((prevHp) => Math.max(prevHp - damage, 0)) // 체력 계산하기
+        attacker.attack.current?.setVisible(false)  // 공격 모션 숨기기
+        attacker.pet.current?.setVisible(true)  // 펫 보이게 하기
         resolve()
       }
-      // 공격 모션 테스트
-      attacker.attack.current?.setX(attacker.pet.current?.x)
-      attacker.pet.current?.setVisible(false)
-      attacker.attack.current?.setVisible(true);
-      attacker.attack.current?.play(`${attacker.name}-attack-test`);
-      attacker.attack.current?.on('animationcomplete', onAnimationComplete);
-      // attacker.pet.current?.play(`${attacker.name}-attack`);  // 휘두르는 모션
-      // attacker.rope.current?.setPosition(attacker.pet.current!.x - attacker.range , attacker.pet.current!.y); // 채찍 위치 조정 필요
-      // attacker.rope.current?.setVisible(true); // 채찍이 보이고
-      // attacker.rope.current?.play(`${attacker.name}-rope-motion`); // 채찍의 모션
-      // // 휘두르는 모션이 끝나면 종료
-      // attacker.pet.current?.on('animationcomplete', onAnimationComplete); // 이벤트 리스너 제거
+      attacker.attack.current?.setX(attacker.pet.current?.x)  // 현재 펫 위치로 공격 모션을 이동
+      attacker.pet.current?.setVisible(false) // 기존 펫 숨기기
+      attacker.attack.current?.setVisible(true);  // 공격 모션 펫 보이기
+      attacker.attack.current?.play(`${attacker.name}-attack`);  // 공격 애니메이션 수행하기
+      attacker.attack.current?.once('animationcomplete', onAnimationComplete);  // onAnimationComplete 함수를 한 번만 실행하게 설정
     })
   }
     
