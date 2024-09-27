@@ -138,6 +138,15 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     })
   }
 
+  // 체력 바를 업데이트 하는 함수
+  function updateHpBar (petRefs: PetRefs, hp: number, maxHp: number) {
+    if (petRefs.hpFill.current && petRefs.pet.current) {
+      petRefs.hpFill.current.clear()
+      petRefs.hpFill.current.fillStyle(0xff0000, 1) // 체력바 색상은 빨간 색
+      petRefs.hpFill.current.fillRoundedRect(petRefs.pet.current.x - 50, petRefs.pet.current.y - 100, (hp / maxHp) * 100, 20, 10) // 길이를 다시 계산하여 지정
+    }
+  }
+
   // 공격 효과음 송출 함수
   function playRandomAttackSound() {
     if (sceneRef.current) {
@@ -231,32 +240,17 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
 
       // 내 펫 스프라이트 추가
       const myPet = this.add.sprite(dvw * 20, this.scale.height - 100, 'my-pet');
-      myPet.setScale(1);
       myPetRefs.pet.current = myPet  // 외부에서 참조할 수 있게 할당
-
-      // 내 펫 공격 모션 스프라이트 추가
-      const myPetAttack = this.add.sprite(myPet.x, myPet.y, 'my-pet-attack')
-      myPetAttack.setVisible(false)
-      myPetAttack.setDepth(1)
-      myPetRefs.attackMotion.current = myPetAttack
 
       // 내 펫 기절 시 기절 아이콘 생성
       const myPetStunMark = this.add.sprite(myPet.x, myPet.y - 50, 'my-pet')
       myPetStunMark.setVisible(false) // 기절 모션은 기절할 때만 보여야 한다.
       myPetRefs.stunMark.current = myPetStunMark
-
+      
       // 상대 펫 스프라이트 추가
       const opponentPet = this.add.sprite(dvw * 80, this.scale.height - 100, 'opponent-pet');
       opponentPet.flipX = true; // 스프라이트 좌우 반전
-      opponentPet.setScale(1);
       opponentPetRefs.pet.current = opponentPet
-
-      // 상대 펫 공격 모션 스프라이트 추가
-      const opponentPetAttack = this.add.sprite(opponentPet.x, opponentPet.y, 'opponent-pet-attack')
-      opponentPetAttack.flipX = true; // 스프라이트 좌우 반전
-      opponentPetAttack.setVisible(false)
-      opponentPetAttack.setDepth(1);
-      opponentPetRefs.attackMotion.current = opponentPetAttack
 
       // 상대 펫 기절 시 기절 아이콘 생성
       const opponentPetStunMark = this.add.sprite(opponentPet.x, opponentPet.y - 50, 'opponentpet')
@@ -264,6 +258,19 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       opponentPetStunMark.setVisible(false);
       opponentPetRefs.stunMark.current = opponentPetStunMark
 
+      // 내 펫 공격 모션 스프라이트 추가
+      const myPetAttack = this.add.sprite(myPet.x, myPet.y, 'my-pet-attack')
+      myPetAttack.setVisible(false)
+      myPetRefs.attackMotion.current = myPetAttack
+      
+      // 상대 펫 공격 모션 스프라이트 추가
+      const opponentPetAttack = this.add.sprite(opponentPet.x, opponentPet.y, 'opponent-pet-attack')
+      opponentPetAttack.flipX = true; // 스프라이트 좌우 반전
+      opponentPetAttack.setVisible(false)
+      opponentPetRefs.attackMotion.current = opponentPetAttack
+
+
+      
       // 내 펫 체력바 생성
       const myHpBar = this.add.graphics();
       myHpBar.fillStyle(0x000000, 1); 
@@ -374,12 +381,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
   
   // 체력 계산 및 전투 종료를 검정하는 함수
   useEffect(() => {
-    // myHp가 변경될 때마다 체력바 업데이트
-    if (myPetRefs.hpFill.current && myPetRefs.pet.current && opponentAttack) {
-      myPetRefs.hpFill.current.clear();  // 체력 초기화
-      myPetRefs.hpFill.current.fillStyle(0xff0000, 1); //빨간색으로 채워라
-      myPetRefs.hpFill.current.fillRoundedRect(myPetRefs.pet.current!.x - 50, myPetRefs.pet.current!.y - 100, (myHp / myMaxHp) * 100, 20, 10); // 크기 재설정
-    }
+    updateHpBar(myPetRefs, myHp, myMaxHp) // hp가 변경할 때마다 체력 업데이트
     // 내 체력이 0일 때
     if (myHp === 0) {
       // 사망 시 화면 흔들림
@@ -417,13 +419,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
 
   // 체력 계산 및 전투 종료를 검정하는 함수
   useEffect(() => {
-    // opponentHp가 변경될 때마다 체력바 업데이트
-    if (opponentPetRefs.hpFill.current && opponentPetRefs.pet.current && selectedAttack) {
-      opponentPetRefs.hpFill.current.clear();  // 체력 초기화
-      opponentPetRefs.hpFill.current.fillStyle(0xff0000, 1); //빨간색으로 채워라
-      opponentPetRefs.hpFill.current.fillRoundedRect(opponentPetRefs.pet.current!.x - 50, opponentPetRefs.pet.current!.y - 100, (opponentHp / opponentMaxHp) * 100, 20, 10); // 크기 재설정
-      opponentPetRefs.pet.current?.play(`${opponentPetRefs.name}-idle`)  // 맞는 펫은 다시 대기 상태로
-    }
+    updateHpBar(opponentPetRefs, opponentHp, opponentMaxHp) // hp가 변경할 때마다 체력 업데이트
     // 상대 체력이 0일 때
     if (opponentHp === 0 && backgroundRef.current) {
       // 사망 시 화면 흔들림
