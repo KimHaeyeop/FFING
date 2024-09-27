@@ -142,7 +142,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
   function playRandomAttackSound() {
     if (sceneRef.current) {
       const randomIndex = Math.floor(Math.random() * 7) + 1; // 1~7 사이의 랜덤 숫자
-      sceneRef.current.sound.play(`attack-sound-${randomIndex}`, { volume: 0.3 }); // 사운드 재생(소리는 기존 소리 크기의 0.2배)
+      sceneRef.current.sound.play(`attack-sound-${randomIndex}`, { volume: 0.2 }); // 사운드 재생(소리는 기존 소리 크기의 0.2배)
     }
   }
 
@@ -196,24 +196,24 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       this.load.audio('game-background', '/musics/game-background.wav');
 
 
-      this.load.spritesheet('mypet', myPetSpriteSheet, {
+      this.load.spritesheet('my-pet', myPetSpriteSheet, {
         frameWidth: 128,  // 각 프레임의 너비
         frameHeight: 128, // 각 프레임의 높이
       });
 
-      this.load.spritesheet('opponentpet', opponentPetSpriteSheet, {
+      this.load.spritesheet('opponent-pet', opponentPetSpriteSheet, {
         frameWidth: 128,
         frameHeight: 128,
       });
 
       // 공격 모션 테스트
-      this.load.spritesheet('mypet-attack', myPetAttackSpriteSheet, {
+      this.load.spritesheet('my-pet-attack', myPetAttackSpriteSheet, {
         frameWidth: 192,
         frameHeight: 192,
       })
 
       // 공격 모션 테스트
-      this.load.spritesheet('opponentpet-attack', opponentPetAttackSpriteSheet, {
+      this.load.spritesheet('opponent-pet-attack', opponentPetAttackSpriteSheet, {
         frameWidth: 192,
         frameHeight: 192,
       })
@@ -228,35 +228,31 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       background.setOrigin(0.5, 0.5); // 이미지의 중심을 기준으로 배치
       background.setDisplaySize(this.scale.width * 1.1, this.scale.height * 1.1); // 배경 이미지를 화면 크기에 맞춤
       backgroundRef.current = background
-      
-      // 배경 음악 재생, 반복 재생
-      // const music = this.sound.add('game-background');
-      // music.play({volume: 1, loop: true});  
 
       // 내 펫 스프라이트 추가
-      const myPet = this.add.sprite(dvw * 20, this.scale.height - 100, 'mypet');
+      const myPet = this.add.sprite(dvw * 20, this.scale.height - 100, 'my-pet');
       myPet.setScale(1);
       myPetRefs.pet.current = myPet  // 외부에서 참조할 수 있게 할당
 
       // 내 펫 공격 모션 스프라이트 추가
-      const myPetAttack = this.add.sprite(myPet.x, myPet.y, 'mypet-attack')
+      const myPetAttack = this.add.sprite(myPet.x, myPet.y, 'my-pet-attack')
       myPetAttack.setVisible(false)
       myPetAttack.setDepth(1)
       myPetRefs.attackMotion.current = myPetAttack
 
       // 내 펫 기절 시 기절 아이콘 생성
-      const myPetStunMark = this.add.sprite(myPet.x, myPet.y - 50, 'mypet')
+      const myPetStunMark = this.add.sprite(myPet.x, myPet.y - 50, 'my-pet')
       myPetStunMark.setVisible(false) // 기절 모션은 기절할 때만 보여야 한다.
       myPetRefs.stunMark.current = myPetStunMark
 
       // 상대 펫 스프라이트 추가
-      const opponentPet = this.add.sprite(dvw * 80, this.scale.height - 100, 'opponentpet');
+      const opponentPet = this.add.sprite(dvw * 80, this.scale.height - 100, 'opponent-pet');
       opponentPet.flipX = true; // 스프라이트 좌우 반전
       opponentPet.setScale(1);
       opponentPetRefs.pet.current = opponentPet
 
       // 상대 펫 공격 모션 스프라이트 추가
-      const opponentPetAttack = this.add.sprite(opponentPet.x, opponentPet.y, 'opponentpet-attack')
+      const opponentPetAttack = this.add.sprite(opponentPet.x, opponentPet.y, 'opponent-pet-attack')
       opponentPetAttack.flipX = true; // 스프라이트 좌우 반전
       opponentPetAttack.setVisible(false)
       opponentPetAttack.setDepth(1);
@@ -290,104 +286,36 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       opponentHpFill.fillRoundedRect(opponentPet.x - 50, opponentPet.y - 100, opponentHp / opponentMaxHp * 100, 20, 10);
       opponentPetRefs.hpFill.current = opponentHpFill
 
-      // 애니메이션 설정 (펫의 idle 상태)
-      // 내 펫 대기
-      this.anims.create({
-        key: 'my-pet-idle',
-        frames: this.anims.generateFrameNumbers('mypet', { start: 128, end: 129 }), // mypet의 128번 프레임부터 129번 프레임까지 반복
-        frameRate: 1, // 1초에 1프레임 재생 속도
-        repeat: -1  // 무한 반복
-      });
-      myPet.play('my-pet-idle');        
 
-      // 상대 펫 대기
-      this.anims.create({
-        key: 'opponent-pet-idle',
-        frames: this.anims.generateFrameNumbers('opponentpet', { start: 128, end: 129 }),
-        frameRate: 1,
-        repeat: -1
-      });
+      // 애니메이션 및 스프라이트를 생성하는 함수
+      function createPetAnimation(scene: Phaser.Scene, petKey: string, animName: string, frames: number[], frameRate = 10, repeat = -1) {
+        scene.anims.create({
+          key: `${petKey}${animName}`,
+          frames: scene.anims.generateFrameNumbers(petKey, { frames }),
+          frameRate,
+          repeat,
+        });
+      }
+
+      // 내 펫 애니메이션 설정
+      createPetAnimation(this, 'my-pet', '-idle', [128, 129], 1) // 내 펫 대기
+      createPetAnimation(this, 'my-pet', '-walk', [0, 8], 5) // 내 펫 이동
+      createPetAnimation(this, 'my-pet', '-attacked', [0, 1, 2, 3, 4, 5], 10, 0) // 내 펫 피격
+      createPetAnimation(this, 'my-pet', '-stun', [32, 33, 34, 35, 9], 5, 0) // 내 펫 기절
+      createPetAnimation(this, 'my-pet', '-stun-bird', [208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219]) // 내 펫 기절마크
+      createPetAnimation(this, 'my-pet-attack', '', [0, 1, 2, 3, 4, 5], 10, 0) // 내 펫 공격
+
+      // 상대 펫 애니메이션 설정
+      createPetAnimation(this, 'opponent-pet', '-idle', [128, 129], 1) // 내 펫 대기
+      createPetAnimation(this, 'opponent-pet', '-walk', [0, 8], 5) // 내 펫 이동
+      createPetAnimation(this, 'my-pet', '-attacked', [0, 1, 2, 3, 4, 5], 10, 0) // 내 펫 피격
+      createPetAnimation(this, 'opponent-pet', '-stun', [32, 33, 34, 35, 9], 5, 0) // 내 펫 기절
+      createPetAnimation(this, 'opponent-pet', '-stun-bird', [208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219]) // 내 펫 기절마크
+      createPetAnimation(this, 'opponent-pet-attack', '', [0, 1, 2, 3, 4, 5], 10, 0) // 내 펫 공격
+      
+      // 전투 준비 태세
+      myPet.play('my-pet-idle');
       opponentPet.play('opponent-pet-idle');
-
-      // 내 펫 이동
-      this.anims.create({
-        key: 'my-pet-walk',
-        frames: this.anims.generateFrameNumbers('mypet', { start: 0, end: 8 }),
-        frameRate: 5,
-        repeat: -1,
-      });
-
-      // 상대 펫 이동
-      this.anims.create({
-        key: 'opponent-pet-walk',
-        frames: this.anims.generateFrameNumbers('opponentpet', { start: 0, end: 8 }),
-        frameRate: 5,
-        repeat: -1,
-      });
-
-      // 내 펫 기절 모션
-      this.anims.create({
-        key: 'my-pet-stun',
-        frames: this.anims.generateFrameNumbers('mypet', { frames: [32, 33, 34, 35, 9] }),
-        frameRate: 5,
-        repeat: 0,
-      })
-
-      // 상대 펫 기절 모션
-      this.anims.create({
-        key: 'opponent-pet-stun',
-        frames: this.anims.generateFrameNumbers('opponentpet', { frames: [32, 33, 34, 35, 9] }),
-        frameRate: 5,
-        repeat: 0,
-      })
-
-      // 내 펫 가절 마크
-      this.anims.create({
-        key: 'my-pet-stun-bird',
-        frames: this.anims.generateFrameNumbers('mypet', { start: 208, end: 219 }),
-        frameRate: 10,
-        repeat: -1,
-      })
-
-      // 상대 펫 기절 마크
-      this.anims.create({
-        key: 'opponent-pet-stun-bird',
-        frames: this.anims.generateFrameNumbers('opponentpet', { start: 208, end: 219 }),
-        frameRate: 10,
-        repeat: -1,
-      })
-
-      // 내 펫 공격 모션
-      this.anims.create({
-        key: 'my-pet-attack',
-        frames: this.anims.generateFrameNumbers('mypet-attack', { start: 0, end: 5 }),
-        frameRate: 10,
-        repeat: 0,
-      })
-
-      // 상대 펫 공격 모션
-      this.anims.create({
-        key: 'opponent-pet-attack',
-        frames: this.anims.generateFrameNumbers('opponentpet-attack', { start: 0, end: 5 }),
-        frameRate: 10,
-        repeat: 0,
-      })
-
-      // 우리 펫 피격 모션
-      this.anims.create({
-        key: 'my-pet-attacked',
-        frames: this.anims.generateFrameNumbers('mypet', { start: 48, end: 49 }),
-        frameRate: 10,
-        repeat: 0,
-      })
-
-      // 상대 펫 피격 모션
-      this.anims.create({
-        key: 'opponent-pet-attacked',
-        frames: this.anims.generateFrameNumbers('opponentpet', { start: 48, end: 49 }),
-        frameRate: 10,
-        repeat: 0,
-      })
     }
     
     // 프레임별 업데이트 함수 ()
@@ -416,7 +344,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     opponentPetRefs.stunMark.current
   ) {
     // 배경 음악이 돌고 있지 않으면 배경 음악 재생
-      sceneRef.current?.sound.play('game-background', {volume: 0.2, loop: true});
+      sceneRef.current?.sound.play('game-background', {volume: 0.3, loop: true});
       (async () => {
           if (mySpeed > opponentSpeed) {
             // 내 공격 -> 상대 공격
