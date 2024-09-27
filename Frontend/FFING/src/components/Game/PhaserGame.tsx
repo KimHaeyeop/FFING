@@ -90,12 +90,14 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       const onAnimationComplete = () => {
         setHp((prevHp) => Math.max(prevHp - damage, 0)) // 체력 계산하기
         // 피격 효과
+        defender.pet.current?.play(`${defender.name}-attacked`)
         defender.pet.current?.scene.tweens.add({
           targets: defender.pet.current,
           x: defender.pet.current.x + defender.direction * damage * 10,  // 데미지에 따라 넉백 거리 설정
           duration: 1000,
           yoyo: true,
           ease: 'Power2',
+          onComplete: () => defender.pet.current?.play(`${defender.name}-idle`)  // 맞는 사람은 다시 대기 상태로
         })
         attacker.attackMotion.current?.setVisible(false)  // 공격 모션 숨기기
         attacker.pet.current?.setVisible(true)  // 펫 보이게 하기
@@ -338,6 +340,22 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       this.anims.create({
         key: 'opponent-pet-attack',
         frames: this.anims.generateFrameNumbers('opponentpet-attack', { start: 0, end: 5 }),
+        frameRate: 10,
+        repeat: 0,
+      })
+
+      // 우리 펫 피격 모션
+      this.anims.create({
+        key: 'my-pet-attacked',
+        frames: this.anims.generateFrameNumbers('mypet', { start: 48, end: 49 }),
+        frameRate: 10,
+        repeat: 0,
+      })
+
+      // 상대 펫 피격 모션
+      this.anims.create({
+        key: 'opponent-pet-attacked',
+        frames: this.anims.generateFrameNumbers('opponentpet', { start: 48, end: 49 }),
         frameRate: 10,
         repeat: 0,
       })
