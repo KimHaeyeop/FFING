@@ -31,6 +31,8 @@ interface PetRefs {
 const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack, setSelectedAttack, setOpponentAttack, setWinner }) => {
   const sceneRef = useRef<Phaser.Scene | null>(null);
   const gameContainerRef = useRef<HTMLDivElement>(null); // HTML DOM 요소를 참조하기 위한 ref
+  const backgroundRef = useRef<Phaser.GameObjects.Image | null>(null)  // 배경을 참조하기 위한 ref
+  // const backgroundRef = useRef<Phaser.GameObjects.TileSprite | null>(null)  // 움직이는 배경 설정
   const { dvw, dvh } = useViewportStore();  // 화면 뷰포트 크기 관리 (동적으로 화면 크기를 변경하기 위해 사용)
   const [myMaxHp, setMyMaxHp] = React.useState<number>(10); // 내 펫의 최대 체력, 기본값 10(임시)
   const [myHp, setMyHp] = React.useState<number>(myMaxHp); // 내 펫의 현재 체력, 기본값 10(임시)
@@ -41,8 +43,6 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
   const mySpeed = 10
   const opponentSpeed = 5
 
-  // 움직이는 배경 설정
-  const backgroundRef = useRef<Phaser.GameObjects.TileSprite | null>(null)
 
   // 내 펫 관련 요소를 참조하는 딕셔너리
   const myPetRefs: PetRefs = {
@@ -101,7 +101,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       attacker.attackMotion.current?.once('animationcomplete', onAnimationComplete);  // onAnimationComplete 함수를 한 번만 실행하게 설정
 
       // 데미지 렌더링
-      const damageText = sceneRef.current?.add.text(defender.pet.current!.x, defender.pet.current!.y - 200, `-${damage}`, {
+      const damageText = sceneRef.current?.add.text(defender.pet.current!.x - 50, defender.pet.current!.y - 200, `-${damage}`, {
         fontFamily: 'Galmuri11',
         fontStyle: '1000',
         fontSize: '64px',
@@ -176,7 +176,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
 
     // 자원을 미리 로드하는 함수
     function preload(this: Phaser.Scene) {
-      this.load.image('background', `backgrounds/battle-background-${Math.floor(Math.random() * 35)}.png`); // 랜덤 이미지 로드
+      this.load.image('background', `backgrounds/battle-background-${Math.floor(Math.random() * 35)}.png`); // 랜덤 이미지 로드, 배경 이미지의 사이즈는 모두 동일함
 
       this.load.spritesheet('mypet', myPetSpriteSheet, {
         frameWidth: 128,  // 각 프레임의 너비
@@ -199,8 +199,6 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         frameWidth: 192,
         frameHeight: 192,
       })
-
-      // this.load.bitmapFont('font', 'fonts/Galmuri11-Condensed', 'fonts/font.fnt')
     }
     
     // 씬이 처음 생성될 때 실행되는 함수
@@ -209,11 +207,11 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       // 움직이지 않는 배경 추가
       const background = this.add.image(this.scale.width / 2, this.scale.height / 2, 'background');
       background.setOrigin(0.5, 0.5); // 이미지의 중심을 기준으로 배치
-      background.setDisplaySize(this.scale.width, this.scale.height); // 배경 이미지를 화면 크기에 맞춤
-      
+      background.setDisplaySize(this.scale.width * 1.1, this.scale.height * 1.1); // 배경 이미지를 화면 크기에 맞춤
+    
       // const background = this.add.tileSprite(this.scale.width / 2, this.scale.height / 2, 0, 0, 'background').setOrigin(0.5, 0.5);  // 배경을 움직일 수 있게 tileSprite로
       // background.setDisplaySize(this.scale.width, this.scale.height); // 배경 이미지를 화면 크기에 맞춤
-      // backgroundRef.current = background
+      backgroundRef.current = background
       
       // 내 펫 스프라이트 추가
       const myPet = this.add.sprite(dvw * 20, this.scale.height - 100, 'mypet');
@@ -374,9 +372,9 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     
     // 프레임별 업데이트 함수 ()
     function update() {
-      if (backgroundRef.current) {
-        backgroundRef.current!.tilePositionX -= 1  // 배경을 매프레임마다 0.01만큼 좌측으로 이동
-      }
+      // if (backgroundRef.current) {
+      //   backgroundRef.current!.tilePositionX -= 1  // 배경을 매프레임마다 0.01만큼 좌측으로 이동
+      // }
     }
 
     return () => {
@@ -435,6 +433,16 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     }
     // 내 체력이 0일 때
     if (myHp === 0) {
+      // 사망 시 화면 흔들림
+      sceneRef.current?.tweens.add({
+        targets: backgroundRef.current,
+        x: backgroundRef.current!.x - 10,
+        y: backgroundRef.current!.y - 10,
+        duration: 50,
+        yoyo: true,
+        repeat: 5,
+        ease: 'Power1'
+      })
       setWinner('opponent')
       myPetRefs.pet.current?.play(`${myPetRefs.name}-stun`) // 기절 애니메이션 실행
       myPetRefs.hpFill.current?.clear()  // 깔끔한 디자인을 위해 삭제
@@ -446,9 +454,9 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       myPetRefs.pet.current?.scene.tweens.add({
         targets: myPetRefs.pet.current,
         x: myPetRefs.pet.current.x + myPetRefs.direction * opponentAttack!.damage * 10,  // 데미지에 따라 넉백 거리 설정
-        duration: 1000,
+        duration: 500,
         yoyo: true,
-        ease: 'Expo',
+        ease: 'Power2',
         onComplete: () => {
           myPetRefs.pet.current?.play(`${myPetRefs.name}-idle`)  // 맞은 이후에는 전투 대기 상태로
         }
@@ -466,7 +474,17 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       opponentPetRefs.pet.current?.play(`${opponentPetRefs.name}-idle`)  // 맞는 펫은 다시 대기 상태로
     }
     // 상대 체력이 0일 때
-    if (opponentHp === 0) {
+    if (opponentHp === 0 && backgroundRef.current) {
+      // 사망 시 화면 흔들림
+      sceneRef.current?.tweens.add({
+        targets: backgroundRef.current,
+        x: backgroundRef.current!.x - 10,
+        y: backgroundRef.current!.y - 10,
+        duration: 50,
+        yoyo: true,
+        repeat: 5,
+        ease: 'Power1'
+      })
       setWinner('me')
       opponentPetRefs.pet.current?.play(`${opponentPetRefs.name}-stun`) // 기절 애니메이션 실행
       opponentPetRefs.hpFill.current?.clear()  // 깔끔한 디자인을 위해 삭제
@@ -478,9 +496,9 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     opponentPetRefs.pet.current?.scene.tweens.add({
         targets: opponentPetRefs.pet.current,
         x: opponentPetRefs.pet.current.x + opponentPetRefs.direction * selectedAttack!.damage * 10,  // 데미지에 따라 넉백 거리 설정
-        duration: 1000,
+        duration: 500,
         yoyo: true,
-        ease: 'Expo',
+        ease: 'Power2',
         onComplete: () => {
           opponentPetRefs.pet.current?.play(`${opponentPetRefs.name}-idle`)  // 맞은 이후에는 전투 대기 상태로
         }
