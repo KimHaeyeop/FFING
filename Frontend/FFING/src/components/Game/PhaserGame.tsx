@@ -89,16 +89,6 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       // 애니메이션 완료마다 체력을 계산하고 이벤트 리스너를 제거하여 턴이 지날 때마다 중복 호출을 제어하는 함수
       const onAnimationComplete = () => {
         setHp((prevHp) => Math.max(prevHp - damage, 0)) // 체력 계산하기
-        // 피격 효과
-        defender.pet.current?.play(`${defender.name}-attacked`)
-        defender.pet.current?.scene.tweens.add({
-          targets: defender.pet.current,
-          x: defender.pet.current.x + defender.direction * damage * 10,  // 데미지에 따라 넉백 거리 설정
-          duration: 1000,
-          yoyo: true,
-          ease: 'Power2',
-          onComplete: () => defender.pet.current?.play(`${defender.name}-idle`)  // 맞는 사람은 다시 대기 상태로
-        })
         attacker.attackMotion.current?.setVisible(false)  // 공격 모션 숨기기
         attacker.pet.current?.setVisible(true)  // 펫 보이게 하기
         resolve()
@@ -394,16 +384,20 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
             if (opponentHp - selectedAttack.damage > 0) {
               await petFight(opponentPetRefs, myPetRefs, opponentAttack.damage, setMyHp)
             }
-            setSelectedAttack(null) // 내 공격 삭제
-            setOpponentAttack(null) // 상대 공격 삭제
+            setTimeout(() => {
+              setSelectedAttack(null) // 내 공격 삭제
+              setOpponentAttack(null) // 상대 공격 삭제
+            }, 1000);
           } else {
           // 상대 공격 -> 내 공격
             await petFight(opponentPetRefs, myPetRefs, opponentAttack.damage, setOpponentHp)
             if (myHp - opponentAttack.damage > 0) {
               await petFight(myPetRefs, opponentPetRefs, selectedAttack.damage, setMyHp)
             }
-            setOpponentAttack(null)
-            setSelectedAttack(null)
+            setTimeout(() => {
+              setSelectedAttack(null) // 내 공격 삭제
+              setOpponentAttack(null) // 상대 공격 삭제
+            }, 1000);          
           } 
         }) ()
       }
@@ -412,37 +406,64 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
   // 체력 계산 및 전투 종료를 검정하는 함수
   useEffect(() => {
     // myHp가 변경될 때마다 체력바 업데이트
-    if (myPetRefs.hpFill.current && myPetRefs.pet.current) {
+    if (myPetRefs.hpFill.current && myPetRefs.pet.current && opponentAttack) {
       myPetRefs.hpFill.current.clear();  // 체력 초기화
       myPetRefs.hpFill.current.fillStyle(0xff0000, 1); //빨간색으로 채워라
       myPetRefs.hpFill.current.fillRoundedRect(myPetRefs.pet.current!.x - 50, myPetRefs.pet.current!.y - 100, (myHp / myMaxHp) * 100, 20, 10); // 크기 재설정
+      
     }
     // 내 체력이 0일 때
     if (myHp === 0) {
-      myPetRefs.hpFill.current?.clear()  // 깔끔한 디자인을 위해 삭제
-      myPetRefs.stunMark.current?.setVisible(true)  // 스턴 모션이 모이고
-      myPetRefs.stunMark.current?.play(`${myPetRefs.name}-stun-bird`)  // 기절 마크 애니메이션 반복
-      myPetRefs.pet.current?.play(`${myPetRefs.name}-stun`) // 기절 애니메이션 실행
       setWinner('opponent')
+      myPetRefs.pet.current?.play(`${myPetRefs.name}-stun`) // 기절 애니메이션 실행
+      myPetRefs.hpFill.current?.clear()  // 깔끔한 디자인을 위해 삭제
+      myPetRefs.stunMark.current?.play(`${myPetRefs.name}-stun-bird`)  // 기절 마크 애니메이션 반복
+      myPetRefs.stunMark.current?.setVisible(true)  // 스턴 모션이 보임
+    } else {
+      // 피격 효과
+      myPetRefs.pet.current?.play(`${myPetRefs.name}-attacked`)
+      myPetRefs.pet.current?.scene.tweens.add({
+        targets: myPetRefs.pet.current,
+        x: myPetRefs.pet.current.x + myPetRefs.direction * opponentAttack!.damage * 10,  // 데미지에 따라 넉백 거리 설정
+        duration: 1000,
+        yoyo: true,
+        ease: 'Expo',
+        onComplete: () => {
+          myPetRefs.pet.current?.play(`${myPetRefs.name}-idle`)  // 맞은 이후에는 전투 대기 상태로
+        }
+      })
     }
   }, [myHp])
 
   // 체력 계산 및 전투 종료를 검정하는 함수
   useEffect(() => {
     // opponentHp가 변경될 때마다 체력바 업데이트
-    if (opponentPetRefs.hpFill.current && opponentPetRefs.pet.current) {
+    if (opponentPetRefs.hpFill.current && opponentPetRefs.pet.current && selectedAttack) {
       opponentPetRefs.hpFill.current.clear();  // 체력 초기화
       opponentPetRefs.hpFill.current.fillStyle(0xff0000, 1); //빨간색으로 채워라
       opponentPetRefs.hpFill.current.fillRoundedRect(opponentPetRefs.pet.current!.x - 50, opponentPetRefs.pet.current!.y - 100, (opponentHp / opponentMaxHp) * 100, 20, 10); // 크기 재설정
+      opponentPetRefs.pet.current?.play(`${opponentPetRefs.name}-idle`)  // 맞는 펫은 다시 대기 상태로
     }
     // 상대 체력이 0일 때
     if (opponentHp === 0) {
+      setWinner('me')
+      opponentPetRefs.pet.current?.play(`${opponentPetRefs.name}-stun`) // 기절 애니메이션 실행
       opponentPetRefs.hpFill.current?.clear()  // 깔끔한 디자인을 위해 삭제
       opponentPetRefs.stunMark.current?.setVisible(true)  // 스턴 모션이 모이고
-      opponentPetRefs.stunMark.current?.play(`${opponentPetRefs.name}-stun-bird`)  // 기절 애니메이션 반복
-      // opponentPetRefs.pet.current?.stop()  // 기존 애니메이션 중지
-      opponentPetRefs.pet.current?.play(`${opponentPetRefs.name}-stun`) // 기절 애니메이션 실행
-      setWinner('me')
+      opponentPetRefs.stunMark.current?.play(`${opponentPetRefs.name}-stun-bird`)  // 기절 마크 애니메이션 반복
+    } else {
+    // 피격 효과
+    opponentPetRefs.pet.current?.play(`${opponentPetRefs.name}-attacked`)
+    opponentPetRefs.pet.current?.scene.tweens.add({
+        targets: opponentPetRefs.pet.current,
+        x: opponentPetRefs.pet.current.x + opponentPetRefs.direction * selectedAttack!.damage * 10,  // 데미지에 따라 넉백 거리 설정
+        duration: 1000,
+        yoyo: true,
+        ease: 'Expo',
+        onComplete: () => {
+          opponentPetRefs.pet.current?.play(`${opponentPetRefs.name}-idle`)  // 맞은 이후에는 전투 대기 상태로
+        }
+      })
     }
   }, [opponentHp])
   
