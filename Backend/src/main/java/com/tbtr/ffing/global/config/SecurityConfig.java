@@ -4,6 +4,7 @@ import com.tbtr.ffing.domain.user.repository.UserRepository;
 import com.tbtr.ffing.global.auth.JWTFilter;
 import com.tbtr.ffing.global.auth.JWTUtil;
 import com.tbtr.ffing.global.redis.repository.RedisRefreshTokenRepository;
+import com.tbtr.ffing.global.redis.service.RedisRefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
@@ -24,11 +25,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Log4j2
 public class SecurityConfig {
 
-    //AuthenticationManager가 인자로 받을 AuthenticationConfiguraion 객체 생성자 주입
-    private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
     private final UserRepository userRepository;
     private final RedisRefreshTokenRepository redisRefreshTokenRepository;
+    private final RedisRefreshTokenService redisRefreshTokenService;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -44,7 +45,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // 세션 관리 설정
 //        // jwt 토큰 확인 필터
-        http.addFilterBefore(new JWTFilter(jwtUtil, userRepository, redisRefreshTokenRepository),
+        http.addFilterBefore(new JWTFilter(jwtUtil, userRepository, redisRefreshTokenRepository, redisRefreshTokenService),
                 UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
