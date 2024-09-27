@@ -1,20 +1,15 @@
 package com.tbtr.ffing.domain.finance.repository;
 
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.tbtr.ffing.domain.finance.dto.response.asset.AssetRes;
-import com.tbtr.ffing.domain.finance.dto.response.asset.DepositAssetRes;
-import com.tbtr.ffing.domain.finance.dto.response.asset.SavingsAssetRes;
-import com.tbtr.ffing.domain.finance.entity.Asset;
-import com.tbtr.ffing.domain.finance.entity.QAsset;
-import com.tbtr.ffing.domain.finance.entity.QDepositAccount;
-import com.tbtr.ffing.domain.finance.entity.QSavingsAccount;
+import com.tbtr.ffing.domain.finance.dto.response.asset.*;
+import com.tbtr.ffing.domain.finance.entity.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -22,6 +17,7 @@ import java.util.List;
 public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
+    private final SecurityFilterChain defaultSecurityFilterChain;
 
     @Override
     public AssetRes findCurrentAssetByUserId(long userId) {
@@ -92,6 +88,61 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                         savingsAccount.totalBalance))
                 .from(savingsAccount)
                 .where(savingsAccount.ssafyUser.ssafyUserId.eq(ssafyUserId))
+                .fetch();
+    }
+
+    @Override
+    public List<AccountAssetRes> findAccountAssetListByUserId(long ssafyUserId) {
+        QAccount account = QAccount.account;
+
+        return queryFactory
+                .select(Projections.constructor(AccountAssetRes.class,
+                        account.accountId,
+                        account.bankCode,
+                        account.accountName,
+                        account.accountNo,
+                        account.accountBalance))
+                .from(account)
+                .where(account.ssafyUser.ssafyUserId.eq(ssafyUserId))
+                .fetch();
+    }
+
+    @Override
+    public List<DepositTransactionAssetRes> findDepositTransactionByDepositAccountId(long accountId) {
+        QDepositTransaction depositTransaction = QDepositTransaction.depositTransaction;
+
+        return queryFactory
+                .select(Projections.constructor(DepositTransactionAssetRes.class,
+                        depositTransaction.depositTransactionId,
+                        depositTransaction.paymentDate,
+                        depositTransaction.paymentTime,
+                        depositTransaction.paymentBalance,
+                        Expressions.numberTemplate(BigDecimal.class,
+                                "SUM({0}) OVER (ORDER BY {1})",
+                                depositTransaction.paymentBalance, depositTransaction.depositTransactionId)))
+                .from(depositTransaction)
+                .where(depositTransaction.depositAccount.depositAccountId.eq(accountId))
+                .orderBy(depositTransaction.paymentDate.desc(), depositTransaction.paymentTime.desc())
+                .fetch();
+    }
+
+    @Override
+    public List<SavingsTransactionAssetRes> findSavingsTransactionByDepositAccountId(long accountId) {
+        QSavingsTransaction savingsTransaction = QSavingsTransaction.savingsTransaction;
+
+        return queryFactory
+                .select(Projections.constructor(SavingsTransactionAssetRes.class,
+                        savingsTransaction.savingsTransactionId,
+                        savingsTransaction.paymentDate,
+                        savingsTransaction.paymentTime,
+                        savingsTransaction.depositInstallment,
+                        savingsTransaction.paymentBalance,
+                        Expressions.numberTemplate(BigDecimal.class,
+                                "SUM({0}) OVER (ORDER BY {1})",
+                                savingsTransaction.paymentBalance, savingsTransaction.savingsTransactionId)))
+                .from(savingsTransaction)
+                .where(savingsTransaction.savingsAccount.savingsAccountId.eq(accountId))
+                .orderBy(savingsTransaction.paymentDate.desc(), savingsTransaction.paymentTime.desc())
                 .fetch();
     }
 }
