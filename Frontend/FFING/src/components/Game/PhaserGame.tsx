@@ -98,6 +98,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       attacker.pet.current?.setVisible(false) // 기존 펫 숨기기
       attacker.attackMotion.current?.setVisible(true);  // 공격 모션 펫 보이기
       attacker.attackMotion.current?.play(`${attacker.name}-attack`);  // 공격 애니메이션 수행하기
+      playRandomAttackSound() // 타격음
       attacker.attackMotion.current?.once('animationcomplete', onAnimationComplete);  // onAnimationComplete 함수를 한 번만 실행하게 설정
 
       // 데미지 렌더링
@@ -137,6 +138,14 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     })
   }
 
+  // 공격 효과음 송출 함수
+  function playRandomAttackSound() {
+    if (sceneRef.current) {
+      const randomIndex = Math.floor(Math.random() * 7) + 1; // 1~7 사이의 랜덤 숫자
+      sceneRef.current.sound.play(`attack-sound-${randomIndex}`, { volume: 0.3 }); // 사운드 재생(소리는 기존 소리 크기의 0.2배)
+    }
+  }
+
   // 전투(한 턴)을 수행하는 함수
   async function petFight (attacker: PetRefs, defender: PetRefs, damage: number, setHp: Dispatch<SetStateAction<number>>) {
       // 단계적으로 함수를 수행하고 모두 완료하면 전투 상태 해제
@@ -144,7 +153,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       await attackOpponent(attacker, defender, damage, setHp)  // 공격
       await moveToBase(attacker)  // 복귀
     }
-    
+
   useEffect(() => {
     if (!gameContainerRef.current) return;  // ref가 초기화되지 않았으면 실행하지 않음
 
@@ -177,6 +186,15 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     // 자원을 미리 로드하는 함수
     function preload(this: Phaser.Scene) {
       this.load.image('background', `backgrounds/battle-background-${Math.floor(Math.random() * 35)}.png`); // 랜덤 이미지 로드, 배경 이미지의 사이즈는 모두 동일함
+      
+      // 필요한 wav 파일을 가져오기(공격 효과음)
+      for (let i = 1; i <= 7; i++) {
+        this.load.audio(`attack-sound-${i}`, `/sounds/attack-sound-${i}.wav`);
+      }
+
+      // 게임 배경 음악 가져오기
+      this.load.audio('game-background', '/musics/game-background.wav');
+
 
       this.load.spritesheet('mypet', myPetSpriteSheet, {
         frameWidth: 128,  // 각 프레임의 너비
@@ -204,15 +222,17 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     // 씬이 처음 생성될 때 실행되는 함수
     function create(this: Phaser.Scene) {
       sceneRef.current = this;  // scene 객체를 참조
+
       // 움직이지 않는 배경 추가
       const background = this.add.image(this.scale.width / 2, this.scale.height / 2, 'background');
       background.setOrigin(0.5, 0.5); // 이미지의 중심을 기준으로 배치
       background.setDisplaySize(this.scale.width * 1.1, this.scale.height * 1.1); // 배경 이미지를 화면 크기에 맞춤
-    
-      // const background = this.add.tileSprite(this.scale.width / 2, this.scale.height / 2, 0, 0, 'background').setOrigin(0.5, 0.5);  // 배경을 움직일 수 있게 tileSprite로
-      // background.setDisplaySize(this.scale.width, this.scale.height); // 배경 이미지를 화면 크기에 맞춤
       backgroundRef.current = background
       
+      // 배경 음악 재생, 반복 재생
+      // const music = this.sound.add('game-background');
+      // music.play({volume: 1, loop: true});  
+
       // 내 펫 스프라이트 추가
       const myPet = this.add.sprite(dvw * 20, this.scale.height - 100, 'mypet');
       myPet.setScale(1);
@@ -395,6 +415,8 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     myPetRefs.stunMark.current &&
     opponentPetRefs.stunMark.current
   ) {
+    // 배경 음악이 돌고 있지 않으면 배경 음악 재생
+      sceneRef.current?.sound.play('game-background', {volume: 0.2, loop: true});
       (async () => {
           if (mySpeed > opponentSpeed) {
             // 내 공격 -> 상대 공격
@@ -429,7 +451,6 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       myPetRefs.hpFill.current.clear();  // 체력 초기화
       myPetRefs.hpFill.current.fillStyle(0xff0000, 1); //빨간색으로 채워라
       myPetRefs.hpFill.current.fillRoundedRect(myPetRefs.pet.current!.x - 50, myPetRefs.pet.current!.y - 100, (myHp / myMaxHp) * 100, 20, 10); // 크기 재설정
-      
     }
     // 내 체력이 0일 때
     if (myHp === 0) {
@@ -444,6 +465,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         ease: 'Power1'
       })
       setWinner('opponent')
+      sceneRef.current?.sound.stopAll() // 전투 종료 시 전체 음악 종료
       myPetRefs.pet.current?.play(`${myPetRefs.name}-stun`) // 기절 애니메이션 실행
       myPetRefs.hpFill.current?.clear()  // 깔끔한 디자인을 위해 삭제
       myPetRefs.stunMark.current?.play(`${myPetRefs.name}-stun-bird`)  // 기절 마크 애니메이션 반복
@@ -462,6 +484,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         }
       })
     }
+    
   }, [myHp])
 
   // 체력 계산 및 전투 종료를 검정하는 함수
@@ -486,6 +509,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         ease: 'Power1'
       })
       setWinner('me')
+      sceneRef.current?.sound.stopAll() // 전투 종료 시 전체 음악 종료
       opponentPetRefs.pet.current?.play(`${opponentPetRefs.name}-stun`) // 기절 애니메이션 실행
       opponentPetRefs.hpFill.current?.clear()  // 깔끔한 디자인을 위해 삭제
       opponentPetRefs.stunMark.current?.setVisible(true)  // 스턴 모션이 모이고
