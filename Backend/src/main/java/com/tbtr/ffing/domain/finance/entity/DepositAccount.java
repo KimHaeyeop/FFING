@@ -57,7 +57,7 @@ public class DepositAccount {
 
     public DepositAssetRes of(DepositAccount depositAccount) {
         return DepositAssetRes.builder()
-                .depositId(depositAccount.depositAccountId)
+                .accountId(depositAccount.depositAccountId)
                 .bankCode(depositAccount.bankCode)
                 .accountName(depositAccount.accountName)
                 .accountNo(depositAccount.accountNo)

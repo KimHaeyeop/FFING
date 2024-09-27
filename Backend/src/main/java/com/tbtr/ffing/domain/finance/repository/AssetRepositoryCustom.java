@@ -1,9 +1,6 @@
 package com.tbtr.ffing.domain.finance.repository;
 
-import com.tbtr.ffing.domain.finance.dto.response.asset.AssetRes;
-import com.tbtr.ffing.domain.finance.dto.response.asset.DepositAssetRes;
-import com.tbtr.ffing.domain.finance.dto.response.asset.SavingsAssetRes;
-import com.tbtr.ffing.domain.finance.entity.Asset;
+import com.tbtr.ffing.domain.finance.dto.response.asset.*;
 
 import java.util.List;
 
@@ -15,4 +12,10 @@ public interface AssetRepositoryCustom {
     List<DepositAssetRes> findDepositAssetListByUserId(long ssafyUserId);
 
     List<SavingsAssetRes> findSavingsAssetListByUserId(long ssafyUserId);
+
+    List<AccountAssetRes> findAccountAssetListByUserId(long ssafyUserId);
+
+    List<DepositTransactionAssetRes> findDepositTransactionByDepositAccountId(long accountId);
+
+    List<SavingsTransactionAssetRes> findSavingsTransactionByDepositAccountId(long accountId);
 }

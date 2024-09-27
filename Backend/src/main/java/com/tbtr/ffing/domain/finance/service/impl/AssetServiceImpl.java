@@ -1,8 +1,7 @@
 package com.tbtr.ffing.domain.finance.service.impl;
 
+import com.tbtr.ffing.domain.finance.dto.response.asset.AccountAssetRes;
 import com.tbtr.ffing.domain.finance.dto.response.asset.AssetRes;
-import com.tbtr.ffing.domain.finance.dto.response.asset.DepositAssetRes;
-import com.tbtr.ffing.domain.finance.entity.Asset;
 import com.tbtr.ffing.domain.finance.repository.AssetRepository;
 import com.tbtr.ffing.domain.finance.service.AssetService;
 import com.tbtr.ffing.domain.user.entity.User;
@@ -48,6 +47,24 @@ public class AssetServiceImpl implements AssetService {
                 resultList.add(depositList.get(i));
             }
         });
+        return resultList;
+    }
+
+    @Override
+    public List<AccountAssetRes> getAccountList(long userId) {
+        User user = userRepository.findByUserId(userId);
+        long ssafyUserId = user.getSsafyUserId();
+        return assetRepository.findAccountAssetListByUserId(ssafyUserId);
+    }
+
+    @Override
+    public List<?> getDepositTransactionList(String type, long accountId) {
+        List<?> resultList = new ArrayList<>();
+        if (type.equals("deposit")) {
+            resultList = assetRepository.findDepositTransactionByDepositAccountId(accountId);
+        } else if (type.equals("savings")) {
+            resultList = assetRepository.findSavingsTransactionByDepositAccountId(accountId);
+        }
         return resultList;
     }
 }

@@ -14,20 +14,20 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class DepositAssetRes {
 
-	private Long depositId;
+	private Long accountId;
 	private String bankCode;
 	private String accountName;
 	private String accountNo;
 	private BigDecimal totalBalance;
 	private String type;
 
-	public DepositAssetRes(Long depositId, String bankCode, String accountName, String accountNo, BigDecimal totalBalance) {
-		this.depositId = depositId;
+	public DepositAssetRes(Long accountId, String bankCode, String accountName, String accountNo, BigDecimal totalBalance) {
+		this.accountId = accountId;
         this.bankCode = bankCode;
         this.accountName = accountName;
         this.accountNo = accountNo;
         this.totalBalance = totalBalance;
-        this.type = "Deposit";
+        this.type = "deposit";
 	}
 
 }
