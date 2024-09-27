@@ -20,7 +20,7 @@ interface PhaserGameProps {
 interface PetRefs {
   name: string;
   x: number;  // 펫의 x축 위치
-  range: number; // 펫이 상대 펫 기준 얼마나 떨어져야 하는지
+  direction: number; // 공격 시, 피격 시 x축 이동 방향
   pet: React.MutableRefObject<Phaser.GameObjects.Sprite | null>;
   attackMotion: React.MutableRefObject<Phaser.GameObjects.Sprite | null>; // 펫의 공격 모션
   stunMark: React.MutableRefObject<Phaser.GameObjects.Sprite | null>;
@@ -47,7 +47,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
   const myPetRefs: PetRefs = {
     name: 'my-pet',
     x: dvw * 20,
-    range: -100,
+    direction: -1,
     pet: useRef<Phaser.GameObjects.Sprite | null>(null),
     attackMotion: useRef<Phaser.GameObjects.Sprite | null>(null),
     stunMark: useRef<Phaser.GameObjects.Sprite | null>(null),
@@ -58,7 +58,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
   const opponentPetRefs: PetRefs = {
     name: 'opponent-pet',
     x: dvw * 80,
-    range: 100,
+    direction: 1,
     pet: useRef<Phaser.GameObjects.Sprite | null>(null),
     attackMotion: useRef<Phaser.GameObjects.Sprite | null>(null),
     stunMark: useRef<Phaser.GameObjects.Sprite | null>(null),
@@ -70,9 +70,9 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
   function moveToOpponent (attacker: PetRefs, defender: PetRefs) {
     return new Promise<void> ((resolve) => {
       attacker.pet.current?.play(`${attacker.name}-walk`);  // 걷기 모션
-      const tween = attacker.pet.current?.scene.tweens.add({
+      attacker.pet.current?.scene.tweens.add({
         targets: attacker.pet.current, // 애니메이션 타겟 설정
-        x: defender.pet.current!.x + attacker.range,  // 상대방 앞으로 이동
+        x: defender.pet.current!.x + attacker.direction * 100,  // 상대방 앞으로 이동
         y: defender.pet.current!.y,
         ease: 'Power1 ', // tween 애니메이션의 속도는 가속도가 존재하게
         duration: 1000, // 이동 시간 (1초)
@@ -84,11 +84,19 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
   }
   
   // 상대방을 공격하는 함수
-  function attackOpponent (attacker: PetRefs, damage: number, setHp: Dispatch<SetStateAction<number>>) {
+  function attackOpponent (attacker: PetRefs, defender: PetRefs, damage: number, setHp: Dispatch<SetStateAction<number>>) {
     return new Promise<void> ((resolve) => {
       // 애니메이션 완료마다 체력을 계산하고 이벤트 리스너를 제거하여 턴이 지날 때마다 중복 호출을 제어하는 함수
       const onAnimationComplete = () => {
         setHp((prevHp) => Math.max(prevHp - damage, 0)) // 체력 계산하기
+        // 피격 효과
+        defender.pet.current?.scene.tweens.add({
+          targets: defender.pet.current,
+          x: defender.pet.current.x + defender.direction * damage * 10,  // 데미지에 따라 넉백 거리 설정
+          duration: 1000,
+          yoyo: true,
+          ease: 'Power2',
+        })
         attacker.attackMotion.current?.setVisible(false)  // 공격 모션 숨기기
         attacker.pet.current?.setVisible(true)  // 펫 보이게 하기
         resolve()
@@ -105,7 +113,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
   function moveToBase (attacker: PetRefs) {
     return new Promise<void> ((resolve) => {
       attacker.pet.current?.play(`${attacker.name}-walk`);
-      const tween = attacker.pet.current?.scene.tweens.add({
+      attacker.pet.current?.scene.tweens.add({
         targets: attacker.pet.current, // 애니메이션 타겟 설정
         x: attacker.x,  // 내 원래 위치로 이동
         y: attacker.pet.current!.y,
@@ -123,7 +131,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
   async function petFight (attacker: PetRefs, defender: PetRefs, damage: number, setHp: Dispatch<SetStateAction<number>>) {
       // 단계적으로 함수를 수행하고 모두 완료하면 전투 상태 해제
       await moveToOpponent(attacker, defender)  // 접근
-      await attackOpponent(attacker, damage, setHp)  // 공격
+      await attackOpponent(attacker, defender, damage, setHp)  // 공격
       await moveToBase(attacker)  // 복귀
     }
     
@@ -186,13 +194,13 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
     // 씬이 처음 생성될 때 실행되는 함수
     function create(this: Phaser.Scene) {
       // 움직이지 않는 배경 추가
-      // const background = this.add.image(this.scale.width / 2, this.scale.height / 2, 'background');
-      // background.setOrigin(0.5, 0.5); // 이미지의 중심을 기준으로 배치
-      // background.setDisplaySize(this.scale.width, this.scale.height); // 배경 이미지를 화면 크기에 맞춤
-      
-      const background = this.add.tileSprite(this.scale.width / 2, this.scale.height / 2, 0, 0, 'background').setOrigin(0.5, 0.5);  // 배경을 움직일 수 있게 tileSprite로
+      const background = this.add.image(this.scale.width / 2, this.scale.height / 2, 'background');
+      background.setOrigin(0.5, 0.5); // 이미지의 중심을 기준으로 배치
       background.setDisplaySize(this.scale.width, this.scale.height); // 배경 이미지를 화면 크기에 맞춤
-      backgroundRef.current = background
+      
+      // const background = this.add.tileSprite(this.scale.width / 2, this.scale.height / 2, 0, 0, 'background').setOrigin(0.5, 0.5);  // 배경을 움직일 수 있게 tileSprite로
+      // background.setDisplaySize(this.scale.width, this.scale.height); // 배경 이미지를 화면 크기에 맞춤
+      // backgroundRef.current = background
 
       // 내 펫 스프라이트 추가
       const myPet = this.add.sprite(dvw * 20, this.scale.height - 100, 'mypet');
