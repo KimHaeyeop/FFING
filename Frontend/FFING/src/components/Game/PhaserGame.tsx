@@ -109,7 +109,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         stroke: '#000000',
         strokeThickness: 2,
       })
-      damageText?.setTint(0xff00ff, 0xff00ff, 0x0000ff, 0x0000ff)
+      damageText?.setTint(0xff00ff, 0xff00ff, 0x0000ff, 0x0000ff) // 텍스트 색상
       // 1초 후 데미지 표시 삭제
       sceneRef.current?.time.addEvent({
         delay: 1000,
@@ -154,7 +154,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       sceneRef.current.sound.play(`attack-sound-${randomIndex}`, { volume: 0.2 }); // 사운드 재생(소리는 기존 소리 크기의 0.2배)
     }
   }
-
+  
   // 전투(한 턴)을 수행하는 함수
   async function petFight (attacker: PetRefs, defender: PetRefs, damage: number, setHp: Dispatch<SetStateAction<number>>) {
       // 단계적으로 함수를 수행하고 모두 완료하면 전투 상태 해제
@@ -215,13 +215,13 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         frameHeight: 128,
       });
 
-      // 공격 모션 테스트
+      // 내 펫 공격 동작
       this.load.spritesheet('my-pet-attack', myPetAttackSpriteSheet, {
         frameWidth: 192,
         frameHeight: 192,
       })
 
-      // 공격 모션 테스트
+      // 상대 펫 공격 동작
       this.load.spritesheet('opponent-pet-attack', opponentPetAttackSpriteSheet, {
         frameWidth: 192,
         frameHeight: 192,
@@ -269,8 +269,6 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       opponentPetAttack.setVisible(false)
       opponentPetRefs.attackMotion.current = opponentPetAttack
 
-
-      
       // 내 펫 체력바 생성
       const myHpBar = this.add.graphics();
       myHpBar.fillStyle(0x000000, 1); 
