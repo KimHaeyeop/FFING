@@ -29,6 +29,7 @@ interface PetRefs {
 
 // 게임판 객체
 const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack, setSelectedAttack, setOpponentAttack, setWinner }) => {
+  const sceneRef = useRef<Phaser.Scene | null>(null);
   const gameContainerRef = useRef<HTMLDivElement>(null); // HTML DOM 요소를 참조하기 위한 ref
   const { dvw, dvh } = useViewportStore();  // 화면 뷰포트 크기 관리 (동적으로 화면 크기를 변경하기 위해 사용)
   const [myMaxHp, setMyMaxHp] = React.useState<number>(10); // 내 펫의 최대 체력, 기본값 10(임시)
@@ -98,6 +99,23 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       attacker.attackMotion.current?.setVisible(true);  // 공격 모션 펫 보이기
       attacker.attackMotion.current?.play(`${attacker.name}-attack`);  // 공격 애니메이션 수행하기
       attacker.attackMotion.current?.once('animationcomplete', onAnimationComplete);  // onAnimationComplete 함수를 한 번만 실행하게 설정
+
+      // 데미지 렌더링
+      const damageText = sceneRef.current?.add.text(defender.pet.current!.x, defender.pet.current!.y - 200, `-${damage}`, {
+        fontFamily: 'Galmuri11',
+        fontStyle: '1000',
+        fontSize: '64px',
+        stroke: '#000000',
+        strokeThickness: 2,
+      })
+      damageText?.setTint(0xff00ff, 0xff00ff, 0x0000ff, 0x0000ff)
+      // 1초 후 데미지 표시 삭제
+      sceneRef.current?.time.addEvent({
+        delay: 1000,
+        callback: () => {
+          damageText?.destroy()
+        }
+      })
     })
   }
     
@@ -181,10 +199,13 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
         frameWidth: 192,
         frameHeight: 192,
       })
+
+      // this.load.bitmapFont('font', 'fonts/Galmuri11-Condensed', 'fonts/font.fnt')
     }
     
     // 씬이 처음 생성될 때 실행되는 함수
     function create(this: Phaser.Scene) {
+      sceneRef.current = this;  // scene 객체를 참조
       // 움직이지 않는 배경 추가
       const background = this.add.image(this.scale.width / 2, this.scale.height / 2, 'background');
       background.setOrigin(0.5, 0.5); // 이미지의 중심을 기준으로 배치
@@ -193,7 +214,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       // const background = this.add.tileSprite(this.scale.width / 2, this.scale.height / 2, 0, 0, 'background').setOrigin(0.5, 0.5);  // 배경을 움직일 수 있게 tileSprite로
       // background.setDisplaySize(this.scale.width, this.scale.height); // 배경 이미지를 화면 크기에 맞춤
       // backgroundRef.current = background
-
+      
       // 내 펫 스프라이트 추가
       const myPet = this.add.sprite(dvw * 20, this.scale.height - 100, 'mypet');
       myPet.setScale(1);
