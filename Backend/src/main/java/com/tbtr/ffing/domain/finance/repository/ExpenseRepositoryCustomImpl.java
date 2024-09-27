@@ -3,9 +3,11 @@ package com.tbtr.ffing.domain.finance.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.tbtr.ffing.domain.finance.dto.response.expense.DailySummaryRes;
 import com.tbtr.ffing.domain.finance.dto.response.expense.ExpenseRes;
 import com.tbtr.ffing.domain.finance.dto.response.expense.CategoryExpenseRes;
 import com.tbtr.ffing.domain.finance.entity.ExpenseCategory;
+import com.tbtr.ffing.domain.finance.entity.QAccountTransaction;
 import com.tbtr.ffing.domain.finance.entity.QExpense;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -15,6 +17,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -55,7 +58,7 @@ public class ExpenseRepositoryCustomImpl implements ExpenseRepositoryCustom {
     }
 
     @Override
-    public List<CategoryExpenseRes> findWeeklyCategoryExpenses(LocalDate startDate, LocalDate endDate) {
+    public List<CategoryExpenseRes> findCategoryExpenses(LocalDate startDate, LocalDate endDate) {
         QExpense expense = QExpense.expense;
 
         // 카테고리별 총액 조회
@@ -83,4 +86,87 @@ public class ExpenseRepositoryCustomImpl implements ExpenseRepositoryCustom {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public BigDecimal getTotalExpenseForMonth(String yearMonth) {
+
+        QExpense expense = QExpense.expense;
+        return queryFactory
+                .select(expense.expenseBalance.sum())
+                .from(expense)
+                .where(expense.expenseDate.startsWith(yearMonth))
+                .fetchOne();
+    }
+
+    @Override
+    public List<DailySummaryRes> getDailyExpensesForMonth(String yearMonth) {
+
+        QExpense expense = QExpense.expense;
+        return queryFactory
+                .select(Projections.constructor(DailySummaryRes.class,
+                        expense.expenseDate,
+                        expense.expenseBalance.sum()))
+                .from(expense)
+                .where(expense.expenseDate.startsWith(yearMonth))
+                .groupBy(expense.expenseDate)
+                .fetch();
+    }
+
+    @Override
+    public List<DailySummaryRes> getDailySummaryForMonth(String yearMonth) {
+        QExpense expense = QExpense.expense;
+        QAccountTransaction transaction = QAccountTransaction.accountTransaction;
+
+        LocalDate startDate = LocalDate.parse(yearMonth + "01", DateTimeFormatter.BASIC_ISO_DATE);
+        LocalDate endDate = startDate.plusMonths(1).minusDays(1);
+
+        // 모든 날짜 생성
+        List<LocalDate> allDatesInMonth = startDate.datesUntil(endDate.plusDays(1))
+                .collect(Collectors.toList());
+
+        // 지출 데이터 조회
+        Map<LocalDate, BigDecimal> expenseMap = queryFactory
+                .select(expense.expenseDate, expense.expenseBalance.sum())
+                .from(expense)
+                .where(expense.expenseDate.between(
+                        startDate.format(DateTimeFormatter.BASIC_ISO_DATE),
+                        endDate.format(DateTimeFormatter.BASIC_ISO_DATE)))
+                .groupBy(expense.expenseDate)
+                .fetch()
+                .stream()
+                .collect(Collectors.toMap(
+                        tuple -> LocalDate.parse(tuple.get(expense.expenseDate), DateTimeFormatter.BASIC_ISO_DATE),
+                        tuple -> tuple.get(expense.expenseBalance.sum()),
+                        (v1, v2) -> v1,
+                        LinkedHashMap::new
+                ));
+
+        // 수입 데이터 조회
+        Map<LocalDate, BigDecimal> incomeMap = queryFactory
+                .select(transaction.transactionDate, transaction.transactionBalance.sum())
+                .from(transaction)
+                .where(transaction.transactionDate.between(
+                                startDate.format(DateTimeFormatter.BASIC_ISO_DATE),
+                                endDate.format(DateTimeFormatter.BASIC_ISO_DATE))
+                        .and(transaction.transactionType.eq("1")))
+                .groupBy(transaction.transactionDate)
+                .fetch()
+                .stream()
+                .collect(Collectors.toMap(
+                        tuple -> LocalDate.parse(tuple.get(transaction.transactionDate), DateTimeFormatter.BASIC_ISO_DATE),
+                        tuple -> tuple.get(transaction.transactionBalance.sum()),
+                        (v1, v2) -> v1,
+                        LinkedHashMap::new
+                ));
+
+        // 결과 생성
+        return allDatesInMonth.stream()
+                .map(date -> new DailySummaryRes(
+                        date.format(DateTimeFormatter.BASIC_ISO_DATE),
+                        expenseMap.getOrDefault(date, BigDecimal.ZERO),
+                        incomeMap.getOrDefault(date, BigDecimal.ZERO)
+                ))
+                .collect(Collectors.toList());
+    }
+
 }
