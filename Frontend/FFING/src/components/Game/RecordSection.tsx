@@ -1,4 +1,5 @@
 import React from "react";
+import PetSprite from "./PetSprite";
 
 const RecordSection: React.FC = () => {
   return (
@@ -18,6 +19,7 @@ const RecordSection: React.FC = () => {
         </div>
         <div className="bg-[#919AA2] rounded-lg w-20 h-20 flex items-center justify-center">
           {/* 펫 이미지 추가 위치 */}
+          <PetSprite imageUrl="/pets/bear-brown.png"/> 
           {/* <img src={petImage} alt="펫 이미지" /> */}
         </div>
       </div>
