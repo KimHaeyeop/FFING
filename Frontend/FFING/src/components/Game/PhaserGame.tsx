@@ -305,7 +305,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       // 내 펫 애니메이션 설정
       createPetAnimation(this, 'my-pet', '-idle', [128, 129], 1) // 내 펫 대기
       createPetAnimation(this, 'my-pet', '-walk', [0, 8], 5) // 내 펫 이동
-      createPetAnimation(this, 'my-pet', '-attacked', [0, 1, 2, 3, 4, 5], 10, 0) // 내 펫 피격
+      createPetAnimation(this, 'my-pet', '-attacked', [48, 49], 10, 0) // 내 펫 피격
       createPetAnimation(this, 'my-pet', '-stun', [32, 33, 34, 35, 9], 5, 0) // 내 펫 기절
       createPetAnimation(this, 'my-pet', '-stun-bird', [208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219]) // 내 펫 기절마크
       createPetAnimation(this, 'my-pet-attack', '', [0, 1, 2, 3, 4, 5], 10, 0) // 내 펫 공격
@@ -313,7 +313,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       // 상대 펫 애니메이션 설정
       createPetAnimation(this, 'opponent-pet', '-idle', [128, 129], 1) // 내 펫 대기
       createPetAnimation(this, 'opponent-pet', '-walk', [0, 8], 5) // 내 펫 이동
-      createPetAnimation(this, 'my-pet', '-attacked', [0, 1, 2, 3, 4, 5], 10, 0) // 내 펫 피격
+      createPetAnimation(this, 'opponent-pet', '-attacked', [48, 49], 10, 0) // 내 펫 피격
       createPetAnimation(this, 'opponent-pet', '-stun', [32, 33, 34, 35, 9], 5, 0) // 내 펫 기절
       createPetAnimation(this, 'opponent-pet', '-stun-bird', [208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219]) // 내 펫 기절마크
       createPetAnimation(this, 'opponent-pet-attack', '', [0, 1, 2, 3, 4, 5], 10, 0) // 내 펫 공격
