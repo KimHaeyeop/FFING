@@ -5,7 +5,7 @@ import GamePage from './pages/GamePage';
 import BattlePage from './pages/BattlePage';
 import RankingPage from './pages/RankingPage';
 import MatchingPage from './pages/MatchingPage';
-import PetPediaPage from './pages/PetPediaPage';
+import PetPediaPage from './pages/petPediaPage';
 import MainPage from './pages/MainPage';
 import NotFoundPage from './pages/NotFoundPage';
 
