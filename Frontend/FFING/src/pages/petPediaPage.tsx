@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import GameBar from "../components/Game/GameBar";
+import NavBar from "../components/Common/Navbar";
 import TabSelection from "../components/Game/Tabselection";
 import RecordSection from "../components/Game/RecordSection";
 import PetPediaSection from "../components/Game/PetPediasection";
@@ -23,6 +24,11 @@ const PetPediaPage: React.FC = () => {
         <main>
           {activeTab === "record" ? <RecordSection /> : <PetPediaSection />}
         </main>
+
+        {/* 페이지 전환을 위한 footer */}
+        <footer>
+          <NavBar />
+        </footer>
       </div>
     </div>
   );

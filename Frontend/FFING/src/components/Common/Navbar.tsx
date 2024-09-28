@@ -53,7 +53,7 @@ const NavBar: React.FC = () => {
       {/* 도감 아이콘 (원형 박스 안에 위치) */}
       <div className="relative -mt-6">
         <div className="bg-white p-3 rounded-full transform z-50 border shadow-xl">
-          <Icon path={mdiNotebookOutline} size={1.5} className={isActive('/pokedex') ? 'text-black' : 'text-gray-500'} />
+          <Icon path={mdiNotebookOutline} size={1.5} className={isActive('/game/petpedia') ? 'text-black' : 'text-gray-500'} />
         </div>
       </div>
 
