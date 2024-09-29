@@ -2,6 +2,7 @@ import React from "react";
 import PetSprite from "./PetSprite";
 
 const PetPediaSection: React.FC = () => {
+  // 사용자가 펫을 발견한 적이 있는지 확인하는 과정이 필요함
   const petSpriteMetaData = [
     {name: 'bear-brown', imageUrl: '/pets/bear-brown.png'},
     {name: 'bear-lime', imageUrl: '/pets/bear-lime.png'},
