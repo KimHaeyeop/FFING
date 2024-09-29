@@ -49,7 +49,7 @@ const PetPediaSection: React.FC = () => {
         {petSpriteMetaData.map((pet, index) => (
           <div key={index} className="bg-[#BBBBBB] rounded-lg p-4 flex items-center justify-center">
             {/* 획득한 펫 이미지 추가 위치 */}
-            <PetSprite imageUrl={pet.imageUrl} />
+            <PetSprite imageUrl={pet.imageUrl} isUnlocked={false}/>
           </div>
         ))}
         {/* 추가적인 도감 요소 */}
