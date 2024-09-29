@@ -58,9 +58,11 @@ const RecordSection: React.FC = () => {
       {/* 주차별 획득한 펫 카드 컴포넌트 */}
       {/* 클릭 시 모달 오픈 */}
       <div className="mt-4 mx-auto bg-[#ECF1F3] rounded-lg w-[277px] h-[111.91px] flex items-center justify-between px-4" onClick={handleModalOpen}>
+        {/* 금융 정보 받아오면서 날짜 정보를 받거나 우리가 처리하는 걸로 하고 */}
         <div className="text-left">
           <p>9월 1주차</p>
           <p className="text-lg font-semibold">{petSpriteMetaData[0].name}</p>
+          {/* 승/패 정보는 추후 정보를 가져와야겠지? */}
           <div className="flex space-x-2 mt-1">
             <span className="bg-[#C8E697] text-black py-1 px-3 rounded-full">10승</span>
             <span className="bg-[#D23B8C] text-white py-1 px-3 rounded-full">3패</span>

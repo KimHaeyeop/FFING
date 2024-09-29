@@ -11,6 +11,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      {/* 모달 창 닫기 단추 */}
       <div className="bg-white rounded-lg border-4 border-gray-400 p-6 relative">
         <button
           onClick={onClose}

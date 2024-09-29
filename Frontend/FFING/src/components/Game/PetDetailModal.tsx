@@ -7,9 +7,9 @@ interface PetDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   petName: string;
-  petIndex: number;
+  petIndex: number; // 이것도 자체적으로 펫 인덱스가 있을 수도 있다.
   petImageUrl: string;
-  petTrait: string;
+  petTrait: string; // 특성이 여러 개일수도 있어서 배열로 바뀔 수도 있다. 아니면 펫 상세 정보에서 trait도 가지고 있을 수도 있다.
 }
 
 const PetDetailModal: React.FC<PetDetailModalProps> = ({
