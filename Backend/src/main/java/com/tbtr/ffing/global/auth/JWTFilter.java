@@ -8,6 +8,7 @@ import com.tbtr.ffing.global.redis.repository.RedisRefreshTokenRepository;
 import com.tbtr.ffing.global.redis.service.RedisRefreshTokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -53,7 +54,7 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
         if (jwtUtil.isExpired(accessToken)) {
-            handleExpiredToken(response, accessToken);
+            handleExpiredToken(request, response, accessToken);
             accessToken = response.getHeader("Authorization").substring(7);
         }
 
@@ -61,10 +62,11 @@ public class JWTFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private void handleExpiredToken(HttpServletResponse response, String accessToken)
+    private void handleExpiredToken(HttpServletRequest request, HttpServletResponse response, String accessToken)
             throws IOException {
         System.out.println("Handling expired token: " + accessToken);
 
+        // Redis에서 Access Token에 대한 Refresh Token 조회
         Optional<RedisRefreshToken> redisRefreshToken = redisRefreshTokenRepository.findByAccessToken(accessToken);
         if (redisRefreshToken.isEmpty()) {
             System.out.println("No Refresh Token found for Access Token: " + accessToken);
@@ -72,26 +74,63 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        String refreshToken = redisRefreshToken.get().getRefreshToken();
-        Long userId = Long.parseLong(redisRefreshToken.get().getId());
-        System.out.println("Found Refresh Token: " + refreshToken + " for User ID: " + userId);
+        // 쿠키에서 Refresh Token 추출
+        String refreshToken = extractRefreshToken(request);
+        if (refreshToken == null) {
+            System.out.println("No Refresh Token in cookies");
+            sendErrorResponse(response, "Refresh token is missing", HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
 
-        if (!validateRefreshToken(refreshToken, userId)) {
-            System.out.println("Invalid Refresh Token for User ID: " + userId);
+        Long storedUserId = Long.parseLong(redisRefreshToken.get().getId());
+        Long tokenUserId = Long.parseLong(jwtUtil.getUserId(accessToken));
+
+        // Access Token이 사용자 ID와 일치하는지 확인
+        if (!storedUserId.equals(tokenUserId)) {
+            System.out.println("Access Token does not belong to the expected user");
+            sendErrorResponse(response, "Invalid access token", HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        // Refresh Token 유효성 검사
+        if (!validateRefreshToken(refreshToken, storedUserId)) {
+            System.out.println("Invalid Refresh Token for User ID: " + storedUserId);
+            // Refresh Token이 유효하지 않은 경우 로그아웃 처리
             sendErrorResponse(response, "Invalid refresh token", HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
         // 새로운 Access Token 발급
-        String newAccessToken = jwtUtil.createJwt("access", userId, getUserRole(userId));
+        String newAccessToken = jwtUtil.createJwt("access", storedUserId, getUserRole(storedUserId));
         System.out.println("New Access Token issued: " + newAccessToken);
 
         // Redis에 새 Access Token 저장
-        redisRefreshTokenService.saveRedisData(userId, refreshToken, newAccessToken);
+        redisRefreshTokenService.saveRedisData(storedUserId, refreshToken, newAccessToken);
 
+        // 응답 헤더에 새로운 Access Token 추가
         response.setHeader("Authorization", "Bearer " + newAccessToken);
         authenticateUser(newAccessToken);
     }
+
+    // Refresh Token을 쿠키에서 추출하는 메소드 (예시)
+    private String extractRefreshToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
+    }
+
+    // Refresh Token 유효성 검사 메소드 (예시)
+    private boolean validateRefreshToken(String refreshToken, Long userId) {
+        // Redis 또는 데이터베이스에서 Refresh Token과 userId를 검증하는 로직 구현
+        return redisRefreshTokenRepository.existsByRefreshTokenAndUserId(refreshToken, userId);
+    }
+
 
     private void authenticateUser(String token) {
         System.out.println("Authenticating with token: " + token);
@@ -122,11 +161,6 @@ public class JWTFilter extends OncePerRequestFilter {
         return user.getRole().toString();
     }
 
-    private boolean validateRefreshToken(String refreshToken, Long userId) {
-        return redisRefreshTokenRepository.findById(String.valueOf(userId))
-                                          .map(redisToken -> redisToken.getRefreshToken().equals(refreshToken))
-                                          .orElse(false);
-    }
 
     private void sendErrorResponse(HttpServletResponse response, String message, int status) throws IOException {
         response.setStatus(status);
