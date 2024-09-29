@@ -25,8 +25,17 @@ public class JWTUtil {
     }
 
     public String getUserId(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
-                   .get("userId", String.class);
+        try {
+            return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
+                       .get("userId", String.class);
+        } catch (ExpiredJwtException e) {
+            // 만료된 토큰에서도 userId를 추출할 수 있도록 예외 처리
+            return e.getClaims().get("userId", String.class);
+        } catch (JwtException e) {
+            // 다른 JWT 관련 예외 발생 시 처리
+            System.out.println("JWT parsing error: " + e.getMessage());
+            return null;
+        }
     }
 
     public String getRole(String token) {
@@ -77,7 +86,7 @@ public class JWTUtil {
                    .claim("userId", userId.toString())
                    .claim("role", role)
                    .issuedAt(new Date(System.currentTimeMillis()))
-                   .expiration(new Date(System.currentTimeMillis() + expirationPeriod * 60 * 1000L))
+                   .expiration(new Date(System.currentTimeMillis() + expirationPeriod * 500L)) // 30초
                    .signWith(secretKey)
                    .compact();
     }
