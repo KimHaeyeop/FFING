@@ -1,5 +1,6 @@
 import React from 'react';
 import PetStatusChart from './PetStatusChart'; // 레이더 차트 컴포넌트
+import PetRaderChart from './PetRaderChart'; // 테스트용
 import Modal from '../Common/Modal';
 import PetSprite from './PetSprite';
 
@@ -41,7 +42,7 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
 
         {/* 레이더 차트 (펫 능력치) */}
         <div className="mt-6 w-full">
-          <PetStatusChart />
+          <PetRaderChart />
         </div>
       </div>
     </Modal>
