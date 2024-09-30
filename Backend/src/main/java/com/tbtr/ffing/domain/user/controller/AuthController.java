@@ -29,14 +29,12 @@ public class AuthController {
         try {
             UserInfoDTO.Response signupResponse = authService.signup(requestDTO);
             Response<Object> response = Response.builder()
-                                                .isSuccess(true)
                                                 .code(200L)
                                                 .message("회원가입에 성공하였습니다.")
                                                 .result(signupResponse).build();
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             Response<Object> errorResponse = Response.builder()
-                                                     .isSuccess(false)
                                                      .code(409L)
                                                      .message(e.getMessage())
                                                      .result(null).build();
@@ -70,7 +68,6 @@ public class AuthController {
 
         // 5. 응답 메시지 생성 (성공 여부, 메시지, 결과 포함)
         Response<Object> responseBody = Response.builder()
-                                                .isSuccess(true)
                                                 .code(200L)
                                                 .message("로그인에 성공하였습니다.")
                                                 .result(userResponse) // 로그인 응답 데이터
