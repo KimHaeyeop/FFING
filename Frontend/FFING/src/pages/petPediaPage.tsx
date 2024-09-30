@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import GameBar from "../components/Game/GameBar";
 import NavBar from "../components/Common/Navbar";
-import TabSelection from "../components/Game/Tabselection";
 import RecordSection from "../components/Game/RecordSection";
 import PetPediaSection from "../components/Game/PetPediasection";
 
