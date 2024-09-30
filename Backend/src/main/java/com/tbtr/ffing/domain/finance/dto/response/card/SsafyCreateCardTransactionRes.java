@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.tbtr.ffing.domain.finance.entity.Card;
 import com.tbtr.ffing.domain.finance.entity.CardTransaction;
+import com.tbtr.ffing.domain.finance.entity.ExpenseCategory;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -22,13 +23,13 @@ public class SsafyCreateCardTransactionRes {
 	@JsonProperty("REC")
 	private cREC rec;
 
-	public CardTransaction toEntity(Card card) {
+	public CardTransaction toEntity(Card card, ExpenseCategory categoryName) {
 		cREC rec = this.rec;
 
 		// 카테고리 로직 추가 확인 필요
 
 		return CardTransaction.builder()
-				.category(rec.getCategoryName())
+				.category(categoryName)
 				.merchant(rec.getMerchantName())
 				.transactionDate(rec.getTransactionDate())
 				.transactionTime(rec.getTransactionTime())
