@@ -6,6 +6,8 @@ import com.tbtr.ffing.domain.user.entity.User;
 import com.tbtr.ffing.domain.user.repository.UserRepository;
 import com.tbtr.ffing.domain.user.service.AuthService;
 import com.tbtr.ffing.global.auth.JWTUtil;
+import com.tbtr.ffing.global.error.code.ErrorCode;
+import com.tbtr.ffing.global.error.exception.CustomException;
 import com.tbtr.ffing.global.redis.service.RedisJwtTokenService;
 import java.util.HashMap;
 import java.util.Map;
