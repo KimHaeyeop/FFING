@@ -1,26 +1,58 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const MatchingPage: React.FC = () => {
   const navigate = useNavigate();
-  const [isSearching, setIsSearching] = useState(false);
+  const [isSearching, setIsSearching] = useState(true);
+  // const [isReady, setIsReady] = useState(false); // 내 준비
+  const [opponentInfo, setOpponentInfo] = useState<PlayerInfo | null>(null); // 상대방 정보
+  const [myInfo, setMyInfo] = useState<PlayerInfo>({
+    nickname: 'myNickName',
+    petType: 'petType',
+    recentMatches: ['승', '패', '승', '패', '승']
+  });
+
+  useEffect(() => {
+    console.log(myInfo);
+    const socket = new WebSocket('ws://websocket-server-url');
+
+    // 매칭 페이지 넘어오면 소켓 연결 시작
+    socket.onopen = () => {
+      // 매칭 시작시 내 정보 같이 보냄
+      socket.send(JSON.stringify({
+        type: 'PLAYER_INFO',
+        data: myInfo,
+      }));
+      console.log(myInfo);
+    };
+
+    // 소켓으로 메시지 수신했을 때
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+
+      // 적 정보가 들어오면 매칭된 것
+      if (message.type === 'OPPONENT_INFO') {
+        setOpponentInfo(message.data);
+      }
+    };
+
+    return () => {
+      // 소켓 닫고 새로운 소켓으로 연결
+      socket.close();
+    };
+  }, [myInfo, navigate]);
 
   const handleFindOpponent = () => {
-    setIsSearching(true);
-    // 임의의 대기 시간 후에 대전 상대를 찾았다고 가정하고 BattlePage로 이동
-    // 여기서 소켓 통신을 통해서 완료하면 이동할 수 있게 한다.
-    setTimeout(() => {
-      navigate('/battle');
-    }, 2000); // 2초 대기
+    setIsSearching(!isSearching);
   };
 
   return (
     <div className="flex flex-col justify-center items-center h-screen">
       <h1 className="text-2xl mb-4">대전 상대 찾기</h1>
       {!isSearching ? (
-        // 버튼을 누르면 큐를 잡는다.
+        // 버튼을 누르면 
         <button
-          onClick={handleFindOpponent} 
+          onClick={handleFindOpponent}
           className="px-4 py-2 bg-blue-500 text-white rounded"
         >
           대전 상대 찾기
