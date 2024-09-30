@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import GamePage from './pages/GamePage';
 import BattlePage from './pages/BattlePage';
 import RankingPage from './pages/RankingPage';
-import FindOpponentPage from './pages/MatchingPage';
+import MatchingPage from './pages/MatchingPage';
 import MainPage from './pages/MainPage';
 import NotFoundPage from './pages/NotFoundPage';
 
@@ -17,7 +17,7 @@ const App: React.FC = () => {
         {/* 게임 페이지(원래 /game) */}
         <Route path="/" element={<GamePage />} />
         {/* 매칭 잡는 페이지(원래 /game/find) */}
-        <Route path="/matching" element={<FindOpponentPage />} />
+        <Route path="/matching" element={<MatchingPage />} />
         {/* 배틀 페이지 (원래 /game/battle)*/}
         <Route path="/battle" element={<BattlePage />} />
         {/* 랭킹 페이지 (원래 /game/ranking)*/}
