@@ -18,7 +18,8 @@ const PetPediaPage: React.FC = () => {
         </header>
 
         {/* 기록과 도감 영역을 선택하는 컴포넌트 */}
-        <TabSelection activeTab={activeTab} setActiveTab={setActiveTab} />
+        {/* 여기로 옮기기 */}
+        <TabSelection activeTab={activeTab} setActiveTab={setActiveTab} />  
 
         {/* 기록 영역 또는 도감 영역을 조건부 렌더링 */}
         <main>
