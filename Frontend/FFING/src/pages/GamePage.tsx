@@ -24,7 +24,7 @@ const GamePage: React.FC = () => {
         {/* 버튼 영역 */}
         <div className="flex rounded-lg overflow-hidden w-full max-w-screen-md mx-auto mt-6 h-16 text-2xl">
           {/* 게임 시작 버튼 */}
-          <Link to="/find">게임시작</Link>
+          <Link to="/matching">게임시작</Link>
           <Link to="/battle">게임으로 바로 이동(test)</Link>
           {/* <button
             className="flex-grow-[7] bg-[#FFD874] text-black py-2 rounded-l-lg font-galmuri-11-bold text-2xl"

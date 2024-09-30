@@ -354,7 +354,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       this.anims.create({
         key: 'my-pet-attack-test',
         frames: this.anims.generateFrameNumbers('mypet-attack', { start: 0, end: 5 }),
-        frameRate: 10,
+        frameRate: 12,
         repeat: 0,
       })
 
@@ -362,7 +362,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       this.anims.create({
         key: 'opponent-pet-attack-test',
         frames: this.anims.generateFrameNumbers('opponentpet-attack', { start: 0, end: 5 }),
-        frameRate: 10,
+        frameRate: 12,
         repeat: 0,
       })
     }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const FindOpponentPage: React.FC = () => {
+const MatchingPage: React.FC = () => {
   const navigate = useNavigate();
   const [isSearching, setIsSearching] = useState(false);
 
@@ -32,4 +32,4 @@ const FindOpponentPage: React.FC = () => {
   );
 };
 
-export default FindOpponentPage;
+export default MatchingPage;
