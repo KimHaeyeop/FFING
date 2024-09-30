@@ -38,10 +38,10 @@ public class SecurityConfig {
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests((auth) -> auth
-                    .requestMatchers("/", "/auth/**").permitAll()
-                    .requestMatchers("/admin/**").hasRole("ADMIN")
-                    .anyRequest().authenticated())
-//                    .anyRequest().permitAll()) // 임시로 모두 허용
+//                    .requestMatchers("/", "/auth/**").permitAll()
+//                    .requestMatchers("/admin/**").hasRole("ADMIN")
+//                    .anyRequest().authenticated())
+                    .anyRequest().permitAll()) // 임시로 모두 허용
             .sessionManagement(session -> session
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // 세션 관리 설정
         http.addFilterBefore(new JWTFilter(jwtUtil, userRepository, redisJwtTokenRepository, redisJwtTokenService),
