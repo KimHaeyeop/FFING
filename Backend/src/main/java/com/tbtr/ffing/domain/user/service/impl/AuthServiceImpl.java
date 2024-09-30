@@ -30,13 +30,13 @@ public class AuthServiceImpl implements AuthService {
     public UserInfoDTO.Response signup(UserInfoDTO.Request requestDTO) {
         // ! 1. email 중복 체크
         if (userRepository.existsByEmail(requestDTO.getEmail())) {
-            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+            throw new CustomException(ErrorCode.NICKNAME_ALREADY_EXISTS);
 
         }
 
         // ! 2. nickname 중복 체크
         if (userRepository.existsByNickname(requestDTO.getNickname())) {
-            throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
+            throw new CustomException(ErrorCode.NICKNAME_ALREADY_EXISTS);
         }
 
         User userInfoDto = UserInfoDTO.Request.toEntity(requestDTO, bCryptPasswordEncoder);

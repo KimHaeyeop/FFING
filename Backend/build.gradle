@@ -30,8 +30,14 @@ ext {
 dependencies {
 	// springboot & web
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	// websocket - 실시간 통신
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.webjars:sockjs-client:1.1.2'
+
+	// stomp - 구독
+	implementation 'org.webjars:stomp-websocket:2.3.3-1'
 
 	// mysql
 	runtimeOnly 'com.mysql:mysql-connector-j'
@@ -49,8 +55,8 @@ dependencies {
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
 
 	// spring batch
-//	implementation 'org.springframework.boot:spring-boot-starter-batch'
-//	testImplementation 'org.springframework.batch:spring-batch-test'
+	implementation 'org.springframework.boot:spring-boot-starter-batch'
+	testImplementation 'org.springframework.batch:spring-batch-test'
 
 	// querydsl
 	implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'

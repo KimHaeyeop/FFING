@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 @Entity
+@ToString
 @Table(name = "expense")
 public class Expense {
 
@@ -22,8 +23,8 @@ public class Expense {
     @Column(nullable = false, length = 255)
     private String expenseName;
 
-    @Column(nullable = false, length = 255)
-    private String expenseCategory;
+    @Enumerated(EnumType.STRING)
+    private ExpenseCategory expenseCategory;
 
     @Column(length = 255)
     private String expenseMemo;
@@ -40,4 +41,5 @@ public class Expense {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
 }
