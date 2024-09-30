@@ -26,11 +26,6 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
         {/* 상단의 둥근 원형 영역 */}
         <div className="w-24 h-24 bg-[#BBBBBB] rounded-full -mt-12 flex justify-center items-center relative z-10">
           <PetSprite imageUrl={petImageUrl} isUnlocked={true}/>
-          {/* <img
-            src={petImageUrl}
-            alt={petName}
-            className="w-20 h-20 rounded-full object-cover"
-          /> */}
         </div>
 
         {/* 펫 이름과 도감 인덱스 */}
@@ -39,7 +34,7 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
           <span className="text-gray-500">No.{petIndex}</span>
         </div>
 
-        {/* 펫 특성 (Chip 형태) */}
+        {/* 펫 특성 (Chip 형태 속성에 따라서 색상을 바꾸긴 해야 함?) */}
         <div className="mt-2 bg-blue-200 text-blue-800 px-3 py-1 rounded-full">
           {petTrait}
         </div>

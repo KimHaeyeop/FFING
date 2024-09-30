@@ -4,43 +4,46 @@ import PetRecord from "./PetRecord";
 
 interface petRecords {
   week: string;
-  name: string;
+  petName: string;
+  petIndex: number;
   wins: number;
   losses: number;
-  imageUrl: string;
-  index: number;
-  trait: string;
+  petImageUrl: string;
+  petTrait: string;
 }
 
 const RecordSection: React.FC = () => {
   const [isModalOpen, setModalOpen] = useState(false)
+  // 모달에 띄울 데이터를 관리
   const [selectedPet, setSelectedPet] = useState({
-    name: '',
-    imageUrl: '',
-    index: 0,
-    trait: ''
+    petName: '',
+    petIndex: 0,
+    petImageUrl: '',
+    petTrait: ''
   });
 
-  // 주차별 데이터
+  // 주차별 데이터 (API 완성되면 가져오기)
   const petRecords = [
-    { week: '9월 1주차', name: 'bear-brown', wins: 10, losses: 3, imageUrl: '/pets/bear-brown.png', index: 1, trait: 'food' },
-    { week: '9월 2주차', name: 'bear-lime', wins: 8, losses: 5, imageUrl: '/pets/bear-lime.png', index: 2, trait: 'living' },
-    { week: '9월 3주차', name: 'candy-fluff-white', wins: 6, losses: 7, imageUrl: '/pets/candy-fluff-white.png', index: 3, trait: 'travel' },
+    { week: '9월 1주차', petName: 'bear-brown', wins: 10, losses: 3, petImageUrl: '/pets/bear-brown.png', petIndex: 1, petTrait: 'food' },
+    { week: '9월 2주차', petName: 'bear-lime', wins: 8, losses: 5, petImageUrl: '/pets/bear-lime.png', petIndex: 2, petTrait: 'living' },
+    { week: '9월 3주차', petName: 'candy-fluff-white', wins: 6, losses: 7, petImageUrl: '/pets/candy-fluff-white.png', petIndex: 3, petTrait: 'travel' },
     // 더 많은 주차 데이터 추가 가능
   ];
 
+  // 모달을 여는 함수
   const handleCardClick = (pet: petRecords) => {
-    setSelectedPet(pet) // 보여줄 데이터
+    setSelectedPet(pet)
     setModalOpen(true)
   }
 
+  // 모달을 닫는 함수
   const handleModalClose = (() => {
     setModalOpen(false)
   })
   
   return (
     <section className="mt-8">
-      {/* 현재 연도와 달 표시 (ex: 2024년 9월) */}
+      {/* 현재 연도와 달 표시 (ex: 2024년 9월) API 활용 불가피? */}
       <h2 className="text-center text-xl font-semibold">2024년 9월</h2>
 
         {/* 주차별 획득한 펫 카드들 */}
@@ -48,10 +51,10 @@ const RecordSection: React.FC = () => {
           <PetRecord
             key={index}
             week={pet.week}
-            name={pet.name}
+            petName={pet.petName}
             wins={pet.wins}
             losses={pet.losses}
-            imageUrl={pet.imageUrl}
+            petImageUrl={pet.petImageUrl}
             onClick={() => handleCardClick(pet)}
           />
         ))}
@@ -59,10 +62,10 @@ const RecordSection: React.FC = () => {
       <PetDetailModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
-        name={selectedPet.name}
-        index={selectedPet.index}
-        imageUrl={selectedPet.imageUrl}
-        trait={selectedPet.trait}
+        petName={selectedPet.petName}
+        petIndex={selectedPet.petIndex}  // 예시로 No.1
+        petImageUrl={selectedPet.petImageUrl}
+        petTrait={selectedPet.petTrait}  // 예시로 food 특성
       />
     </section>
   );

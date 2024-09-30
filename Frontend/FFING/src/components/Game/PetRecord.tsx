@@ -17,7 +17,9 @@ const PetRecord: React.FC<PetCardProps> = ({ week, petName, wins, losses, petIma
       onClick={onClick}
     >
       <div className="text-left">
+        {/* 주차 */}
         <h3 className="text-lg font-semibold">{week}</h3>
+        {/* 펫 이름 */}
         <p>{petName}</p>
         <div className="flex space-x-2 mt-1">
           <span className="bg-[#C8E697] text-black py-1 px-3 rounded-full">{wins}승</span>

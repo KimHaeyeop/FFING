@@ -18,8 +18,27 @@ const PetPediaPage: React.FC = () => {
         </header>
 
         {/* 기록과 도감 영역을 선택하는 컴포넌트 */}
-        {/* 여기로 옮기기 */}
-        <TabSelection activeTab={activeTab} setActiveTab={setActiveTab} />  
+        <nav className="flex justify-center mt-5 space-x-4">
+          {/* 기록 탭 */}
+          <button
+            className={`rounded-full px-6 py-3 ${
+              activeTab === "record" ? "bg-[#5253F0] text-white" : "bg-[#D9D9D9] text-black"
+            }`}
+            onClick={() => setActiveTab("record")}
+          >
+            기록
+          </button>
+
+          {/* 도감 탭 */}
+          <button
+            className={`rounded-full px-6 py-3 ${
+              activeTab === "pedia" ? "bg-[#5253F0] text-white" : "bg-[#D9D9D9] text-black"
+            }`}
+            onClick={() => setActiveTab("pedia")}
+          >
+            도감
+          </button>
+        </nav>
 
         {/* 기록 영역 또는 도감 영역을 조건부 렌더링 */}
         <main>
