@@ -1,13 +1,12 @@
 package com.tbtr.ffing.domain.finance.service;
 
-import com.tbtr.ffing.domain.finance.dto.response.expense.ExpenseRes;
-import com.tbtr.ffing.domain.finance.dto.response.expense.CategoryExpenseRes;
-import com.tbtr.ffing.domain.finance.dto.response.expense.MonthlySummaryRes;
+import com.tbtr.ffing.domain.finance.dto.response.expense.*;
 import com.tbtr.ffing.domain.finance.entity.AccountTransaction;
 import com.tbtr.ffing.domain.finance.entity.CardTransaction;
 import com.tbtr.ffing.domain.finance.entity.ExpenseCategory;
 import com.tbtr.ffing.domain.user.entity.User;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ExpenseService {
@@ -18,9 +17,11 @@ public interface ExpenseService {
 
     List<ExpenseRes> getMonthlyExpenses(ExpenseCategory category);
 
-    List<CategoryExpenseRes> getWeeklyCategoryExpenses(boolean aThis);
+    WeeklyCategoryExpenseRes getWeeklyCategoryExpenses(boolean aThis);
 
     List<CategoryExpenseRes> getThisMonthCategoryExpenses();
 
     MonthlySummaryRes getMonthlySummary(String yearMonth);
+
+    DailyExpenseRes getDailyExpense(String date);
 }
