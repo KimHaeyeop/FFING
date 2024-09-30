@@ -10,14 +10,14 @@ import org.springframework.data.redis.core.index.Indexed;
 @AllArgsConstructor
 @Getter
 @RedisHash(value = "jwtToken")
-public class RedisRefreshToken {
+public class RedisJwtToken {
     @Id
     private String id;
 
-    private String refreshToken;
-
     @Indexed
     private String accessToken;
+
+    private String refreshToken;
 
     @TimeToLive
     private Long timeToLive;
