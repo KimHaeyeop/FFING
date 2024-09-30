@@ -24,7 +24,7 @@ const GameResult: React.FC<GameResultProps> = ({ winner, score, rank }) => {
         {/* 버튼들 */}
         <div className="w-1/2 flex flex-col items-center">
           <Link to="/">메인으로</Link>
-          <Link to="/battle">다시하기</Link>
+          <Link to="game/battle">다시하기</Link>
         </div>
       </div>
     </div>
