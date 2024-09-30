@@ -1,11 +1,9 @@
 package com.tbtr.ffing.domain.user.dto;
 
+import com.tbtr.ffing.domain.user.entity.User;
 import com.tbtr.ffing.domain.user.entity.UserRole;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +16,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
-    private final Long userId;
+    private final Long userId, ssafyUserId;
     private final String email, username, password;
     private final UserRole role;
+
+    public static CustomUserDetails of(User user) {
+        return CustomUserDetails.builder()
+                                .userId(user.getUserId())
+                                .ssafyUserId(user.getSsafyUserId())
+                                .email(user.getEmail())
+                                .username(user.getUsername())
+                                .role(user.getRole())
+                                .build();
+    }
 
     @Override
     public String getPassword() {
@@ -36,5 +44,4 @@ public class CustomUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(role.getKey()));
     }
-
 }

@@ -3,8 +3,8 @@ package com.tbtr.ffing.global.config;
 import com.tbtr.ffing.domain.user.repository.UserRepository;
 import com.tbtr.ffing.global.auth.JWTFilter;
 import com.tbtr.ffing.global.auth.JWTUtil;
-import com.tbtr.ffing.global.redis.repository.RedisRefreshTokenRepository;
-import com.tbtr.ffing.global.redis.service.RedisRefreshTokenService;
+import com.tbtr.ffing.global.redis.repository.RedisJwtTokenRepository;
+import com.tbtr.ffing.global.redis.service.RedisJwtTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
@@ -27,8 +27,8 @@ public class SecurityConfig {
 
     private final JWTUtil jwtUtil;
     private final UserRepository userRepository;
-    private final RedisRefreshTokenRepository redisRefreshTokenRepository;
-    private final RedisRefreshTokenService redisRefreshTokenService;
+    private final RedisJwtTokenRepository redisJwtTokenRepository;
+    private final RedisJwtTokenService redisJwtTokenService;
 
 
     @Bean
@@ -38,14 +38,13 @@ public class SecurityConfig {
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests((auth) -> auth
-                    .requestMatchers("/", "/auth/signup", "/auth/signin").permitAll()
+                    .requestMatchers("/", "/auth/**").permitAll()
+                    .requestMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated())
 //                    .anyRequest().permitAll()) // 임시로 모두 허용
-//                    .requestMatchers("/admin/**").hasRole("ADMIN")
             .sessionManagement(session -> session
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // 세션 관리 설정
-//        // jwt 토큰 확인 필터
-        http.addFilterBefore(new JWTFilter(jwtUtil, userRepository, redisRefreshTokenRepository, redisRefreshTokenService),
+        http.addFilterBefore(new JWTFilter(jwtUtil, userRepository, redisJwtTokenRepository, redisJwtTokenService),
                 UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
