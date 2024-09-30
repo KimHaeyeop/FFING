@@ -3,9 +3,9 @@ package com.tbtr.ffing.global.auth;
 import com.tbtr.ffing.domain.user.dto.CustomUserDetails;
 import com.tbtr.ffing.domain.user.entity.User;
 import com.tbtr.ffing.domain.user.repository.UserRepository;
-import com.tbtr.ffing.global.redis.component.RedisRefreshToken;
-import com.tbtr.ffing.global.redis.repository.RedisRefreshTokenRepository;
-import com.tbtr.ffing.global.redis.service.RedisRefreshTokenService;
+import com.tbtr.ffing.global.redis.component.RedisJwtToken;
+import com.tbtr.ffing.global.redis.repository.RedisJwtTokenRepository;
+import com.tbtr.ffing.global.redis.service.RedisJwtTokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -28,8 +28,8 @@ public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
     private final UserRepository userRepository;
-    private final RedisRefreshTokenRepository redisRefreshTokenRepository;
-    private final RedisRefreshTokenService redisRefreshTokenService;
+    private final RedisJwtTokenRepository redisJwtTokenRepository;
+    private final RedisJwtTokenService redisJwtTokenService;
 
     /*
      * * 토큰 검증없이 접근 가능한 api를 설정함
@@ -48,68 +48,103 @@ public class JWTFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         log.info("-------jwt filter-------");
 
+        // 1. 헤더에서 Access Token 추출
+        // Authorization 헤더에서 토큰을 추출하여 검증할 준비를 한다.
         String accessToken = extractToken(request);
         if (accessToken == null || accessToken.isEmpty()) {
             sendErrorResponse(response, "Access token is missing", HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
+
+        // 2. Access Token 만료 여부 확인
         if (jwtUtil.isExpired(accessToken)) {
-            handleExpiredToken(request, response, accessToken);
-            accessToken = response.getHeader("Authorization").substring(7);
+            System.out.println("access token expired: " + accessToken);
+            // 만료된 Access Token을 처리
+            handleExpiredToken(request, response, accessToken, filterChain);
+            // 새로 발급된 Access Token을 Authorization 헤더에서 가져온다.
+            String authorizationHeader = response.getHeader("Authorization");
+
+            // Authorization 헤더가 비어있는지 또는 Bearer 토큰 형식이 올바른지 체크
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                // 헤더가 없거나 형식이 잘못되었을 경우 에러 응답을 보낸다.
+                sendErrorResponse(response, "Invalid authorization header", HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+
+            // 새로 발급된 Access Token을 사용하기 위해 Bearer 부분을 제거한 토큰을 추출
+            accessToken = authorizationHeader.substring(7);
         }
 
+        // 3. 추출된 Access Token으로 사용자 인증 처리
         authenticateUser(accessToken);
+
+        // 4. 필터 체인을 계속 실행하여 요청을 다음 단계로 전달
         filterChain.doFilter(request, response);
     }
 
-    private void handleExpiredToken(HttpServletRequest request, HttpServletResponse response, String accessToken)
-            throws IOException {
-        System.out.println("Handling expired token: " + accessToken);
+    private void handleExpiredToken(HttpServletRequest request, HttpServletResponse response, String accessToken,
+                                    FilterChain filterChain)
+            throws IOException, ServletException {
+        log.info("Handling expired token: " + accessToken);
 
-        // Redis에서 Access Token에 대한 Refresh Token 조회
-        Optional<RedisRefreshToken> redisRefreshToken = redisRefreshTokenRepository.findByAccessToken(accessToken);
+        Optional<RedisJwtToken> redisRefreshToken = redisJwtTokenRepository.findByAccessToken(accessToken);
         if (redisRefreshToken.isEmpty()) {
-            System.out.println("No Refresh Token found for Access Token: " + accessToken);
-            sendErrorResponse(response, "Refresh token is missing", HttpServletResponse.SC_UNAUTHORIZED);
+            sendErrorResponse(response, "[Redis] Refresh token is missing", HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        // 쿠키에서 Refresh Token 추출
         String refreshToken = extractRefreshToken(request);
         if (refreshToken == null) {
-            System.out.println("No Refresh Token in cookies");
-            sendErrorResponse(response, "Refresh token is missing", HttpServletResponse.SC_UNAUTHORIZED);
+            sendErrorResponse(response, "[extract] Refresh token is missing", HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
         Long storedUserId = Long.parseLong(redisRefreshToken.get().getId());
         Long tokenUserId = Long.parseLong(jwtUtil.getUserId(accessToken));
 
-        // Access Token이 사용자 ID와 일치하는지 확인
         if (!storedUserId.equals(tokenUserId)) {
-            System.out.println("Access Token does not belong to the expected user");
             sendErrorResponse(response, "Invalid access token", HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        // Refresh Token 유효성 검사
-        if (!validateRefreshToken(refreshToken, storedUserId)) {
-            System.out.println("Invalid Refresh Token for User ID: " + storedUserId);
-            // Refresh Token이 유효하지 않은 경우 로그아웃 처리
-            sendErrorResponse(response, "Invalid refresh token", HttpServletResponse.SC_UNAUTHORIZED);
+        // Refresh Token 만료 체크
+        if (jwtUtil.isExpired(refreshToken)) {
+            redisJwtTokenService.deleteRedisDataById(storedUserId.toString());  // Redis 에서 기존 토큰 삭제
+            sendErrorResponse(response, "Refresh token expired, please log in again",
+                    HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        // 새로운 Access Token 발급
+        // 기존 Access/Refresh Token 삭제
+        redisJwtTokenService.deleteRedisDataById(storedUserId.toString());
+
+        // Refresh Token 유효하면 새로운 Access/Refresh Token 발급
         String newAccessToken = jwtUtil.createJwt("access", storedUserId, getUserRole(storedUserId));
-        System.out.println("New Access Token issued: " + newAccessToken);
+        String newRefreshToken = jwtUtil.createJwt("refresh", storedUserId, getUserRole(storedUserId));
+        redisJwtTokenService.saveRedisData(storedUserId, newAccessToken, newRefreshToken);
 
-        // Redis에 새 Access Token 저장
-        redisRefreshTokenService.saveRedisData(storedUserId, refreshToken, newAccessToken);
+        log.info("new access token: " + accessToken);
+        log.info("new refresh token: " + refreshToken);
 
-        // 응답 헤더에 새로운 Access Token 추가
-        response.setHeader("Authorization", "Bearer " + newAccessToken);
+        // 쿠키와 헤더 업데이트
+        updateCookiesAndHeader(response, newAccessToken, newRefreshToken);
+
         authenticateUser(newAccessToken);
+
+        filterChain.doFilter(request, response);
+
+    }
+
+    private void updateCookiesAndHeader(HttpServletResponse response, String newAccessToken, String newRefreshToken) {
+        // Authorization 헤더에 새 Access Token 설정
+        response.setHeader("Authorization", "Bearer " + newAccessToken);
+
+        // 쿠키에 새 Refresh Token 설정
+        Cookie refreshTokenCookie = new Cookie("refreshToken", newRefreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);  // 7일
+        response.addCookie(refreshTokenCookie);
     }
 
     // Refresh Token을 쿠키에서 추출하는 메소드 (예시)
@@ -125,34 +160,18 @@ public class JWTFilter extends OncePerRequestFilter {
         return null;
     }
 
-    // Refresh Token 유효성 검사 메소드 (예시)
-    private boolean validateRefreshToken(String refreshToken, Long userId) {
-        // Redis 또는 데이터베이스에서 Refresh Token과 userId를 검증하는 로직 구현
-        return redisRefreshTokenRepository.existsByRefreshTokenAndUserId(refreshToken, userId);
-    }
-
-
     private void authenticateUser(String token) {
-        System.out.println("Authenticating with token: " + token);
+        log.info("[authenticateUser] " + token);
 
         Long userId = Long.parseLong(jwtUtil.getUserId(token));
-        System.out.println("Extracted User ID from token: " + userId);
-
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        System.out.println("Found User: " + user.getUsername() + " (ID: " + user.getUserId() + ")");
 
-        CustomUserDetails customUserDetails = CustomUserDetails.builder()
-                                                               .userId(user.getUserId())
-                                                               .email(user.getEmail())
-                                                               .username(user.getUsername())
-                                                               .role(user.getRole())
-                                                               .build();
-        System.out.println("CustomUserDetails created: " + customUserDetails.getUsername());
+        CustomUserDetails customUserDetails = CustomUserDetails.of(user);
 
+        // userDetails 기반 인증 생성 및 securityContext 에 저장
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null,
                 customUserDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authToken);
-        System.out.println("Authentication set for user: " + customUserDetails.getUsername());
     }
 
 
@@ -164,7 +183,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
     private void sendErrorResponse(HttpServletResponse response, String message, int status) throws IOException {
         response.setStatus(status);
-        response.getWriter().print(message);
+        response.getWriter().println(message);
     }
 
     private String extractToken(HttpServletRequest request) {
@@ -174,122 +193,5 @@ public class JWTFilter extends OncePerRequestFilter {
         }
         return null;
     }
-
-//    @Override
-//    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-//            throws ServletException, IOException {
-//        log.info("-------jwt filter-------");
-//
-//        // Authorization 헤더에서 Bearer 토큰을 추출
-//        String accessToken = request.getHeader("Authorization");
-//        if (accessToken != null && accessToken.startsWith("Bearer ")) {
-//            accessToken = accessToken.substring(7); // "Bearer " 부분을 제거
-//        }
-//        System.out.println("Extracted Access Token: " + accessToken); // 추가
-//
-//        // Access Token 유무 확인
-//        if (accessToken == null || accessToken.isEmpty()) {
-//            System.out.println("Access Token is missing"); // 추가
-//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//            response.getWriter().print("Access token is missing");
-//            return;
-//        }
-//
-//        // accessToken 만료됐을 경우
-//        if (jwtUtil.isExpired(accessToken)) {
-//            System.out.println("Access Token has expired."); // Access Token 만료 확인
-//
-//            // Redis에서 Access Token으로 Refresh Token 조회
-//            Optional<RedisRefreshToken> redisRefreshTokenOpt = redisRefreshTokenRepository.findByAccessToken(accessToken);
-//            if (redisRefreshTokenOpt.isPresent()) {
-//                String refreshToken = redisRefreshTokenOpt.get().getRefreshToken();
-//                System.out.println("Refresh Token retrieved from Redis: " + refreshToken); // Redis에서 가져온 Refresh Token
-//
-//                Long userId = Long.parseLong(redisRefreshTokenOpt.get().getId());
-//                System.out.println("User ID extracted from Access Token: " + userId); // User ID 추출 확인
-//
-//                User user = userRepository.findById(userId)
-//                                          .orElseThrow(() -> new RuntimeException("User not found"));
-//
-//                // Redis에서 Refresh Token 확인
-//                Optional<RedisRefreshToken> redisRefreshToken = redisRefreshTokenRepository.findById(String.valueOf(userId));
-//                if (redisRefreshToken.isPresent()) {
-//                    System.out.println("Refresh Token found in Redis for User ID: " + userId); // Redis에서 Refresh Token 확인
-//
-//                    // Redis에 저장된 Refresh Token과 클라이언트에서 받은 Refresh Token 비교
-//                    if (redisRefreshToken.get().getRefreshToken().equals(refreshToken)) {
-//                        System.out.println("Refresh Token is valid."); // Refresh Token 유효성 확인
-//
-//                        // 새로운 Access Token 발급
-//                        String newAccessToken = jwtUtil.createJwt("access", userId, user.getRole().toString());
-//                        response.setHeader("Authorization", "Bearer " + newAccessToken);
-//                        System.out.println("New Access Token issued: " + newAccessToken); // 새로운 Access Token 발급 확인
-//
-//                        accessToken = newAccessToken;
-//
-//                        CustomUserDetails customUserDetails = CustomUserDetails.builder()
-//                                                                               .userId(user.getUserId())
-//                                                                               .email(user.getEmail())
-//                                                                               .username(user.getUsername())
-//                                                                               .role(user.getRole())
-//                                                                               .build();
-//
-//                        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null,
-//                                customUserDetails.getAuthorities());
-//                        SecurityContextHolder.getContext().setAuthentication(authToken);
-//
-//                        // 필터 체인 종료 - 더 이상의 로직이 실행되지 않도록 return
-//                        filterChain.doFilter(request, response);
-//                        return;
-//                    } else {
-//                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//                        response.getWriter().print("Invalid refresh token");
-//                        System.out.println("Invalid Refresh Token received."); // 유효하지 않은 Refresh Token 확인
-//                        return;
-//                    }
-//                } else {
-//                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//                    response.getWriter().print("Refresh token is missing");
-//                    System.out.println("No Refresh Token found in Redis for User ID: " + userId); // Redis에 Refresh Token 없음 확인
-//                    return;
-//                }
-//            } else {
-//                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//                response.getWriter().print("Refresh token is missing");
-//                System.out.println("Refresh Token is null or not found."); // Refresh Token이 null이거나 없음 확인
-//                return;
-//            }
-//        }
-//
-//
-//
-//        // 사용자 정보 가져오기
-//        Long userId = Long.parseLong(jwtUtil.getUserId(accessToken));
-//        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-//
-//        // CustomUserDetails 객체 생성
-//        CustomUserDetails customUserDetails = CustomUserDetails.builder()
-//                                                               .userId(user.getUserId())
-//                                                               .email(user.getEmail())
-//                                                               .username(user.getUsername())
-//                                                               .role(user.getRole())
-//                                                               .build();
-//
-//        // SecurityContext에 인증 정보 설정
-//        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null,
-//                customUserDetails.getAuthorities());
-//        SecurityContextHolder.getContext().setAuthentication(authToken);
-//        // 인증 정보 로그 추가
-//        System.out.println("Authentication set in SecurityContext: " + customUserDetails.getUsername());
-//        System.out.println("CustomUserDetails");
-//        System.out.println(customUserDetails.getUserId());
-//        System.out.println(customUserDetails.getEmail());
-//        System.out.println(customUserDetails.getUsername());
-//        System.out.println(customUserDetails.getPassword());
-//        System.out.println(customUserDetails.getRole());
-//        log.info("-------jwt filter done-------");
-//        // 필터 체인 계속 진행
-//        filterChain.doFilter(request, response);
-//    }
 
 }
