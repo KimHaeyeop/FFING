@@ -6,7 +6,7 @@ import com.tbtr.ffing.domain.user.entity.User;
 import com.tbtr.ffing.domain.user.repository.UserRepository;
 import com.tbtr.ffing.domain.user.service.AuthService;
 import com.tbtr.ffing.global.auth.JWTUtil;
-import com.tbtr.ffing.global.redis.service.RedisRefreshTokenService;
+import com.tbtr.ffing.global.redis.service.RedisJwtTokenService;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class AuthServiceImpl implements AuthService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
     private final JWTUtil jwtUtil;
-    private final RedisRefreshTokenService redisRefreshTokenService;
+    private final RedisJwtTokenService redisJwtTokenService;
 
     @Override
     public UserInfoDTO.Response signup(UserInfoDTO.Request requestDTO) {
@@ -61,14 +61,10 @@ public class AuthServiceImpl implements AuthService {
         // 3. JWT 토큰 발급 및 Redis에 저장
         String accessToken = jwtUtil.createJwt("access", user.getUserId(), user.getRole().toString());
         String refreshToken = jwtUtil.createJwt("refresh", user.getUserId(), user.getRole().toString());
-        redisRefreshTokenService.saveRedisData(user.getUserId(), refreshToken, accessToken);
+        redisJwtTokenService.saveRedisData(user.getUserId(), accessToken, refreshToken);
 
         // 4. 응답 데이터 구성
-        UserSigninDTO.Response response = UserSigninDTO.Response.builder()
-                                                                .email(user.getEmail())
-                                                                .username(user.getUsername())
-                                                                .nickname(user.getNickname())
-                                                                .build();
+        UserSigninDTO.Response response = UserSigninDTO.Response.of(user);
 
         Map<String, Object> result = new HashMap<>();
         result.put("accessToken", accessToken);
