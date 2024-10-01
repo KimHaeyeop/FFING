@@ -1,5 +1,5 @@
 import React from 'react';
-import { mdiFood, mdiTrainCar, mdiShopping, mdiSofaSingleOutline, mdiTheater, mdiFinance, mdiCashMultiple } from '@mdi/js';
+import { mdiFood, mdiTrainCar, mdiShopping, mdiSofaSingleOutline, mdiTheater, mdiCashMultiple } from '@mdi/js';
 import Icon from '@mdi/react';
 
 interface ExpenseDetailProps {
@@ -11,13 +11,11 @@ interface ExpenseDetailProps {
 
 const ExpenseDetail: React.FC<ExpenseDetailProps> = ({ category, title, date, cost }) => {
   const categoryIconMap = {
-    'food': mdiFood,
-    'transportation': mdiTrainCar,
-    'shopping': mdiShopping,
-    'living': mdiSofaSingleOutline,
-    'cultrue': mdiTheater,
-    'finance': mdiFinance,
-    'rest': mdiCashMultiple,
+    '식비': mdiFood,
+    '교통': mdiTrainCar,
+    '쇼핑': mdiShopping,
+    '생활/문화': mdiSofaSingleOutline,
+    '금융': mdiCashMultiple,
   };
 
   return (
@@ -26,9 +24,9 @@ const ExpenseDetail: React.FC<ExpenseDetailProps> = ({ category, title, date, co
         {/* 왼편 아이콘과 타이틀 */}
         <div className="flex items-center">
           <Icon path={categoryIconMap[category]} size={1} />
-          <div className="ml-4">
+          <div className="ml-4 text-left">
             <p className="font-bold">{title}</p>
-            <p className="mt-1 text-gray-500 text-sm">{date}</p>
+            <p className="mt-2 ml-4 text-gray-500 text-sm">{date}</p>
           </div>
         </div>
         {/* 오른편 비용 */}
