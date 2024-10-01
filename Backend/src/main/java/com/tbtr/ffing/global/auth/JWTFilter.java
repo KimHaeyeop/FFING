@@ -3,6 +3,7 @@ package com.tbtr.ffing.global.auth;
 import com.tbtr.ffing.domain.user.dto.CustomUserDetails;
 import com.tbtr.ffing.domain.user.entity.User;
 import com.tbtr.ffing.domain.user.repository.UserRepository;
+import com.tbtr.ffing.global.auth.util.JWTUtil;
 import com.tbtr.ffing.global.redis.component.RedisJwtToken;
 import com.tbtr.ffing.global.redis.repository.RedisJwtTokenRepository;
 import com.tbtr.ffing.global.redis.service.RedisJwtTokenService;
@@ -12,7 +13,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -118,13 +118,15 @@ public class JWTFilter extends OncePerRequestFilter {
         // 기존 Access/Refresh Token 삭제
         redisJwtTokenService.deleteRedisDataById(storedUserId.toString());
 
+        User user = userRepository.findById(tokenUserId).orElseThrow(() -> new RuntimeException("User not found"));
+        CustomUserDetails customUserDetails = CustomUserDetails.of(user);
         // Refresh Token 유효하면 새로운 Access/Refresh Token 발급
-        String newAccessToken = jwtUtil.createJwt("access", storedUserId, getUserRole(storedUserId));
-        String newRefreshToken = jwtUtil.createJwt("refresh", storedUserId, getUserRole(storedUserId));
+        String newAccessToken = jwtUtil.createJwt("access", customUserDetails);
+        String newRefreshToken = jwtUtil.createJwt("refresh", customUserDetails);
         redisJwtTokenService.saveRedisData(storedUserId, newAccessToken, newRefreshToken);
 
-        log.info("new access token: " + accessToken);
-        log.info("new refresh token: " + refreshToken);
+        log.info("new access token: " + newAccessToken);
+        log.info("new refresh token: " + newRefreshToken);
 
         // 쿠키와 헤더 업데이트
         updateCookiesAndHeader(response, newAccessToken, newRefreshToken);
