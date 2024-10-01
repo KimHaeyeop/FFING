@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '@mdi/react';
-import { mdiBell } from '@mdi/js';
-import { mdiChevronLeft } from '@mdi/js';
+import { mdiBell, mdiChevronLeft } from '@mdi/js';
 
 interface LinkHeaderProps {
   contentName: string // 콘텐츠 이름

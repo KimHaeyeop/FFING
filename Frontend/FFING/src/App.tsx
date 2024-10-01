@@ -9,6 +9,8 @@ import PetPediaPage from './pages/PetPediaPage';
 import MainPage from './pages/MainPage';
 import NotFoundPage from './pages/NotFoundPage';
 import SpendingCategoryPage from './pages/SpendingCategoryPage';
+import SpendingMonthlyPage from './pages/SpendingMonthlyPage';
+import SpendingMonthlyAnalysisPage from './pages/SpendingMonthlyAnalysisPage';
 
 const App: React.FC = () => {
   return (
@@ -16,9 +18,13 @@ const App: React.FC = () => {
       <Routes>
         {/* 메인 페이지 */}
         <Route path="/" element={<MainPage />} />
-        {/* 메인 페이지 */}
+        {/* 지출 페이지 */}
         <Route path="/spending" element={<SpendingCategoryPage />} />
-        {/* 게임 페이지(원래 /game) */}
+        {/* 월간 지출 페이지 */}
+        <Route path="/spending/monthly" element={<SpendingMonthlyPage />} />
+        {/* 월간 지출 분석 페이지 */}
+        <Route path="/spending/monthly/analysis" element={<SpendingMonthlyAnalysisPage />} />
+        {/* 게임 페이지 */}
         <Route path="/game" element={<GamePage />} />
         {/* 매칭 잡는 페이지 */}
         <Route path="/game/matching" element={<MatchingPage />} />

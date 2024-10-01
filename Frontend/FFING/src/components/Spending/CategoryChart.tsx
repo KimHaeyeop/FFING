@@ -37,7 +37,6 @@ const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({ chartData
 
   // 차트를 클릭했을 때, SpendingCategoryPage에 카테고리를 전달하는 함수
   const handleClick = (event, elements) => {
-    console.log(event, elements)
     // 다른 곳을 클릭하면
     if (elements.length > 0) {
       const chart = elements[0].element.$context.chart;
