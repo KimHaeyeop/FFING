@@ -2,7 +2,7 @@ package com.tbtr.ffing.global.config;
 
 import com.tbtr.ffing.domain.user.repository.UserRepository;
 import com.tbtr.ffing.global.auth.JWTFilter;
-import com.tbtr.ffing.global.auth.JWTUtil;
+import com.tbtr.ffing.global.auth.util.JWTUtil;
 import com.tbtr.ffing.global.redis.repository.RedisJwtTokenRepository;
 import com.tbtr.ffing.global.redis.service.RedisJwtTokenService;
 import lombok.RequiredArgsConstructor;
