@@ -19,7 +19,6 @@ const LinkHeader: React.FC<LinkHeaderProps> = ({ contentName, contentRoute }) =>
       justifyContent: 'space-between', 
       alignItems: 'center',
       padding: '10px',
-      borderBottom: '1px solid #ccc' 
     }}>
       {/* 컨텐츠 메뉴 이름 */}
         <Link to={contentRoute} className='flex items-center'>

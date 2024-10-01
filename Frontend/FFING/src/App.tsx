@@ -8,6 +8,7 @@ import MatchingPage from './pages/MatchingPage';
 import PetPediaPage from './pages/PetPediaPage';
 import MainPage from './pages/MainPage';
 import NotFoundPage from './pages/NotFoundPage';
+import SpendingCategoryPage from './pages/SpendingCategoryPage';
 
 const App: React.FC = () => {
   return (
@@ -15,6 +16,8 @@ const App: React.FC = () => {
       <Routes>
         {/* 메인 페이지 */}
         <Route path="/" element={<MainPage />} />
+        {/* 메인 페이지 */}
+        <Route path="/spending" element={<SpendingCategoryPage />} />
         {/* 게임 페이지(원래 /game) */}
         <Route path="/game" element={<GamePage />} />
         {/* 매칭 잡는 페이지 */}
