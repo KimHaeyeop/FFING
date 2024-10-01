@@ -1,5 +1,5 @@
 import React from "react";
-import Header from '../components/Common/Header'
+import Header from '../components/Common/LinkHeader'
 import NavBar from "../components/Common/Navbar";
 
 const MainPage: React.FC = () => {

@@ -1,8 +1,15 @@
 import React from 'react';
-import { mdiBell } from '@mdi/js';
+import { Link } from 'react-router-dom';
 import Icon from '@mdi/react';
+import { mdiBell } from '@mdi/js';
+import { mdiChevronLeft } from '@mdi/js';
 
-const GameBar: React.FC = () => {
+interface LinkHeaderProps {
+  contentName: string // 콘텐츠 이름
+  contentRoute: string // 콘텐츠 링크
+}
+
+const LinkHeader: React.FC<LinkHeaderProps> = ({ contentName, contentRoute }) => {
   // 기본적으로 보지 않은 알림이 있다고 가정
   const hasUnreadNotifications = true; // 여기에 실제 알림 확인 로직을 추가해야 함
 
@@ -14,8 +21,11 @@ const GameBar: React.FC = () => {
       padding: '10px',
       borderBottom: '1px solid #ccc' 
     }}>
-      {/* 게임 이름 */}
-      <h1>Pet Fight</h1> 
+      {/* 컨텐츠 메뉴 이름 */}
+        <Link to={contentRoute} className='flex items-center'>
+          <Icon path={mdiChevronLeft} size={1} />
+          { contentName }
+        </Link>
       <div style={{ position: 'relative' }}> {/* 아이콘 위치 설정 */}
         {/* 종 아이콘 */}
         <Icon path={mdiBell} size={1} /> 
@@ -35,4 +45,4 @@ const GameBar: React.FC = () => {
   );
 };
 
-export default GameBar;
+export default LinkHeader;

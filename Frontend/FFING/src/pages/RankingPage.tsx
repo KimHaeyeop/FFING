@@ -1,5 +1,5 @@
 import React from "react";
-import GameBar from "../components/Game/GameBar";
+import LinkHeader from "../components/Common/LinkHeader";
 import NavBar from "../components/Common/Navbar";
 import DisplayRanking from "../components/Game/DisplayRanking";
 
@@ -25,7 +25,7 @@ const RankingPage: React.FC = () => {
         <div className="w-screen h-screen">
           {/* 읽지 않은 알람 표시와 링크를 제공하는 header */}
           <header>
-            <GameBar />
+            <LinkHeader contentName="랭킹" contentRoute="/game/ranking"/>
           </header>
           {/* 이번 달 랭킹을 보여주는 컴포넌트 */}
           <div>
