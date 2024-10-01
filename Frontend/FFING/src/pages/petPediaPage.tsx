@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import GameBar from "../components/Game/GameBar";
+// import GameBar from "../components/Game/GameBar";
 import NavBar from "../components/Common/Navbar";
+import Header from "../components/Common/LinkHeader";
 import RecordSection from "../components/Game/RecordSection";
 import PetPediaSection from "../components/Game/PetPediaSection";
 import useViewportStore from "../store/useViewportStore";  // store import
@@ -15,8 +16,8 @@ const PetPediaPage: React.FC = () => {
     <div className="flex justify-center items-center">
       <div className="w-screen h-screen">
         {/* 게임 상단 header */}
-        <header >
-          <GameBar />
+        <header>
+          <Header contentName="도감" contentRoute="/game"/>
         </header>
 
         {/* 기록과 도감 영역을 선택하는 요소 */}
