@@ -1,15 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import Icon from '@mdi/react';
 import { mdiBell } from '@mdi/js';
-import { mdiChevronLeft } from '@mdi/js';
+import Icon from '@mdi/react';
 
-interface HeaderProps {
-  contentName: string // 콘텐츠 이름
-  contentRoute: string // 콘텐츠 링크
+interface TextHeaderProps {
+  title: string // 콘텐츠 이름
 }
 
-const Header: React.FC<HeaderProps> = ({ contentName, contentRoute }) => {
+const TextHeader: React.FC<TextHeaderProps> = ({title}) => {
   // 기본적으로 보지 않은 알림이 있다고 가정
   const hasUnreadNotifications = true; // 여기에 실제 알림 확인 로직을 추가해야 함
 
@@ -21,11 +18,8 @@ const Header: React.FC<HeaderProps> = ({ contentName, contentRoute }) => {
       padding: '10px',
       borderBottom: '1px solid #ccc' 
     }}>
-      {/* 컨텐츠 메뉴 이름 */}
-        <Link to={contentRoute} className='flex items-center'>
-          <Icon path={mdiChevronLeft} size={1} />
-          { contentName }
-        </Link>
+      {/* 게임 이름 */}
+      <h1>{title}</h1> 
       <div style={{ position: 'relative' }}> {/* 아이콘 위치 설정 */}
         {/* 종 아이콘 */}
         <Icon path={mdiBell} size={1} /> 
@@ -45,4 +39,4 @@ const Header: React.FC<HeaderProps> = ({ contentName, contentRoute }) => {
   );
 };
 
-export default Header;
+export default TextHeader;

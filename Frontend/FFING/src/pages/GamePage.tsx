@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import GameBar from "../components/Game/GameBar";
+import TextHeader from "../components/Common/TextHeader";
 import NavBar from "../components/Common/Navbar";
 import PetIdle from "../components/Game/PetIdle";
 import PetStatusChart from "../components/Game/PetStatusChart";
@@ -9,9 +9,9 @@ const GamePage: React.FC = () => {
   return (
     <div className="flex justify-center items-center">
       <div className="w-screen h-screen">
-        {/* 게임 상단의 petfight와 알람을 표시하는 header */}
+        {/* 게임 상단에 사용자 이름?과 알람을 표시하는 header */}
         <header>
-          <GameBar />
+          <TextHeader title="이규석 님"/>
         </header>
         {/* 내 펫이 인사를 하는 컴포넌트*/}
         <div>
