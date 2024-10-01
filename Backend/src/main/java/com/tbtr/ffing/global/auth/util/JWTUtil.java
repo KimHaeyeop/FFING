@@ -1,5 +1,6 @@
-package com.tbtr.ffing.global.auth;
+package com.tbtr.ffing.global.auth.util;
 
+import com.tbtr.ffing.domain.user.dto.CustomUserDetails;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -38,18 +39,6 @@ public class JWTUtil {
         }
     }
 
-    public String getRole(String token) {
-
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
-                   .get("role", String.class);
-    }
-
-    public String getCategory(String token) {
-
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
-                   .get("category", String.class);
-    }
-
     public Boolean isExpired(String token) {
         System.out.println("JWTUtil: Checking if the token is expired..."); // 로그 추가
         System.out.println("현재시간: " + new Date(System.currentTimeMillis()));
@@ -76,15 +65,13 @@ public class JWTUtil {
         return expirationDate.before(currentDate);
     }
 
-    public String createJwt(String category, Long userId, String role) {
+    public String createJwt(String category, CustomUserDetails userDetails) {
 
         Long expirationPeriod =
                 category.equals("access") ? ACCESS_TOKEN_EXPIRATION_PERIOD : REFRESH_TOKEN_EXPIRATION_PERIOD;
 
         return Jwts.builder()
-                   .claim("category", category)
-                   .claim("userId", userId.toString())
-                   .claim("role", role)
+                   .claims(userDetails.getClaims())
                    .issuedAt(new Date(System.currentTimeMillis()))
                    .expiration(new Date(System.currentTimeMillis() + expirationPeriod * 500L)) // 30초
                    .signWith(secretKey)
