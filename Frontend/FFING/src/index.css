@@ -138,6 +138,28 @@ html body {
   font-family: 'Galmuri11', sans-serif;
 }
 
+/* 오늘 날짜는 원으로 표시 */
+.react-calendar__tile--now {
+  border: 1px solid #FE830A;
+  border-radius: 100%;
+}
+
+/* 지출 내역이 있는 날짜에 점 표시 */
+.dot {
+  height: 8px;
+  width: 8px;
+  background-color: #FE830A;
+  border-radius: 50%;
+  margin-left: 1px;
+}
+
+/* 날짜 네비게이션 */
+.react-calendar__navigation {
+	margin-bottom: 1rem; /* 6px */
+  font-size: 1.25rem; /* 20px */
+  line-height: 1.75rem; /* 28px */
+}
+
 @layer utilities {
   .h-dvh {
     height: 100dvh;

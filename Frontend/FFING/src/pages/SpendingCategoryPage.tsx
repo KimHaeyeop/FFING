@@ -53,14 +53,14 @@ const SpendingCategoryPage: React.FC = () => {
       <div className="w-screen h-screen">
         {/* 메인 화면으로 되돌아가는 링크와 알람 header */}
         <header style={{height: `${dvh * 10}px`}}>
-          <LinkHeader contentName="지출" contentRoute="/"/> 
+          <LinkHeader contentName="항목별 지출" contentRoute="/"/> 
         </header>
         <main className='mx-auto'style={{height: `${dvh * 75}px`, width: `${dvw * 90}px`}}>
           {/* 이번 달 지출 금액 */}
           <div className="border-black border-4 rounded-lg" style={{height: '40%'}}>
             <div className='flex justify-end items-center mt-2 mx-2'>
               {/* 이번 달 지출 확인 route */}
-              <Link to='/' className='flex items-center'>
+              <Link to='monthly' className='flex items-center'>
                 <p style={{color:'#F55322'}}>이번 달 지출</p>
                 <Icon path={mdiChevronRight} size={1} color='#F55322'/>
               </Link>
