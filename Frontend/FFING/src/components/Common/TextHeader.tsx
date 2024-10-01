@@ -15,8 +15,7 @@ const TextHeader: React.FC<TextHeaderProps> = ({title}) => {
       display: 'flex',  // 상단에 위치시키기 위해 flex 사용
       justifyContent: 'space-between', 
       alignItems: 'center',
-      padding: '10px',
-      borderBottom: '1px solid #ccc' 
+      padding: '10px', 
     }}>
       {/* 게임 이름 */}
       <h1>{title}</h1> 
