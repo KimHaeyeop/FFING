@@ -36,7 +36,7 @@ public class TimeBasedBatchScheduler {
      * - * : 매월
      * - ? : 요일 상관없음
      */
-    @Scheduled(cron = "0 52 19 * * ?")
+    @Scheduled(cron = "0 39 09 * * ?")
     public void runTimeBasedExpenseJob() {
         try {
             JobParameters jobParameters = new JobParametersBuilder()
