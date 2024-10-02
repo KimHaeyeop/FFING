@@ -1,5 +1,9 @@
 package com.tbtr.ffing.domain.finance.entity;
 
+import com.tbtr.ffing.domain.finance.dto.response.asset.AssetRes;
+import com.tbtr.ffing.domain.finance.dto.response.asset.DepositAssetRes;
+import com.tbtr.ffing.domain.user.entity.SsafyUser;
+import com.tbtr.ffing.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -43,9 +47,21 @@ public class DepositAccount {
     @Column(nullable = false)
     private LocalDate accountExpiryDate;
 
-    @Column(nullable = false)
-    private Long depositProductId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deposit_product_id", nullable = false)
+    private DepositProduct depositProduct;
 
-    @Column(nullable = false)
-    private Long ssafyUserId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ssafy_user_id", nullable = false)
+    private SsafyUser ssafyUser;
+
+    public DepositAssetRes of(DepositAccount depositAccount) {
+        return DepositAssetRes.builder()
+                .accountId(depositAccount.depositAccountId)
+                .bankCode(depositAccount.bankCode)
+                .accountName(depositAccount.accountName)
+                .accountNo(depositAccount.accountNo)
+                .totalBalance(depositAccount.totalBalance)
+                .build();
+    }
 }

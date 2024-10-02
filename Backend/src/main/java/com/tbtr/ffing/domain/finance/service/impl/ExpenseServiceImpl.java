@@ -1,9 +1,6 @@
 package com.tbtr.ffing.domain.finance.service.impl;
 
-import com.tbtr.ffing.domain.finance.dto.response.expense.DailySummaryRes;
-import com.tbtr.ffing.domain.finance.dto.response.expense.ExpenseRes;
-import com.tbtr.ffing.domain.finance.dto.response.expense.CategoryExpenseRes;
-import com.tbtr.ffing.domain.finance.dto.response.expense.MonthlySummaryRes;
+import com.tbtr.ffing.domain.finance.dto.response.expense.*;
 import com.tbtr.ffing.domain.finance.entity.AccountTransaction;
 import com.tbtr.ffing.domain.finance.entity.CardTransaction;
 import com.tbtr.ffing.domain.finance.entity.Expense;
@@ -19,8 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +27,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     private final ExpenseRepository expenseRepository;
     private final AccountTransactionRepository accountTransactionRepository;
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     /**
      * 카드 지출 -> 전체 지출에 반영
@@ -52,11 +52,11 @@ public class ExpenseServiceImpl implements ExpenseService {
         expenseRepository.save(newExpense);
 
 
-
     }
 
     /**
      * 당월 지출내역
+     *
      * @param category
      * @return
      */
@@ -71,11 +71,12 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     /**
      * 주간 카테고리별 지출액
+     *
      * @param isThisWeek
      * @return
      */
     @Override
-    public List<CategoryExpenseRes> getWeeklyCategoryExpenses(boolean isThisWeek) {
+    public WeeklyCategoryExpenseRes getWeeklyCategoryExpenses(boolean isThisWeek) {
         LocalDate today = LocalDate.now();
         LocalDate startDate;
         LocalDate endDate;
@@ -88,11 +89,21 @@ public class ExpenseServiceImpl implements ExpenseService {
             endDate = startDate.plusDays(6); // Saturday
         }
 
-        return expenseRepository.findCategoryExpenses(startDate, endDate);
+        List<CategoryExpenseRes> categoryExpenses = expenseRepository.findCategoryExpenses(startDate, endDate);
+
+        BigDecimal weeklyTotalAmount = categoryExpenses.stream()
+                .map(CategoryExpenseRes::getTotalAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return WeeklyCategoryExpenseRes.builder()
+                .weeklyTotalAmount(weeklyTotalAmount)
+                .categoryExpenses(categoryExpenses)
+                .build();
     }
 
     /**
      * 월간 카테고리 총액
+     *
      * @return
      */
     @Override
@@ -107,6 +118,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     /**
      * 월간(일간 포함) 지출액, 수입액 조회
+     *
      * @param yearMonth
      * @return
      */
@@ -124,6 +136,30 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .build();
     }
 
+    @Override
+    public DailyExpenseRes getDailyExpense(String dateString) {
+        LocalDate date = LocalDate.parse(dateString, DATE_FORMATTER);
 
+        List<ExpenseRes> dailyExpenses = expenseRepository.findExpensesByDate(dateString);
+
+        BigDecimal dailyTotal = expenseRepository.calculateTotalExpenseByDate(dateString);
+
+        // 현재 날짜가 속한 주의 일요일을 시작일로 설정
+        LocalDate startOfWeek = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
+        // 다음 주 토요일을 종료일로 설정
+        LocalDate endOfWeek = startOfWeek.plusDays(6);
+
+        String startDateString = startOfWeek.format(DATE_FORMATTER);
+        String endDateString = endOfWeek.format(DATE_FORMATTER);
+
+        BigDecimal weeklyTotal = expenseRepository.calculateTotalExpenseBetweenDates(startDateString, endDateString);
+
+        return DailyExpenseRes.builder()
+                .date(dateString)
+                .expenses(dailyExpenses)
+                .dailyTotal(dailyTotal != null ? dailyTotal : BigDecimal.ZERO)
+                .weeklyTotal(weeklyTotal != null ? weeklyTotal : BigDecimal.ZERO)
+                .build();
+    }
 
 }

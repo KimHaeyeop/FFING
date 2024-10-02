@@ -28,7 +28,7 @@ public class DepositProduct {
     private String bankName;
 
     @Column(nullable = false, length = 20)
-    private String productName;
+    private String accountName;
 
     @Column(nullable = false)
     private Long subscriptionPeriod;

@@ -169,4 +169,69 @@ public class ExpenseRepositoryCustomImpl implements ExpenseRepositoryCustom {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<ExpenseRes> findExpensesByDate(String date) {
+        QExpense expense = QExpense.expense;
+        return queryFactory
+                .select(Projections.constructor(ExpenseRes.class,
+                        expense.expenseId,
+                        expense.expenseName,
+                        expense.expenseCategory,
+                        expense.expenseMemo,
+                        expense.expenseDate,
+                        expense.expenseTime,
+                        expense.expenseBalance))
+                .from(expense)
+                .where(expense.expenseDate.eq(date))
+                .fetch();
+    }
+
+    @Override
+    public List<ExpenseRes> findExpensesBetweenDates(String startDate, String endDate) {
+        QExpense expense = QExpense.expense;
+        return queryFactory
+                .select(Projections.constructor(ExpenseRes.class,
+                        expense.expenseId,
+                        expense.expenseName,
+                        expense.expenseCategory,
+                        expense.expenseMemo,
+                        expense.expenseDate,
+                        expense.expenseTime,
+                        expense.expenseBalance))
+                .from(expense)
+                .where(expense.expenseDate.between(startDate, endDate))
+                .fetch();
+    }
+
+    @Override
+    public BigDecimal calculateTotalExpenseByDate(String date) {
+        QExpense expense = QExpense.expense;
+        BigDecimal total = queryFactory
+                .select(expense.expenseBalance.sum())
+                .from(expense)
+                .where(expense.expenseDate.eq(date))
+                .fetchOne();
+        return total != null ? total : BigDecimal.ZERO;
+    }
+
+    @Override
+    public BigDecimal calculateTotalExpenseBetweenDates(String startDate, String endDate) {
+        QExpense expense = QExpense.expense;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        LocalDate start = LocalDate.parse(startDate, formatter);
+        LocalDate end = LocalDate.parse(endDate, formatter);
+
+        List<String> dateRange = start.datesUntil(end.plusDays(1))
+                .map(date -> date.format(formatter))
+                .collect(Collectors.toList());
+
+        BigDecimal total = queryFactory
+                .select(expense.expenseBalance.sum())
+                .from(expense)
+                .where(expense.expenseDate.in(dateRange))
+                .fetchOne();
+        return total != null ? total : BigDecimal.ZERO;
+    }
+
+
 }
