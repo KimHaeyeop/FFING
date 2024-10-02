@@ -21,7 +21,7 @@ public class SavingsTransactionAssetRes {
 	public SavingsTransactionAssetRes(Long transactionId, String paymentDate, String paymentTime, long depositInstallment, BigDecimal paymentBalance, BigDecimal totalBalance) {
 		this.transactionId = transactionId;
 		if (paymentBalance.compareTo(BigDecimal.ZERO) > 0) {
-			paymentName = "입금";
+			paymentName = depositInstallment + "회차 입금";
 		} else {
 			paymentName = "출금";
 		}
