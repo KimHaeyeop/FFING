@@ -41,7 +41,7 @@ public class AuthServiceImpl implements AuthService {
             throw new CustomException(ErrorCode.NICKNAME_ALREADY_EXISTS);
         }
 
-        User userInfoDto = UserInfoDTO.Request.toEntity(requestDTO, bCryptPasswordEncoder);
+        User userInfoDto = UserInfoDTO.Request.to(requestDTO, bCryptPasswordEncoder);
         userRepository.save(userInfoDto);
 
         return UserInfoDTO.Response.of(userInfoDto);
