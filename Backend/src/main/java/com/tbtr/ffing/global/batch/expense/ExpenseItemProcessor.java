@@ -1,9 +1,14 @@
 package com.tbtr.ffing.global.batch.expense;
 
+import com.tbtr.ffing.domain.fcm.event.FcmEvent;
 import com.tbtr.ffing.domain.finance.entity.Expense;
 import com.tbtr.ffing.domain.finance.entity.ExpenseCategory;
 import com.tbtr.ffing.domain.user.entity.User;
+import com.tbtr.ffing.domain.fcm.repository.FcmRepository;
+import com.tbtr.ffing.domain.fcm.entity.Fcm;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -12,23 +17,20 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
-/**
- * User 정보를 기반으로 Expense 객체를 생성하는 ItemProcessor
- */
 @Component
 public class ExpenseItemProcessor implements ItemProcessor<User, Expense> {
 
     private final Random random = new Random();
 
-    /**
-     * User 객체를 입력받아 새로운 Expense 객체를 생성합니다.
-     *
-     * @param user 입력 User 객체
-     * @return 생성된 Expense 객체
-     */
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
+    @Autowired
+    private FcmRepository fcmRepository;
+
     @Override
     public Expense process(User user) {
-        return Expense.builder()
+        Expense expense = Expense.builder()
                 .expenseName("Scheduled Expense for " + user.getUsername())
                 .expenseCategory(getRandomExpenseCategory())
                 .expenseMemo("Auto generated expense at " + LocalTime.now())
@@ -37,6 +39,19 @@ public class ExpenseItemProcessor implements ItemProcessor<User, Expense> {
                 .expenseBalance(BigDecimal.valueOf(random.nextDouble() * 100))
                 .user(user)
                 .build();
+
+        // FCM 토큰 찾기
+        Fcm fcm = fcmRepository.findByUser(user);
+        if (fcm != null && fcm.getFcmToken() != null) {
+            // FCM 이벤트 발생
+            FcmEvent fcmEvent = new FcmEvent(this,
+                    "새로운 지출이 등록되었습니다.",
+                    "지출 항목: " + expense.getExpenseName() + ", 금액: " + expense.getExpenseBalance(),
+                    fcm.getFcmToken());
+            eventPublisher.publishEvent(fcmEvent);
+        }
+
+        return expense;
     }
 
     private ExpenseCategory getRandomExpenseCategory() {
