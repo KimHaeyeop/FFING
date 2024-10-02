@@ -44,8 +44,8 @@ public class PetInfo {
     @Column(nullable = false)
     private int loseCount;
 
-    @Column(nullable = false)
-    private LocalDate createdAt;
+    @Column(nullable = false, length = 8)
+    private String createdDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_id", nullable = false)
