@@ -17,8 +17,8 @@ spring:
       max-file-size: 100MB
       max-request-size: 100MB
   batch:
-    jdbc:
-      initialize-schema: always
+#    jdbc:
+#      initialize-schema: always
     job:
       enabled: false
 
@@ -29,7 +29,7 @@ server:
 spring:
   config:
     activate:
-      on-profile: "develop"
+      on-profile: develop
     import: optional:file:env-develop.env[.properties]
   datasource:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
@@ -40,15 +40,18 @@ spring:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
-  batch:
-    jdbc:
-      initialize-schema: always
+#  batch:
+#    jdbc:
+#      initialize-schema: always
 logging:
   level:
     org.springframework.batch: DEBUG
     org.springframework.jdbc: TRACE
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql: TRACE
+    org.springframework.jdbc.datasource: TRACE
+    com.zaxxer.hikari: DEBUG
+    org.springframework.boot.autoconfigure.jdbc: DEBUG
 jwt:
   secret: ${JWT_SECRET}
 
@@ -56,7 +59,7 @@ jwt:
 spring:
   config:
     activate:
-      on-profile: "local"
+      on-profile: local
     import: optional:file:env-local.env[.properties]
   datasource:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
@@ -67,14 +70,17 @@ spring:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
-  batch:
-    jdbc:
-      initialize-schema: always
+#  batch:
+#    jdbc:
+#      initialize-schema: always
 logging:
   level:
     org.springframework.batch: DEBUG
     org.springframework.jdbc: TRACE
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql: TRACE
+    org.springframework.jdbc.datasource: TRACE
+    com.zaxxer.hikari: DEBUG
+    org.springframework.boot.autoconfigure.jdbc: DEBUG
 jwt:
   secret: ${JWT_SECRET}
