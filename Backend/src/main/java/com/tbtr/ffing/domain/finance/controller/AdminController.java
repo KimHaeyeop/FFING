@@ -4,8 +4,8 @@ import com.tbtr.ffing.domain.finance.dto.request.account.TransferDmdDepAccReq;
 import com.tbtr.ffing.domain.finance.dto.request.card.CreateCardTransactionReq;
 import com.tbtr.ffing.domain.finance.service.AccountService;
 import com.tbtr.ffing.domain.finance.service.CardService;
+import com.tbtr.ffing.global.common.dto.Response;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,18 +19,23 @@ public class AdminController {
 
     // 카드 결제
     @PostMapping("/cardTransaction")
-    public ResponseEntity<?> createCardTransaction(@RequestBody CreateCardTransactionReq createCardTransactionReq) {
+    public ResponseEntity<Response<Void>> createCardTransaction(@RequestBody CreateCardTransactionReq createCardTransactionReq) {
         cardService.addCardTransaction(createCardTransactionReq);
 
-        return ResponseEntity.status(HttpStatus.OK).body("카드결제가 정상 처리되었습니다.");
+        return ResponseEntity.ok(Response.<Void>builder()
+                .code(200L)
+                .message("카드결제가 정상 처리되었습니다.")
+                .build());
     }
 
     // 계좌이체
     @PostMapping("/accountTransfer")
-    public ResponseEntity<?> updateAccountTransfer(@RequestBody TransferDmdDepAccReq transferDmdDepAccReq) {
-       accountService.updateAccountTransfer(transferDmdDepAccReq);
+    public ResponseEntity<Response<Void>> updateAccountTransfer(@RequestBody TransferDmdDepAccReq transferDmdDepAccReq) {
+        accountService.updateAccountTransfer(transferDmdDepAccReq);
 
-        return ResponseEntity.status(HttpStatus.OK).body("계좌이체가 정상 처리되었습니다.");
+        return ResponseEntity.ok(Response.<Void>builder()
+                .code(200L)
+                .message("계좌이체가 정상 처리되었습니다.")
+                .build());
     }
-
 }

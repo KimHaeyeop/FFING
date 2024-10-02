@@ -15,7 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-public class UserInfoDto {
+public class UserInfoDTO {
 
     /**
      * 회원 가입 요청 DTO
@@ -56,7 +56,7 @@ public class UserInfoDto {
         @Size(min = 6, max = 6, message = "PIN은 6자리 숫자여야 합니다.")
         private String pin;
 
-        public static User toEntity(UserInfoDto.Request request, BCryptPasswordEncoder encoder) {
+        public static User toEntity(UserInfoDTO.Request request, BCryptPasswordEncoder encoder) {
             return User.builder()
                        .email(request.getEmail())
                        .password(encoder.encode(request.getPassword()))
@@ -96,7 +96,7 @@ public class UserInfoDto {
 
         private Long ssafyUserId;
 
-        public static UserInfoDto.Response of(User user) {
+        public static UserInfoDTO.Response of(User user) {
             return Response.builder()
                            .userId(user.getUserId())
                            .email(user.getEmail())
