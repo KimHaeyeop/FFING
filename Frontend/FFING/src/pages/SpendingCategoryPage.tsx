@@ -69,7 +69,8 @@ const SpendingCategoryPage: React.FC = () => {
             <SpendingCategoryChart chartData={spendingData} onClick={handleCategoryClick} />
           </div>
           {/* 항목 별 지출 내역 API 연동 필요*/}
-          <div >
+          {/* 글자수 초과하면 ...으로 짜르기 */}
+          <div>
             {filteredExpenses.map((expense, index) => (
                 <ExpenseDetail
                   key={index}

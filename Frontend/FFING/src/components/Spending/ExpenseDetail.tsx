@@ -1,5 +1,5 @@
 import React from 'react';
-import { mdiFood, mdiTrainCar, mdiShopping, mdiSofaSingleOutline, mdiTheater, mdiCashMultiple } from '@mdi/js';
+import { mdiFood, mdiTrainCar, mdiShopping, mdiSofaSingleOutline, mdiCashMultiple } from '@mdi/js';
 import Icon from '@mdi/react';
 
 interface ExpenseDetailProps {

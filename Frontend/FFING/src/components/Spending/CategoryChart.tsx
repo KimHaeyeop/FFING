@@ -10,8 +10,6 @@ interface SpendingCategoryChartProps {
   onClick: (category: string) => void; // 카테고리를 클릭했을 때 호출하는 함수
 }
 
-
-
 const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({ chartData, onClick }) => {
 
   // 누른 카테고리를 강조하기 위한 상태 관리
