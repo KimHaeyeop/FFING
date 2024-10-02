@@ -22,7 +22,7 @@ server:
 spring:
   config:
     activate:
-      on-profile: "develop"
+      on-profile: develop
     import: optional:file:env-develop.env[.properties]
   datasource:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&serverTimeZone=Asia/Seoul&characterEncoding=UTF-8
@@ -43,7 +43,7 @@ jwt:
 spring:
   config:
     activate:
-      on-profile: "local"
+      on-profile: local
     import: optional:file:env-local.env[.properties]
   datasource:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&serverTimeZone=Asia/Seoul&characterEncoding=UTF-8
