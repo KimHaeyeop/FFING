@@ -30,6 +30,11 @@ public class MatchingController {
 
     private static final String MATCH_REQUEST_KEY = "match_request-";
 
+    @MessageMapping()
+    public void test() {
+        System.out.println("됨?");
+    }
+
     // TODO: 랜덤 매칭 추가
     @MessageMapping("/match/random/request")
     public void handleRandomMatchEvent(RandomMatchReq randomMatchEvent) {

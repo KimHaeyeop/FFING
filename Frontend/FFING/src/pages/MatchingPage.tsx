@@ -100,8 +100,8 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import NavBar from '../components/Common/Navbar';
-// import TextHeader from '../components/Common/TextHeader';
+import SockJS from 'sockjs-client';
+import { Stomp, Client } from '@stomp/stompjs';
 
 interface PlayerInfo {
   nickname: string;
@@ -116,7 +116,6 @@ interface ModalProps {
 
 const MatchingPageModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
-  const [isSearching, setIsSearching] = useState(false);
   const [opponentInfo, setOpponentInfo] = useState<PlayerInfo | null>(null);
   const [myInfo, setMyInfo] = useState<PlayerInfo>({
     nickname: 'myNickName',
@@ -124,40 +123,68 @@ const MatchingPageModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     recentMatches: ['승', '패', '승', '패', '승']
   });
 
-  const socketRef = useRef<WebSocket | null>(null);
+  const stompClientRef = useRef<Client | null>(null);
+  // const socketRef = useRef<WebSocket | null>(null);
+
+  const connect = () => {
+    const socket = new WebSocket("ws://localhost:8900/match/");
+    stompClientRef.current = Stomp.over(socket);
+    stompClientRef.current?.connect({}, () => {
+      stompClientRef.current?.subscribe(`/sub/chatroom/1`, (message) => {
+        const newMessage = JSON.parse(message.body);
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+      });
+    });
+  };
 
   useEffect(() => {
+    connect();
+    console.log("connect 성공");
     if (isOpen) {
-      socketRef.current = new WebSocket('ws://websocket-server-url');
+      console.log("일단 실행");
+      // const socket = new SockJS("http://localhost:8900/match")
+      // socketRef.current = new WebSocket('ws://websocket-server-url');
+      console.log("주소 입력");
+      const stompClient = new Client({
+        // webSocketFactory: () => socket,
+        // debug: (str) => {
+        //   console.log(str);
+        // },
+        brokerURL: 'http://localhost:8900/match/',
+        reconnectDelay: 5000,
+        heartbeatIncoming: 100000, // 서버에서 클라이언트로 보내는 심장박동 간격
+        heartbeatOutgoing: 100000, // 클라이언트에서 서버로 보내는 심장박동 간격
+        onConnect: () => {
+          console.log('STOMP Client connected');
 
-      socketRef.current.onopen = () => {
-        socketRef.current?.send(
-          JSON.stringify({
-            type: 'PLAYER_INFO',
-            data: myInfo,
-          })
-        );
-        console.log('WebSocket opened and sent myInfo:', myInfo);
-      };
+          // 유저 정보 전송
+          console.log("유저 정보 전송");
+          stompClient.subscribe('/topic/match', (message) => {
+            const response = JSON.parse(message.body);
+            if (response.type === 'OPPONENT_INFO') {
+              setOpponentInfo(response.data);
+            }
+          });
 
-      socketRef.current.onmessage = (event) => {
-        const message = JSON.parse(event.data);
+          stompClient.publish({
+            destination: '/pub/match/direct/request',
+            body: JSON.stringify({ type: 'PLAYER_INFO', data: myInfo }),
+          });
+        },
+        onStompError: (frame) => {
+          console.error('Broker error: ' + frame.headers['message']);
+        },
+      });
 
-        if (message.type === 'OPPONENT_INFO') {
-          setOpponentInfo(message.data);
-        }
-      };
-
-      socketRef.current.onclose = () => {
-        console.log('WebSocket closed');
-      };
+      stompClient.activate();
+      stompClientRef.current = stompClient;
     }
 
     return () => {
-      if (socketRef.current) {
-        socketRef.current.close();
-        socketRef.current = null;
-        console.log('WebSocket instance cleared');
+      if (stompClientRef.current) {
+        stompClientRef.current.deactivate();
+        stompClientRef.current = null;
+        console.log('STOMP Client disconnected');
       }
     };
   }, [isOpen, myInfo]);
@@ -181,9 +208,9 @@ const MatchingPageModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
           {opponentInfo ? (
             <div>
               <h3 className='text-xl mb-2'>상대방 정보</h3>
-                <p>닉네임: {opponentInfo.nickname}</p>
-                <p>펫 타입: {opponentInfo.petType}</p>
-                <p>최근 전적: {opponentInfo.recentMatches.join(', ')}</p>
+              <p>닉네임: {opponentInfo.nickname}</p>
+              <p>펫 타입: {opponentInfo.petType}</p>
+              <p>최근 전적: {opponentInfo.recentMatches.join(', ')}</p>
             </div>
           ) : (
             <p>대전 상대를 찾는 중...</p>
