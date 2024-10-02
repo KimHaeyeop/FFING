@@ -1,5 +1,5 @@
-import React from 'react';
-import { mdiFood, mdiTrainCar, mdiShopping, mdiSofaSingleOutline, mdiTheater, mdiCashMultiple } from '@mdi/js';
+import React, { Key } from 'react';
+import { mdiFood, mdiTrainCar, mdiShopping, mdiSofaSingleOutline, mdiCashMultiple, mdiBikePedalMountain } from '@mdi/js';
 import Icon from '@mdi/react';
 
 interface ExpenseDetailProps {
@@ -10,12 +10,13 @@ interface ExpenseDetailProps {
 }
 
 const ExpenseDetail: React.FC<ExpenseDetailProps> = ({ category, title, date, cost }) => {
-  const categoryIconMap = {
-    '식비': mdiFood,
-    '교통': mdiTrainCar,
-    '쇼핑': mdiShopping,
-    '생활/문화': mdiSofaSingleOutline,
-    '금융': mdiCashMultiple,
+  const categoryIconMap:  { [key: string]: string } = {
+    'FOOD_BAKERY': mdiFood,
+    'TRANSPORTATION': mdiTrainCar,
+    'SHOPPING': mdiShopping,
+    'LIFE_CULTURE': mdiSofaSingleOutline,
+    'FINANCE': mdiCashMultiple,
+    'OVERSEAS': mdiBikePedalMountain,  // 오류 대비
   };
 
   return (
