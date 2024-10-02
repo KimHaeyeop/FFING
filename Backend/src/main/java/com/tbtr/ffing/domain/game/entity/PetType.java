@@ -24,7 +24,7 @@ public class PetType {
     @Column(nullable = false, length = 20)
     private String typeName;
 
-    @Column(nullable = false, length = 255)
+    @Column
     private String imageUrl;
 
 }

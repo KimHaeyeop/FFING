@@ -22,6 +22,6 @@ public class PetList {
     @Column(nullable = false, length = 20)
     private String petName;
 
-    @Column(nullable = false, length = 255)
+    @Column
     private String imageUrl;
 }
