@@ -24,7 +24,7 @@ const SpendingCategoryPage: React.FC = () => {
     {date: '2024-09-15', expenditure: 100000},
     {date: '2024-09-07', expenditure: 160000},
     {date: '2024-09-01', expenditure: 50000},
-    {date: '2024-09-01', expenditure: 17000, income: 100000},
+    {date: '2024-08-31', expenditure: 17000, income: 100000},
   ] 
 
   // 달력을 위한 value
@@ -37,14 +37,17 @@ const SpendingCategoryPage: React.FC = () => {
 
   // 지출이 있는 날짜에 <div class="dot"></div> 추가
   const tileContent = ({ date, view }) => {
+    const localDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
     if (view === 'month') {
-      const expense = expenses.find(expense => expense.date === date.toISOString().split('T')[0]);
+      const expense = expenses.find(expense => expense.date === localDate);
+      console.log(expense)
+      // 지출이 있으면 dot 추가
       if (expense) {
         return (
           <div className="flex flex-col items-center">
             <div className="dot"></div>
-            <p>-{expense.expenditure}</p>
-            {expense.income && <p>+{expense.income}</p>}
+            <p className="text-xs">-{expense.expenditure}</p>
+            {expense.income && <p className="text-xs">+{expense.income}</p>}
           </div>
         );
       }
@@ -63,13 +66,13 @@ const SpendingCategoryPage: React.FC = () => {
         <header style={{height: `${dvh * 10}px`}}>
           <LinkHeader contentName="지출" contentRoute="/spending"/> 
         </header>
-        <main className='mx-auto'style={{height: `${dvh * 75}px`, width: `${dvw * 90}px`}}>
+        <main className='mx-auto'style={{height: `${dvh * 80}px`, width: `${dvw * 90}px`}}>
           {/* 항목 별 지출 라우팅 */}
-          <div style={{height: '10%'}} className="flex justify-between items-center">
-            <Link to="/spending" style={{color: '#F55322'}} className="flex items-center">
+          <div style={{height: '10%'}} className="flex justify-end items-center">
+            {/* <Link to="/spending" style={{color: '#F55322'}} className="flex items-center">
               <Icon path={mdiChevronLeft} size={1} />
               <span>항목 별 지출</span>
-            </Link>
+            </Link> */}
             {/* 이번 달 소비액 */}
             <p>- {expense.toLocaleString()}원</p>
           </div>
@@ -84,7 +87,7 @@ const SpendingCategoryPage: React.FC = () => {
               next2Label={null} // 월 단위로만 넘어갈 수 있게
               calendarType='gregory'  // 일요일부터 시작
               formatDay={formatDay} // 숫자로만 이루어진 달력
-              tileClassName='my-[2%]' // 날짜 사이의 세로 margin 2%
+              tileClassName='my-[1%]' // 날짜 사이의 세로 margin 2%
               tileContent={tileContent} // 지출이 있는 날짜에 점 추가
               maxDate={lastDayOfMonth}  // 마지막 날짜는 이번 달 말일
             />

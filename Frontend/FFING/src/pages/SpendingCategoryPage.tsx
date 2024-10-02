@@ -28,7 +28,7 @@ const SpendingCategoryPage: React.FC = () => {
     { category: '금융', title: '윤요한', date: '2024.07.28 08:55', cost: 1000 },
     { category: '금융', title: 'LH 이규석', date: '2024.07.26 18:18', cost: 64250 },
     { category: '금융', title: '행복주택28단지관리', date: '2024.07.26 18:17', cost: 54130 },
-    { category: '문화', title: '요기 yogi 스터디카페', date: '2024.07.16 14:17', cost: 9000 },
+    { category: '생활/문화', title: '요기 yogi 스터디카페', date: '2024.07.16 14:17', cost: 9000 },
     { category: '교통', title: 'KB 카드출금', date: '2024.09.10 07:05', cost: 3301 },
   ];
 
@@ -55,7 +55,7 @@ const SpendingCategoryPage: React.FC = () => {
         <header style={{height: `${dvh * 10}px`}}>
           <LinkHeader contentName="항목별 지출" contentRoute="/"/> 
         </header>
-        <main className='mx-auto'style={{height: `${dvh * 75}px`, width: `${dvw * 90}px`}}>
+        <main className='mx-auto'style={{height: `${dvh * 80}px`, width: `${dvw * 90}px`}}>
           {/* 이번 달 지출 금액 */}
           <div className="border-black border-4 rounded-lg" style={{height: '40%'}}>
             <div className='flex justify-end items-center mt-2 mx-2'>
