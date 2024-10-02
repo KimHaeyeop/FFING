@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class GoalReq {
 
     Long userId;
-    Boolean goalType;
+    String goalType;
     String balance;
 
     public static Goal to(GoalReq goalReq) {
