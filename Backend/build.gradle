@@ -55,8 +55,8 @@ dependencies {
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
 
 	// spring batch
-//	implementation 'org.springframework.boot:spring-boot-starter-batch'
-//	testImplementation 'org.springframework.batch:spring-batch-test'
+	implementation 'org.springframework.boot:spring-boot-starter-batch'
+	testImplementation 'org.springframework.batch:spring-batch-test'
 
 	// querydsl
 	implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'

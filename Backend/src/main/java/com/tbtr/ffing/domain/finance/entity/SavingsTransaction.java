@@ -30,12 +30,8 @@ public class SavingsTransaction {
     @Column(nullable = false)
     private Long depositInstallment;
 
-    @Column(nullable = false)
-    private boolean status;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "savings_account_id", nullable = false)
+    private SavingsAccount savingsAccount;
 
-    @Column(length = 255)
-    private String failureReason;
-
-    @Column(nullable = false)
-    private Long savingsAccountId;
 }
