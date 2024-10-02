@@ -1,9 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import NavBar from '../components/Common/Navbar';
+import GameBar from '../components/Game/GameBar';
+
+interface PlayerInfo {
+  nickname: string;
+  petType: string;
+  recentMatches: string[];
+}
 
 const MatchingPage: React.FC = () => {
   const navigate = useNavigate();
-  const [isSearching, setIsSearching] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
   // const [isReady, setIsReady] = useState(false); // 내 준비
   const [opponentInfo, setOpponentInfo] = useState<PlayerInfo | null>(null); // 상대방 정보
   const [myInfo, setMyInfo] = useState<PlayerInfo>({
@@ -12,55 +20,80 @@ const MatchingPage: React.FC = () => {
     recentMatches: ['승', '패', '승', '패', '승']
   });
 
+  const socketRef = useRef<WebSocket | null>(null);
+
   useEffect(() => {
     console.log(myInfo);
-    const socket = new WebSocket('ws://websocket-server-url');
+    if (isSearching) {
+      socketRef.current = new WebSocket('ws://websocket-server-url');
 
-    // 매칭 페이지 넘어오면 소켓 연결 시작
-    socket.onopen = () => {
-      // 매칭 시작시 내 정보 같이 보냄
-      socket.send(JSON.stringify({
-        type: 'PLAYER_INFO',
-        data: myInfo,
-      }));
-      console.log(myInfo);
-    };
+      socketRef.current.onopen = () => {
+        socketRef.current?.send(
+          JSON.stringify({
+            type: 'PLAYER_INFO',
+            data: myInfo,
+          })
+        );
+        console.log('WebSoket opened and sent myInfo:', myInfo);
+      };
 
-    // 소켓으로 메시지 수신했을 때
-    socket.onmessage = (event) => {
-      const message = JSON.parse(event.data);
+      socketRef.current.onmessage = (event) => {
+        const message = JSON.parse(event.data);
 
-      // 적 정보가 들어오면 매칭된 것
-      if (message.type === 'OPPONENT_INFO') {
-        setOpponentInfo(message.data);
-      }
-    };
+        if (message.type === 'OPPONENT_INFO') {
+          setOpponentInfo(message.data);
+        }
+      };
+
+      socketRef.current.onclose = () => {
+        console.log('WebSoket closed');
+      };
+    }
 
     return () => {
-      // 소켓 닫고 새로운 소켓으로 연결
-      socket.close();
+      if (socketRef.current) {
+        socketRef.current.close();
+        socketRef.current = null;
+        console.log('WebSocket instance cleared');
+      }
     };
-  }, [myInfo, navigate]);
+  }, [isSearching, myInfo]);
 
   const handleFindOpponent = () => {
     setIsSearching(!isSearching);
   };
 
   return (
-    <div className="flex flex-col justify-center items-center h-screen">
-      <h1 className="text-2xl mb-4">대전 상대 찾기</h1>
-      {!isSearching ? (
-        // 버튼을 누르면 
+    <div className="flex justify-center items-center">
+      <div className="w-screen h-screen">
+        <header>
+          <GameBar />
+        </header>
+        <div className="w-screen h-1/2">
+          내 정보
+        </div>
+
+        <h1 className="text-2xl mb-4">대전 상대 찾기</h1>
         <button
           onClick={handleFindOpponent}
           className="px-4 py-2 bg-blue-500 text-white rounded"
         >
           대전 상대 찾기
         </button>
-      ) : (
-        <p>대전 상대를 찾는 중...</p>
-      )}
+        {!isSearching ? (
+          // 버튼을 누르면 
+          <p>
+            대전 상대 찾기
+          </p>
+        ) : (
+          <p>대전 상대를 찾는 중...</p>
+        )}
+        <footer>
+          <NavBar />
+        </footer>
+      </div>
     </div>
+
   );
 };
 

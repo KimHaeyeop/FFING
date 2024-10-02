@@ -12,7 +12,13 @@ const GameBar: React.FC = () => {
       justifyContent: 'space-between', 
       alignItems: 'center',
       padding: '10px',
-      borderBottom: '1px solid #ccc' 
+      borderBottom: '1px solid #ccc',
+      // position: 'fixed',
+      // top: 0,
+      // left: 0,
+      // right: 0,
+      // backgroundColor: 'white',
+      // zIndex: 1000
     }}>
       {/* 게임 이름 */}
       <h1>Pet Fight</h1> 
