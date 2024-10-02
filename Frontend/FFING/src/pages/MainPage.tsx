@@ -5,7 +5,7 @@ import { mdiChevronRight } from '@mdi/js';
 import TextHeader from '../components/Common/TextHeader'
 import NavBar from "../components/Common/Navbar";
 import useViewportStore from "../store/useViewportStore";
-import SpendingMonthlyChart from "../components/Spending/MonthlyChart";
+import MonthlyDoughnutChart from "../components/Spending/MonthlyDoughnutChart";
 
 const MainPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
@@ -38,7 +38,7 @@ const MainPage: React.FC = () => {
               </Link>
             </div>
             {/* 이번 달 지출 내역을 나타내는 차트 API 연동 필요*/}
-            <SpendingMonthlyChart chartData={[20, 5, 15, 25, 20, 15]}/>
+            <MonthlyDoughnutChart chartData={[20, 5, 15, 25, 20, 15]}/>
           </div>
         </main>
         {/* 페이지 이동을 위한 footer */}

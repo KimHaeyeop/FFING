@@ -4,11 +4,11 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend, layouts } from 'chart.js
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-interface SpendingMonthlyChartProps {
+interface MonthlyDoughnutChartProps {
   chartData: number[] // 숫자로 이루어진 배열
 }
 
-const SpendingMonthlyChart: React.FC<SpendingMonthlyChartProps> = ({chartData}) => {
+const MonthlyDoughnutChart: React.FC<MonthlyDoughnutChartProps> = ({chartData}) => {
   const data = {
     labels: ['식비', '교통', '쇼핑', '문화', '생활', '잔여'],
     datasets: [
@@ -64,4 +64,4 @@ const SpendingMonthlyChart: React.FC<SpendingMonthlyChartProps> = ({chartData}) 
   );
 };
 
-export default SpendingMonthlyChart;
+export default MonthlyDoughnutChart;
