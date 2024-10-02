@@ -1,22 +1,21 @@
-import { plugins } from 'chart.js';
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
 // import { Chart as ChartJS, ArcElement, Tooltip, Legend, layouts } from 'chart.js';
 
 // ChartJS.register(ArcElement, Tooltip, Legend);
 
-// interface MonthlyBarChartProps {
-//   chartData: number[] // 숫자로 이루어진 배열
-// }
+interface MonthlyBarChartProps {
+  chartData: number[] // 숫자로 이루어진 배열
+}
 
-const MonthlyBarChart: React.FC = () => {
+const MonthlyBarChart: React.FC<MonthlyBarChartProps> = ({ chartData }) => {
   const config = {
     data: {
       // API를 통해 이번 달 정보 가져오기
       labels: ['5월', '6월', '7월', '8월', '9월', '10월'],
       datasets: [
         {
-          data: [100000, 200000, 300000, 400000, 500000, 600000],
+          data: chartData,
           backgroundColor: [
             '#B1B1B1',
             '#B1B1B1',

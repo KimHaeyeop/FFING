@@ -38,7 +38,7 @@ const MainPage: React.FC = () => {
               </Link>
             </div>
             {/* 이번 달 지출 내역을 나타내는 차트 API 연동 필요*/}
-            <MonthlyDoughnutChart chartData={[20, 5, 15, 25, 20, 15]}/>
+            <MonthlyDoughnutChart />
           </div>
         </main>
         {/* 페이지 이동을 위한 footer */}
