@@ -63,7 +63,7 @@ const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({ chartData
             const data = chart.data
             return data.labels.map((label, i) => {
               const value = data.datasets[0].data[i]
-              const formattedValue  = value.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' })
+              const formattedValue  = value.toLocaleString()
               return {
                 text: `${label} ${formattedValue}`,
                 fillStyle: data.datasets[0].backgroundColor[i],

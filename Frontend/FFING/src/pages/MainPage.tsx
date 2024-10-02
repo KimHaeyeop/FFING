@@ -18,7 +18,7 @@ const MainPage: React.FC = () => {
           {/* 사용자의 정보와 알람 API 연동 필요*/}
           <TextHeader title="이규석 님"/> 
         </header>
-        <main className='mx-auto'style={{height: `${dvh * 75}px`, width: `${dvw * 90}px`}}>
+        <main className='mx-auto'style={{height: `${dvh * 80}px`, width: `${dvw * 90}px`}}>
           {/* 자산 목표 달성 관련 */}
           <div className="border-black border-4 rounded-lg" style={{height: '20%'}}>
             목표 달성까지
