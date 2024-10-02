@@ -15,14 +15,22 @@ import lombok.NoArgsConstructor;
 public class GoalReq {
 
     Long userId;
-    String goalType;
-    String balance;
+    String goalBalance;
+    String spendingBalance;
 
-    public static Goal to(GoalReq goalReq) {
+    public static Goal goalTo(GoalReq goalReq) {
         return Goal.builder()
                    .userId(goalReq.getUserId())
-                   .goalType(goalReq.getGoalType())
-                   .balance(new BigDecimal(goalReq.getBalance()))
+                   .goalType("자산")
+                   .balance(new BigDecimal(goalReq.getGoalBalance()))
+                   .build();
+    }
+
+    public static Goal spendingTo(GoalReq goalReq) {
+        return Goal.builder()
+                   .userId(goalReq.getUserId())
+                   .goalType("소비")
+                   .balance(new BigDecimal(goalReq.getSpendingBalance()))
                    .build();
     }
 }
