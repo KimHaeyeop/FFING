@@ -56,7 +56,7 @@ public class UserInfoDTO {
         @Size(min = 6, max = 6, message = "PIN은 6자리 숫자여야 합니다.")
         private String pin;
 
-        public static User toEntity(UserInfoDTO.Request request, BCryptPasswordEncoder encoder) {
+        public static User to(UserInfoDTO.Request request, BCryptPasswordEncoder encoder) {
             return User.builder()
                        .email(request.getEmail())
                        .password(encoder.encode(request.getPassword()))
