@@ -4,13 +4,14 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import GamePage from './pages/GamePage';
 import BattlePage from './pages/BattlePage';
 import RankingPage from './pages/RankingPage';
-import MatchingPage from './pages/MatchingPage';
+// import MatchingPage from './pages/MatchingPage';
 import PetPediaPage from './pages/PetPediaPage';
 import MainPage from './pages/MainPage';
 import NotFoundPage from './pages/NotFoundPage';
 import SpendingCategoryPage from './pages/SpendingCategoryPage';
 import SpendingMonthlyPage from './pages/SpendingMonthlyPage';
 import SpendingMonthlyAnalysisPage from './pages/SpendingMonthlyAnalysisPage';
+// import MatchingPageModal from './pages/MatchingPage';
 
 const App: React.FC = () => {
   return (
@@ -27,7 +28,7 @@ const App: React.FC = () => {
         {/* 게임 페이지 */}
         <Route path="/game" element={<GamePage />} />
         {/* 매칭 잡는 페이지 */}
-        <Route path="/game/matching" element={<MatchingPage />} />
+        {/* <Route path="/game/matching" element={<MatchingPageModal />} /> */}
         {/* 배틀 페이지 */}
         <Route path="/game/battle" element={<BattlePage />} />
         {/* 랭킹 페이지 */}
