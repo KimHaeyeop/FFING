@@ -33,10 +33,10 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                         asset.depositSavingsBalance,
                         asset.stockBalance,
                         asset.othersBalance,
-                        asset.updatedAt))
+                        asset.updatedDate))
                 .from(asset)
                 .where(asset.user.userId.eq(userId))
-                .orderBy(asset.updatedAt.desc())
+                .orderBy(asset.updatedDate.desc())
                 .limit(1)
                 .fetchOne();
     }
@@ -53,10 +53,10 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                         asset.depositSavingsBalance,
                         asset.stockBalance,
                         asset.othersBalance,
-                        asset.updatedAt))
+                        asset.updatedDate))
                 .from(asset)
                 .where(asset.user.userId.eq(userId))
-                .orderBy(asset.updatedAt.desc())
+                .orderBy(asset.updatedDate.desc())
                 .limit(6)
                 .fetch();
     }
