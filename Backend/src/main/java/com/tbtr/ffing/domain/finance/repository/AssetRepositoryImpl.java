@@ -8,12 +8,14 @@ import com.tbtr.ffing.domain.finance.entity.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AssetRepositoryImpl implements AssetRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
