@@ -1,5 +1,7 @@
 package com.tbtr.ffing.domain.finance.entity;
 
+import com.tbtr.ffing.domain.finance.dto.response.asset.DepositAssetRes;
+import com.tbtr.ffing.domain.user.entity.SsafyUser;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -50,13 +52,26 @@ public class SavingsAccount {
     @Column(nullable = false)
     private SavingsAccountStatus status;
 
-    @Column(nullable = false)
-    private Long savingsProductId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "savings_product_id", nullable = false)
+    private SavingsProduct SavingsProduct;
 
-    @Column(nullable = false)
-    private Long ssafyUserId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ssafy_user_id", nullable = false)
+    private SsafyUser ssafyUser;
+
+    public DepositAssetRes of(SavingsAccount savingsAccount) {
+        return DepositAssetRes.builder()
+                .accountId(savingsAccount.savingsAccountId)
+                .bankCode(savingsAccount.bankCode)
+                .accountName(savingsAccount.accountName)
+                .accountNo(savingsAccount.accountNo)
+                .totalBalance(savingsAccount.totalBalance)
+                .build();
+    }
 
     public enum SavingsAccountStatus {
         ACTIVE, MATURED, CLOSED
     }
+
 }

@@ -27,6 +27,8 @@ public class DepositTransaction {
     @Column(nullable = false, precision = 16, scale = 2)
     private BigDecimal paymentBalance;
 
-    @Column(nullable = false)
-    private Long depositAccountId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deposit_account_id", nullable = false)
+    private DepositAccount depositAccount;
+
 }
