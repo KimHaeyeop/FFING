@@ -43,8 +43,8 @@ const PetPediaSection: React.FC = () => {
 
   return (
     // 배경 색상 추가
-    <div className="bg-[#0A3711]">
-      <section className="mt-8 grid grid-cols-3 gap-4">
+    <div className="bg-[#0A3711] rounded pb-20">
+      <section className="m-2 grid grid-cols-3 gap-2">
         {/* 펫 도감 리스트 - 각 요소는 3개씩 한 행에 배치 */}
         {petSpriteMetaData.map((pet, index) => (
           <div key={index} className="bg-[#BBBBBB] rounded-lg p-4 flex items-center justify-center">
