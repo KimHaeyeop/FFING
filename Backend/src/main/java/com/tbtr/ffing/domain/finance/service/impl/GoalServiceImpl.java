@@ -22,36 +22,6 @@ public class GoalServiceImpl implements GoalService {
 
     @Override
     @Transactional
-    public GoalRes setGoal(GoalReq goalReq) {
-        // 목표 자산, 소비액 저장
-        Goal goal = GoalReq.goalTo(goalReq);
-        Goal spending = GoalReq.spendingTo(goalReq);
-        goalRepository.save(goal);
-        goalRepository.save(spending);
-
-        SpendingRes spendingRes = SpendingRes.builder()
-                                             .leftMonths(12 - goal.getCreatedAt().getMonthValue() + 1)
-                                             .spendingBalance(goal.getBalance().toString()).build();
-
-        return GoalRes.builder()
-                      .goalBalance(goal.getBalance().toString())
-                      .spending(spendingRes).build();
-    }
-
-    @Override
-    @Transactional
-    public SpendingRes setSpending(GoalReq goalReq) {
-        // 목표 소비액 저장
-        Goal goal = GoalReq.spendingTo(goalReq);
-        goalRepository.save(goal);
-
-        return SpendingRes.builder()
-                          .leftMonths(12 - goal.getCreatedAt().getMonthValue() + 1)
-                          .spendingBalance(goal.getBalance().toString()).build();
-    }
-
-    @Override
-    @Transactional
     public GoalDetailRes getGoal(Long userId) {
         // 현재 총 자산 : asset 테이블에서 가져오기
         BigDecimal totalAsset = new BigDecimal(10000000);
@@ -82,6 +52,59 @@ public class GoalServiceImpl implements GoalService {
                             .recommendedGoalBalance(recommendedGoalBalance)
                             .lowerLimitBalance(lowerLimitBalance)
                             .upperLimitBalance(upperLimitBalance).build();
+    }
+
+    @Override
+    @Transactional
+    public GoalRes setGoal(GoalReq goalReq) {
+        // 현재 년도 및 월 정보 가져오기
+        LocalDate now = LocalDate.now();
+        int currentYear = now.getYear();
+        int currentMonth = now.getMonthValue();
+
+        // 해당 년도에 목표가 존재하는지 확인
+        Goal existingGoal = goalRepository.findByUserIdAndGoalTypeAndYear(goalReq.getUserId(), "1", currentYear);
+        if (existingGoal != null) {
+            goalRepository.delete(existingGoal);
+        }
+
+        // 해당 월에 소비가 존재하는지 확인
+        Goal existingSpending = goalRepository.findByUserIdAndGoalTypeAndMonth(goalReq.getUserId(), "2", currentMonth);
+        if (existingSpending != null) {
+            goalRepository.delete(existingSpending);
+        }
+
+        // 목표 자산, 소비액 저장
+        Goal goal = GoalReq.goalTo(goalReq);
+        Goal spending = GoalReq.spendingTo(goalReq);
+        goalRepository.save(goal);
+        goalRepository.save(spending);
+
+        SpendingRes spendingRes = SpendingRes.builder()
+                                             .leftMonths(12 - goal.getCreatedAt().getMonthValue() + 1)
+                                             .spendingBalance(spending.getBalance().toString()).build();
+
+        return GoalRes.builder()
+                      .goalBalance(goal.getBalance().toString())
+                      .spending(spendingRes).build();
+    }
+
+    @Override
+    @Transactional
+    public SpendingRes setSpending(GoalReq goalReq) {
+        // 해당 월에 소비가 존재하는지 확인
+        Goal existingSpending = goalRepository.findByUserIdAndGoalTypeAndMonth(goalReq.getUserId(), "2", LocalDate.now().getMonthValue());
+        if (existingSpending != null) {
+            goalRepository.delete(existingSpending);
+        }
+
+        // 목표 소비액 저장
+        Goal goal = GoalReq.spendingTo(goalReq);
+        goalRepository.save(goal);
+
+        return SpendingRes.builder()
+                          .leftMonths(12 - goal.getCreatedAt().getMonthValue() + 1)
+                          .spendingBalance(goal.getBalance().toString()).build();
     }
 
 }
