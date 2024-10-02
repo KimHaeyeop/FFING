@@ -21,7 +21,7 @@ public class GoalReq {
     public static Goal goalTo(GoalReq goalReq) {
         return Goal.builder()
                    .userId(goalReq.getUserId())
-                   .goalType("자산")
+                   .goalType("1")
                    .balance(new BigDecimal(goalReq.getGoalBalance()))
                    .build();
     }
@@ -29,7 +29,7 @@ public class GoalReq {
     public static Goal spendingTo(GoalReq goalReq) {
         return Goal.builder()
                    .userId(goalReq.getUserId())
-                   .goalType("소비")
+                   .goalType("2")
                    .balance(new BigDecimal(goalReq.getSpendingBalance()))
                    .build();
     }

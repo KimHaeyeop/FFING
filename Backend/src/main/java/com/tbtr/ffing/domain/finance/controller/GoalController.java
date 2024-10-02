@@ -9,10 +9,10 @@ import com.tbtr.ffing.global.common.dto.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,8 +30,8 @@ public class GoalController {
     /**
      * 목표 설정 입장시
      */
-    @GetMapping
-    public ResponseEntity<?> getGoal(@RequestParam Long userId) {
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> getGoal(@PathVariable("userId") Long userId) {
         GoalDetailRes goalDetailRes = goalService.getGoal(userId);
         Response<Object> response = Response.builder()
                                             .code(200L)
