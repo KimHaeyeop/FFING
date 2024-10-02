@@ -14,31 +14,13 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class AccountTransactionAssetRes {
 
-	private Long accountTransactionId;
-	private String transactionDate;
-	private String transactionTime;
-	private String transactionType;
-	private String transactionTypeName;
-	private String transactionAccountNo;
-	private BigDecimal transactionBalance;
-	private BigDecimal transactionAfterBalance;
-	private String transactionSummary;
-	private String transactionMemo;
-
-	// AccountTransactionDTO 어떻게 작성해야 할 지 생각 좀 해봐야겠다...
-
-//	public AccountTransactionAssetRes(Long transactionId, String paymentDate, String paymentTime, long depositInstallment, BigDecimal paymentBalance, BigDecimal totalBalance) {
-//		this.transactionId = transactionId;
-//		if (paymentBalance.compareTo(BigDecimal.ZERO) > 0) {
-//			paymentName = "입금";
-//		} else {
-//			paymentName = "출금";
-//		}
-//        this.paymentDate = paymentDate;
-//        this.paymentTime = paymentTime;
-//		this.depositInstallment = depositInstallment;
-//        this.paymentBalance = paymentBalance;
-//        this.totalBalance = totalBalance;
-//	}
+	private Long transactionId;
+	private String paymentName;
+	private String paymentDate;
+	private String paymentTime;
+	private String paymentType;
+	private String paymentMemo;
+	private BigDecimal paymentBalance;
+	private BigDecimal totalBalance;
 
 }

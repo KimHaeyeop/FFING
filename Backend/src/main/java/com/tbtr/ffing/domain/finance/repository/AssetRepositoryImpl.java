@@ -127,7 +127,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
     }
 
     @Override
-    public List<SavingsTransactionAssetRes> findSavingsTransactionByDepositAccountId(long accountId) {
+    public List<SavingsTransactionAssetRes> findSavingsTransactionBySavingsAccountId(long accountId) {
         QSavingsTransaction savingsTransaction = QSavingsTransaction.savingsTransaction;
 
         return queryFactory
@@ -143,6 +143,29 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                 .from(savingsTransaction)
                 .where(savingsTransaction.savingsAccount.savingsAccountId.eq(accountId))
                 .orderBy(savingsTransaction.paymentDate.desc(), savingsTransaction.paymentTime.desc())
+                .fetch();
+    }
+
+    @Override
+    public List<AccountTransactionAssetRes> findAccountTransactionByAccountId(long accountId) {
+        QAccountTransaction accountTransaction = QAccountTransaction.accountTransaction;
+
+        return queryFactory
+                .select(Projections.constructor(AccountTransactionAssetRes.class,
+                        accountTransaction.accountTransactionId,
+                        accountTransaction.transactionSummary,
+                        accountTransaction.transactionDate,
+                        accountTransaction.transactionTime,
+                        accountTransaction.transactionTypeName,
+                        accountTransaction.transactionMemo,
+                        accountTransaction.transactionBalance,
+                        accountTransaction.transactionAfterBalance))
+//                        Expressions.numberTemplate(BigDecimal.class,
+//                                "SUM({0}) OVER (ORDER BY {1})",
+//                                accountTransaction.transactionBalance, accountTransaction.accountTransactionId)))
+                .from(accountTransaction)
+                .where(accountTransaction.account.accountId.eq(accountId))
+                .orderBy(accountTransaction.transactionDate.desc(), accountTransaction.transactionTime.desc())
                 .fetch();
     }
 }

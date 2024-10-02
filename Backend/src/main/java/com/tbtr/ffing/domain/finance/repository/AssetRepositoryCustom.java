@@ -17,5 +17,7 @@ public interface AssetRepositoryCustom {
 
     List<DepositTransactionAssetRes> findDepositTransactionByDepositAccountId(long accountId);
 
-    List<SavingsTransactionAssetRes> findSavingsTransactionByDepositAccountId(long accountId);
+    List<SavingsTransactionAssetRes> findSavingsTransactionBySavingsAccountId(long accountId);
+
+    List<AccountTransactionAssetRes> findAccountTransactionByAccountId(long accountId);
 }

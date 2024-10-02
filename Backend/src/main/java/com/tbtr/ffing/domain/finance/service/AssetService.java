@@ -1,6 +1,7 @@
 package com.tbtr.ffing.domain.finance.service;
 
 import com.tbtr.ffing.domain.finance.dto.response.asset.AccountAssetRes;
+import com.tbtr.ffing.domain.finance.dto.response.asset.AccountTransactionAssetRes;
 import com.tbtr.ffing.domain.finance.dto.response.asset.AssetRes;
 import org.springframework.stereotype.Service;
 
@@ -17,4 +18,6 @@ public interface AssetService {
     List<AccountAssetRes> getAccountList(long userId);
 
     List<?> getDepositTransactionList(String type, long accountId);
+
+    List<AccountTransactionAssetRes> getAccountTransactionList(long accountId);
 }
