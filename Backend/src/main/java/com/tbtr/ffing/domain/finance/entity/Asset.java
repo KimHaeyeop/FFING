@@ -1,5 +1,7 @@
 package com.tbtr.ffing.domain.finance.entity;
 
+import com.tbtr.ffing.domain.finance.dto.response.asset.AssetRes;
+import com.tbtr.ffing.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,6 +39,19 @@ public class Asset {
     @Column(nullable = true, columnDefinition = "date default current_date()")
     private LocalDate updatedAt;
 
-    @Column(nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    public AssetRes of(Asset asset) {
+        return AssetRes.builder()
+                .assetId(asset.assetId)
+                .totalAsset(asset.totalAsset)
+                .accountBalance(asset.accountBalance)
+                .depositSavingsBalance(asset.depositSavingsBalance)
+                .stockBalance(asset.stockBalance)
+                .othersBalance(asset.othersBalance)
+                .updatedAt(asset.updatedAt)
+                .build();
+    }
 }
