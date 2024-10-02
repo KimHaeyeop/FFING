@@ -22,9 +22,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         config.setApplicationDestinationPrefixes("/pub");
     }
 
+    // Client에서 websocket 연결할 때 사용할 API 경로를 설정
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        //Client에서 websocket 연결할 때 사용할 API 경로를 설정 - 매칭용
+        // 매칭용
         registry.addEndpoint("/match")
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
