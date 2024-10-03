@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Doughnut } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, layouts } from 'chart.js';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, layouts, Chart } from 'chart.js';
 import { getThisMonthCategorySpending } from '../../api/SpendingApi';
 
 
@@ -27,7 +27,6 @@ const MonthlyDoughnutChart: React.FC = () => {
         console.error('Error fetching spending data:', error);
       }
     };
-
     fetchData();
   }, []);
 
@@ -77,19 +76,19 @@ const MonthlyDoughnutChart: React.FC = () => {
           labels: {
             boxWidth: 15, // 범례 색상 공간의 너비 수정
             // 범례 색상의 테두리 삭제 필요
-            generateLabels: (chart) => {
-              const data = chart.data
-              return data.labels.map((label, i) => {
-                const value = data.datasets[0].data[i]
-                const total = data.datasets[0].data.reduce((a, b) => a + b, 0)
-                const percentage = ((value / total) * 100).toFixed(2) // 소수점 둘째자리까지 출력
+            generateLabels: (chart: Chart) => { // chart의 타입 지정
+              const data = chart.data;
+              return data.labels!.map((label, i) => {
+                const value = data.datasets![0].data[i] as number;
+                const total = data.datasets![0].data.reduce((a, b) => (a as number) + (b as number), 0);
+                const percentage = ((value / total) * 100).toFixed(2); // 소수점 둘째자리까지 출력
                 return {
                   text: `${label} ${percentage}%`,
-                  fillStyle: data.datasets[0].backgroundColor[i],
+                  fillStyle: data.datasets![0].backgroundColor[i] as string,
                   hidden: false,
-                }
-              })
-            }
+                };
+              });
+            },
           },
         },
         tooltip: {

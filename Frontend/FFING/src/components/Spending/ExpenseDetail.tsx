@@ -1,4 +1,4 @@
-import React, { Key } from 'react';
+import React from 'react';
 import { mdiFood, mdiTrainCar, mdiShopping, mdiSofaSingleOutline, mdiCashMultiple, mdiBikePedalMountain } from '@mdi/js';
 import Icon from '@mdi/react';
 
