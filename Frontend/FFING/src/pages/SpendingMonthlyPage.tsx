@@ -50,10 +50,10 @@ const SpendingCategoryPage: React.FC = () => {
         return (
           <div className="flex flex-col items-center">
             <div className="dot"></div>
-            {/* 지출이 0보다 크면 렌더링 */}
-            {expense.totalExpense > 0 && <p className="text-xs">-{expense.totalExpense}</p>}  
+            {/* 지출이 0보다 크면 렌더링, 소수점 절삭 */}
+            {expense.totalExpense > 0 && <p className="text-xs">-{expense.totalExpense.toFixed(0)}</p>}  
             {/* 수입이 0보다 크면 렌더링 */}
-            {expense.totalIncome > 0 && <p className="text-xs">+{expense.totalIncome}</p>}
+            {expense.totalIncome > 0 && <p className="text-xs">+{expense.totalIncome.toFixed(0)}</p>}
           </div>
         );
       }
@@ -89,7 +89,7 @@ const SpendingCategoryPage: React.FC = () => {
           {/* 항목 별 지출 라우팅 */}
           <div style={{height: '10%'}} className="flex justify-end items-center">
             {/* 이번 달 소비액 */}
-            <p>{monthTotalExpense.toLocaleString()}원</p>
+            <p>{monthTotalExpense.toLocaleString(undefined, {maximumFractionDigits: 0})}원</p>
           </div>
           {/* 달력 컴포넌트 */}
           <div style={{height: '80%'}}>
