@@ -13,7 +13,7 @@ interface dailySummaryInterface {
   totalIncome: number,
 }
 
-const SpendingCategoryPage: React.FC<dailySummaryInterface> = () => {
+const SpendingCategoryPage: React.FC = () => {
   const [dailySummary, setDailySummary] = useState<dailySummaryInterface[]>([]);  // 당월 일자 별 지출액 확인
   const [monthTotalExpense, setMonthTotalExpense] = useState(0) // 이번 달 총 사용 금액
   const [value, setValue] = useState(new Date()); // 달력을 위한 value
@@ -34,12 +34,12 @@ const SpendingCategoryPage: React.FC<dailySummaryInterface> = () => {
   };
 
   // 달력에는 날짜만 표시
-  const formatDay = (locale, date) => {
+  const formatDay = (locale: string, date: Date) => {
     return date.getDate().toString();
   };
 
   // 지출이 있는 날짜에 <div class="dot"></div> 추가
-  const tileContent = ({ date, view }) => {
+  const tileContent = ({ date, view }: { date: Date; view: string }) => {
     const localDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
     .toISOString().split('T')[0]  // 'YYYY-MM-DD' 형식으로 변경
     .replace(/-/g, ''); // '-' 제거
@@ -61,7 +61,7 @@ const SpendingCategoryPage: React.FC<dailySummaryInterface> = () => {
   };
 
   // 달력이 바뀌었을 때 API를 호출하기 위해 바뀐 연/월을 가져오는 함수
-  const handleActiveStartDateChange = ({ activeStartDate }) => {
+  const handleActiveStartDateChange = ({ activeStartDate }: { activeStartDate: Date }) => {
     const year = activeStartDate.getFullYear();
     const month = (activeStartDate.getMonth() + 1).toString().padStart(2, '0'); // 월을 두 자리 숫자로 포맷팅
     const formattedDate = `${year}${month}`;

@@ -27,39 +27,30 @@ const SpendingCategoryPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = React.useState('all');
   const [categorySpending, setCategorySpending] = useState<MonthlyCategorySpending[]>([]);
   const [loading, setLoading] = useState(true); // 로딩 상태 추가
-  
-  // 전체 거래 데이터를 가져오는 함수
-  const fetchData = async () => {
+
+  // 중복된 API 호출 처리 로직을 함수로 분리
+  const loadExpenseData = async (category = '') => {
     try {
-      const response = await getExpenseDetail('');
-      console.log(response.data.result);
-      setSelectedCategory('all')
-      setLoading(false)
-      setCategorySpending(response.data.result); // 데이터를 상태에 저장
+      const response = await getExpenseDetail(category);
+      setCategorySpending(response.data.result);
     } catch (error) {
-      console.error('Error fetching categorySpending data:', error);
+      console.error('Error fetching spending data:', error);
+    } finally {
+      setLoading(false); // 로딩 완료
     }
   };
 
-  // 차트에서 카테고리를 클릭하면 해당 카테고리로 필터링
+  // 카테고리 클릭 이벤트 함수에서 API 호출 및 로직 처리
   const handleCategoryClick = async (category: string) => {
-    console.log(category)
-    // 다른 곳을 누르거나 잔여를 누른다면
-    if (category === undefined || category === '') {  
+    setLoading(true); // 로딩 시작
+    // 빈 값이거나 undefined일 때
+    if (!category) {  
       setSelectedCategory('all')
-      setLoading(false); // 'all'을 선택한 경우에도 로딩 완료로 처리
-      fetchData()
+      loadExpenseData();  // 전체 데이터 다시 로드
     // 그 외에는 필터링
     } else {
-      try {
-        const response = await getExpenseDetail(category);
-        setSelectedCategory(category)
-        setCategorySpending(response.data.result); // 데이터를 상태에 저장
-      } catch (error) {
-        console.error('Error fetching spending data:', error);
-      } finally {
-        setLoading(false); // 로딩 완료
-      }
+      setSelectedCategory(category);
+      loadExpenseData(category);  // 카테고리 필터링된 데이터 로드
     }
   };
 
@@ -70,9 +61,8 @@ const SpendingCategoryPage: React.FC = () => {
 
   // 렌더링 되면 전체 데이터를 가져 옴
   useEffect(() => {
-    fetchData();
+    loadExpenseData();
   }, []);
-
 
   return (
     <div className="flex justify-center items-center">
