@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Doughnut } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, layouts } from 'chart.js';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, layouts, ChartEvent, ActiveElement, Chart } from 'chart.js';
 import { getThisMonthCategorySpending } from '../../api/SpendingApi';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -50,28 +50,23 @@ const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({ onClick }
     'TRANSPORTATION': '교통',
   }
 
-  // mapKrUs의 딕셔너리의 키와 값을 바꿀 수 있다.
-  const  reverseMapKrUs: { [key: string]: string } = Object.fromEntries(
-    Object.entries(mapKrUs).map(([key, value]) => [value, key])
-  );
-
   // 해외 카테고리 삭제 전까지 이 걸로 진행해야 함
   const filteredData = spendingData
   .filter(item => item.category !== 'OVERSEAS')
   .sort((a, b) => b.totalAmount - a.totalAmount); // 차트 정렬하기
 
-  // 차트를 클릭했을 때, SpendingCategoryPage에 카테고리를 전달하는 함수
-  const handleClick = (event, elements) => {
+  // 클릭 시 카테고리 필터링 및 전달하는 함수
+  const handleClick = (event: React.MouseEvent<HTMLCanvasElement>, elements: ActiveElement[]) => {
     // 다른 곳을 클릭하면
     if (elements.length > 0) {
       const chart = elements[0].element.$context.chart;
       const index = elements[0].index;
       const categoryLabel = chart.data.labels[index];
-      const category = reverseMapKrUs[categoryLabel]
-      setHighlightedCategory(category)  // 강조할 카테고리 선정
-      onClick(category); // 클릭한 카테고리 전달
+      const category = Object.keys(mapKrUs).find(key => mapKrUs[key] === categoryLabel);  // 카테고리 매핑
+      setHighlightedCategory(category)  // 클릭된 카테고리 강조
+      onClick(category); // 카테고리 전달
     } else {
-      onClick('')
+      onClick('') // 클릭 안 된 경우 빈 값 전달
     }
   };  
 
@@ -103,11 +98,11 @@ const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({ onClick }
           labels: {
             boxWidth: 15, // 범례 색상 공간의 너비 수정
             // 범례 색상의 테두리 삭제 필요
-            generateLabels: (chart) => {
+            generateLabels: (chart: Chart) => {
               const data = chart.data
               return data.labels.map((label, i) => {
                 const value = data.datasets[0].data[i]
-                const formattedValue  = value.toLocaleString()
+                const formattedValue  = value.toLocaleString(undefined, {maximumFractionDigits: 0})
                 return {
                   text: `${label} ${formattedValue}원`,
                   fillStyle: data.datasets[0].backgroundColor[i],
