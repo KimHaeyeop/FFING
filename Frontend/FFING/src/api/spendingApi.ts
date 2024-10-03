@@ -54,10 +54,15 @@ export async function getMonthlyExpense(yyyyMm: string) {
 }
 
 // 특정 날짜 지출내역, 지출액 및 해당 주 지출액 조회
-export async function getCertainDateExpense() {
-  const response = await axios.get('/expense?date=YYYYMMDD');
-  console.log(response);
-  return response;
+export async function getCertainDateExpense(yyyyMmDd: string) {
+  try {
+    const response = await axios.get(`/expense?date=${yyyyMmDd}`);
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.log('Error fetching certain expense:', error)
+    throw error
+  }
 }
 
 // 월별(6개월 간) 지출액 확인 및 월간 지출 분석 API

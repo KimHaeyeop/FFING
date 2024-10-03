@@ -21,6 +21,7 @@ const ExpenseDetail: React.FC<ExpenseDetailProps> = ({ category, title, date, co
 
   return (
     <>
+    <hr className='border-1 border-black'/>
       <div className="flex justify-between items-center m-4">
         {/* 왼편 아이콘과 타이틀 */}
         <div className="flex items-center">
@@ -32,10 +33,9 @@ const ExpenseDetail: React.FC<ExpenseDetailProps> = ({ category, title, date, co
         </div>
         {/* 오른편 비용 */}
         <div>
-          <p className="font-bold">-{cost.toLocaleString()}원</p>
+          <p className="font-bold">-{cost.toLocaleString()}</p>
         </div>
       </div>
-      <hr className='border-1 border-black'/>
     </>
   );
 };

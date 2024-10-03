@@ -1,6 +1,7 @@
 import React, { useState, useEffect} from "react";
 import { Link } from 'react-router-dom';
-import Calendar from 'react-calendar';
+import { useNavigate } from "react-router-dom";
+import Calendar, { OnArgs } from 'react-calendar';
 import LinkHeader from '../components/Common/LinkHeader'
 import NavBar from "../components/Common/Navbar";
 import useViewportStore from "../store/useViewportStore";
@@ -14,6 +15,7 @@ interface dailySummaryInterface {
 }
 
 const SpendingCategoryPage: React.FC = () => {
+  const navigate = useNavigate();
   const [dailySummary, setDailySummary] = useState<dailySummaryInterface[]>([]);  // 당월 일자 별 지출액 확인
   const [monthTotalExpense, setMonthTotalExpense] = useState(0) // 이번 달 총 사용 금액
   const [value, setValue] = useState(new Date()); // 달력을 위한 value
@@ -25,7 +27,6 @@ const SpendingCategoryPage: React.FC = () => {
   const fetchData = async (today: string) => {
     try {
       const response = await getMonthlyExpense(today);  // 캘린더의 일자에 따라 값 가져오기
-      console.log(response.data.result.dailySummary);
       setMonthTotalExpense(response.data.result['totalExpense'])  // 이번 달 총 사용 금액 저장
       setDailySummary(response.data.result.dailySummary); // 데이터를 일자 별 지출액 확인
     } catch (error) {
@@ -34,7 +35,7 @@ const SpendingCategoryPage: React.FC = () => {
   };
 
   // 달력에는 날짜만 표시
-  const formatDay = (locale: string, date: Date) => {
+  const formatDay = (locale, date) => {
     return date.getDate().toString();
   };
 
@@ -61,7 +62,7 @@ const SpendingCategoryPage: React.FC = () => {
   };
 
   // 달력이 바뀌었을 때 API를 호출하기 위해 바뀐 연/월을 가져오는 함수
-  const handleActiveStartDateChange = ({ activeStartDate }: { activeStartDate: Date }) => {
+  const handleActiveStartDateChange = ({ activeStartDate }) => {
     const year = activeStartDate.getFullYear();
     const month = (activeStartDate.getMonth() + 1).toString().padStart(2, '0'); // 월을 두 자리 숫자로 포맷팅
     const formattedDate = `${year}${month}`;
@@ -72,6 +73,11 @@ const SpendingCategoryPage: React.FC = () => {
   const lastDayOfMonth = new Date();
   lastDayOfMonth.setMonth(lastDayOfMonth.getMonth() + 1);
   lastDayOfMonth.setDate(0);
+
+  // 특정 날짜를 클릭하면 WeeklySpendingPage로 이동
+  const handleDayClick = (date: Date) => {
+    navigate('weekly', { state: { date: date.toISOString().split('T')[0].replace(/-/g, '') } })
+  };
 
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0].replace(/-/g, '').slice(0, 6);
@@ -107,6 +113,7 @@ const SpendingCategoryPage: React.FC = () => {
               tileContent={tileContent} // 지출이 있는 날짜에 점 추가
               maxDate={lastDayOfMonth}  // 마지막 날짜는 이번 달 말일
               onActiveStartDateChange={handleActiveStartDateChange} // 월 변경 시 이벤트 처리
+              onClickDay={handleDayClick}
             />
           </div>
           {/* 지출 분석 버튼 */}
