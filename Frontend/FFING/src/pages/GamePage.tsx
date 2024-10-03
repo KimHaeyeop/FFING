@@ -25,8 +25,8 @@ const GamePage: React.FC = () => {
         <div className="flex rounded-lg overflow-hidden w-full max-w-screen-md mx-auto mt-6 h-16 text-2xl">
           {/* 게임 시작 버튼 */}
           <Link to="/game/battle" className="flex-grow-[7] bg-[#FFD874] text-black py-2 rounded-l-lg font-galmuri-11-bold text-2xl">게임으로 바로 이동(test)</Link>
-          {/* 랭킹 버튼 */}
-          <Link to="/game/petpedia" className="flex-grow-[3] bg-[#FFA1A1] text-black py-2 rounded-r-lg font-galmuri-11-bold">도감</Link>
+          {/* 도감 버튼 */}
+          <Link to="/petpedia" className="flex-grow-[3] bg-[#FFA1A1] text-black py-2 rounded-r-lg font-galmuri-11-bold">도감</Link>
         </div>
         {/* 경로 이동을 제공하는 footer */}
         <footer>
