@@ -10,6 +10,11 @@ export interface MonthlyExpense {
   yyyyMm: string;
 }
 
+// 주간 카테고리 및 전체 지출액 확인 인터페이스
+export interface WeeklyExpense {
+  when: string;
+}
+
 // 당월 지출 상세 내역 조회
 export async function getExpenseDetail(category: string) {
   try {
@@ -23,10 +28,15 @@ export async function getExpenseDetail(category: string) {
 }
 
 // 주간 카테고리 및 전체 지출액 확인
-export async function getWeeklyCategorySpending() {
-  const response = await axios.get('/expense/weekly/category/{this or last}');
-  console.log(response);
-  return response;
+export async function getWeeklyCategorySpending(when: string) {
+  try {
+    const response = await axios.get<WeeklyExpense>(`/expense/weekly/category/${when}`); // this(이번주) or last(저번주)
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error('Error fetching weekly category spending:', error);
+    throw error;
+  }
 }
 
 // 당월 지출 상세 내역 조회
@@ -65,11 +75,16 @@ export async function getCertainDateExpense(yyyyMmDd: string) {
   }
 }
 
-// 월별(6개월 간) 지출액 확인 및 월간 지출 분석 API
+// 월별(6개월 간) 지출액 확인 및 월간 지출 분석 API(백엔드 개발 미비)
 export async function getSixMonthExpense() {
-  const response = await axios.get('/expense/monthly');
-  console.log(response);
-  return response;
+  try {
+    const response = await axios.get('/expense/monthly');
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error('Error fetching six month expense:', error);
+    throw error;
+  }
 }
 
 export default {
