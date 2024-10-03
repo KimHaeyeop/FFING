@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Doughnut } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, layouts, ChartEvent, ActiveElement } from 'chart.js';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, layouts, ChartEvent, ActiveElement, Chart } from 'chart.js';
 import { getThisMonthCategorySpending } from '../../api/SpendingApi';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -98,11 +98,11 @@ const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({ onClick }
           labels: {
             boxWidth: 15, // 범례 색상 공간의 너비 수정
             // 범례 색상의 테두리 삭제 필요
-            generateLabels: (chart) => {
+            generateLabels: (chart: Chart) => {
               const data = chart.data
               return data.labels.map((label, i) => {
                 const value = data.datasets[0].data[i]
-                const formattedValue  = value.toLocaleString()
+                const formattedValue  = value.toLocaleString(undefined, {maximumFractionDigits: 0})
                 return {
                   text: `${label} ${formattedValue}원`,
                   fillStyle: data.datasets[0].backgroundColor[i],
