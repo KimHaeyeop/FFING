@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from 'react-router-dom';
 import Icon from '@mdi/react';
 import { mdiChevronRight } from '@mdi/js';
@@ -6,10 +6,28 @@ import TextHeader from '../components/Common/TextHeader'
 import NavBar from "../components/Common/Navbar";
 import useViewportStore from "../store/useViewportStore";
 import MonthlyDoughnutChart from "../components/Spending/MonthlyDoughnutChart";
+import { get1, get2, get3, get4, get5, get6, get7 } from '../api/assetApi'
+
+
 
 const MainPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
+
+  // 테스트
+  const fetchData = async () => {
+    try {
+      const response = await get3();
+      console.log(response)
+    } catch (error) {
+      console.error('Error fetching certain spending data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
 
   return (
     <div className="flex justify-center items-center">
