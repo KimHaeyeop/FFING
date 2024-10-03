@@ -7,27 +7,7 @@ export interface ExpenseDetail {
 
 // 월간 지출 인터페이스
 export interface MonthlyExpense {
-  total: number;
-  details: ExpenseDetail[];
-}
-
-// 주간 카테고리 지출 인터페이스
-export interface WeeklyCategorySpending {
-  category: string;
-  total: number;
-}
-
-// 당월 카테고리별 지출 인터페이스
-export interface MonthlyCategorySpending {
-  category: string;
-  total: number;
-}
-
-// 특정 날짜 지출 인터페이스
-export interface CertainDateExpense {
-  date: string;
-  total: number;
-  details: ExpenseDetail[];
+  yyyyMm: string;
 }
 
 // 당월 지출 상세 내역 조회
@@ -62,17 +42,27 @@ export async function getThisMonthCategorySpending() {
 }
 
 // 월간 지출액 및 일간 수입/지출액 조회
-export async function getMonthlyExpense() {
-  const response = await axios.get('/expense/monthly/{YYYYMM}');
-  console.log(response);
-  return response;
+export async function getMonthlyExpense(yyyyMm: string) {
+  try {
+    const response = await axios.get<MonthlyExpense>(`/expense/monthly/${yyyyMm}`);
+    console.log(response);
+    return response
+  } catch (error) {
+    console.error('Error fetching monthly expense:', error);
+    throw error;
+  }
 }
 
 // 특정 날짜 지출내역, 지출액 및 해당 주 지출액 조회
-export async function getCertainDateExpense() {
-  const response = await axios.get('/expense?date=YYYYMMDD');
-  console.log(response);
-  return response;
+export async function getCertainDateExpense(yyyyMmDd: string) {
+  try {
+    const response = await axios.get(`/expense?date=${yyyyMmDd}`);
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.log('Error fetching certain expense:', error)
+    throw error
+  }
 }
 
 // 월별(6개월 간) 지출액 확인 및 월간 지출 분석 API
