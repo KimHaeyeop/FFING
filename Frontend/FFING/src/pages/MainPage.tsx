@@ -10,7 +10,7 @@ import PetSprite from "../components/Game/PetSprite";
 import PetSpeechBubble from "../components/Common/PetSpeechBubble";
 import HorizontalBarChart from "../components/Asset/HorizontalBarChart";
 import { getMonthlyExpense } from '../api/SpendingApi';
-
+import { getTotalAsset } from "../api/AssetApi";
 
 const MainPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
@@ -22,6 +22,8 @@ const MainPage: React.FC = () => {
     try {
       const yyyyMm = new Date().toISOString().split('T')[0].replace(/-/g, '').slice(0, 6);
       const response = await getMonthlyExpense(yyyyMm);
+      const response1 = await getTotalAsset('1');
+      console.log(response1);
       setThisMonthExpese(response.data.result.totalExpense);
     } catch (error) {
       console.error('Error fetching certain spending data:', error);
