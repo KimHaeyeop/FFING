@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Doughnut } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, layouts, ChartEvent, ActiveElement, Chart } from 'chart.js';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, layouts, Chart } from 'chart.js';
 import { getThisMonthCategorySpending } from '../../api/SpendingApi';
+
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -13,14 +14,7 @@ interface MonthlyCategorySpending {
   target: number;
 }
 
-
-interface SpendingCategoryChartProps {
-  onClick: (category: string) => void; // 카테고리를 클릭했을 때 호출하는 함수
-}
-
-const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({ onClick }) => {
-  // 누른 카테고리를 강조하기 위한 상태 관리
-  const [highlightedCategory, setHighlightedCategory] = useState<string | null>(null);
+const MonthlyDoughnutChart: React.FC = () => {
   const [spendingData, setSpendingData] = useState<MonthlyCategorySpending[]>([]);
 
   // 카테고리 별 지출액을 가져오는 함수
@@ -33,7 +27,6 @@ const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({ onClick }
         console.error('Error fetching spending data:', error);
       }
     };
-
     fetchData();
   }, []);
 
@@ -54,21 +47,6 @@ const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({ onClick }
   const filteredData = spendingData
   .filter(item => item.category !== 'OVERSEAS')
   .sort((a, b) => b.totalAmount - a.totalAmount); // 차트 정렬하기
-
-  // 클릭 시 카테고리 필터링 및 전달하는 함수
-  const handleClick = (event: React.MouseEvent<HTMLCanvasElement>, elements: ActiveElement[]) => {
-    // 다른 곳을 클릭하면
-    if (elements.length > 0) {
-      const chart = elements[0].element.$context.chart;
-      const index = elements[0].index;
-      const categoryLabel = chart.data.labels[index];
-      const category = Object.keys(mapKrUs).find(key => mapKrUs[key] === categoryLabel);  // 카테고리 매핑
-      setHighlightedCategory(category)  // 클릭된 카테고리 강조
-      onClick(category); // 카테고리 전달
-    } else {
-      onClick('') // 클릭 안 된 경우 빈 값 전달
-    }
-  };  
 
   const config = {
     data: {
@@ -98,29 +76,28 @@ const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({ onClick }
           labels: {
             boxWidth: 15, // 범례 색상 공간의 너비 수정
             // 범례 색상의 테두리 삭제 필요
-            generateLabels: (chart: Chart) => {
-              const data = chart.data
-              return data.labels.map((label, i) => {
-                const value = data.datasets[0].data[i]
-                const formattedValue  = value.toLocaleString(undefined, {maximumFractionDigits: 0})
+            generateLabels: (chart: Chart) => { // chart의 타입 지정
+              const data = chart.data;
+              return data.labels!.map((label, i) => {
+                const value = data.datasets![0].data[i] as number;
+                const total = data.datasets![0].data.reduce((a, b) => (a as number) + (b as number), 0);
+                const percentage = ((value / total) * 100).toFixed(2); // 소수점 둘째자리까지 출력
                 return {
-                  text: `${label} ${formattedValue}원`,
-                  fillStyle: data.datasets[0].backgroundColor[i],
+                  text: `${label} ${percentage}%`,
+                  fillStyle: data.datasets![0].backgroundColor[i] as string,
                   hidden: false,
-                  class: label === highlightedCategory ? 'font-galmuri-11-bold' : '', // 이거 아직 안 되서 수정해야 함
-                }
-              })
-            }
+                };
+              });
+            },
           },
         },
         tooltip: {
           enabled: false,
         },
       },
-      // 클릭하면 해당 부분이 확대되고 해당 항목의 거래 내역만 렌더링
-      onClick: handleClick,
-    }
-  }
+    },
+  };
+  
   return (
     <div className="h-full w-full flex justify-center items-center">
       <Doughnut {...config} />
@@ -128,4 +105,4 @@ const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({ onClick }
   );
 };
 
-export default SpendingCategoryChart;
+export default MonthlyDoughnutChart;

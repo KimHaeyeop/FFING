@@ -11,7 +11,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import SpendingCategoryPage from './pages/SpendingCategoryPage';
 import SpendingMonthlyPage from './pages/SpendingMonthlyPage';
 import SpendingMonthlyAnalysisPage from './pages/SpendingMonthlyAnalysisPage';
-// import MatchingPageModal from './pages/MatchingPage';
+import SpendingWeeklyPage from './pages/SpendingWeeklyPage'
 
 const App: React.FC = () => {
   return (
@@ -25,6 +25,8 @@ const App: React.FC = () => {
         <Route path="/spending/monthly" element={<SpendingMonthlyPage />} />
         {/* 월간 지출 분석 페이지 */}
         <Route path="/spending/monthly/analysis" element={<SpendingMonthlyAnalysisPage />} />
+        {/* 주간 지출 페이지 */}
+        <Route path="/spending/monthly/weekly" element={<SpendingWeeklyPage />} />
         {/* 게임 페이지 */}
         <Route path="/game" element={<GamePage />} />
         {/* 매칭 잡는 페이지 */}
@@ -34,7 +36,7 @@ const App: React.FC = () => {
         {/* 랭킹 페이지 */}
         <Route path="/game/ranking" element={<RankingPage />} />
         {/* 도감 페이지 */}
-        <Route path="/game/petpedia" element={<PetPediaPage />} />
+        <Route path="/petpedia" element={<PetPediaPage />} />
         {/* 404 페이지 */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
