@@ -140,7 +140,7 @@ html body {
 
 /* 오늘 날짜는 원으로 표시 */
 .react-calendar__tile--now {
-  border: 1px solid #FE830A;
+  background-color: #FE830A;
   border-radius: 100%;
 }
 
@@ -148,7 +148,7 @@ html body {
 .dot {
   height: 8px;
   width: 8px;
-  background-color: #FE830A;
+  background-color: #D9D9D9;
   border-radius: 50%;
   margin-left: 1px;
 }
