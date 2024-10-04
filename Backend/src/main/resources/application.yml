@@ -23,6 +23,11 @@ spring:
 #      initialize-schema: always
     job:
       enabled: false
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+    deserialization:
+      ADJUST_DATES_TO_CONTEXT_TIME_ZONE: false
 
 server:
   port: 8900

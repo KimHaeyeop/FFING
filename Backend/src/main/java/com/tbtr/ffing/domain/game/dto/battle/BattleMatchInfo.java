@@ -10,8 +10,8 @@ public class BattleMatchInfo {
     private String matchId;
 
     // TODO: fromUser의 펫 정보 (체력, 스탯, 공격옵션)
-    private String user1Info;
+    private String fromUserInfo;
 
     // TODO: toUser의 펫 정보
-    private String user2Info;
+    private String toUserInfo;
 }

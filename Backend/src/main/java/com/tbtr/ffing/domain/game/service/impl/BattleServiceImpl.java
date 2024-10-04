@@ -33,8 +33,8 @@ public class BattleServiceImpl implements BattleService {
 
         return BattleMatchInfo.builder()
                 .matchId(matchId)
-                .user1Info("펫1임")
-                .user2Info("펫2임")
+                .fromUserInfo("펫1임")
+                .toUserInfo("펫2임")
                 .build();
     }
 
