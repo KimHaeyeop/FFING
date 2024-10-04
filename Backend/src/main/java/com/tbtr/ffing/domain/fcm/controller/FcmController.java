@@ -16,8 +16,11 @@ public class FcmController {
 
     @PostMapping("/register/{userId}")
     public ResponseEntity<?> registerFcm(@PathVariable("userId") Long userId, @RequestBody String token) {
+        log.debug("Received userId: {}", userId);
+        log.debug("Received token: {}", token);
         log.info("===클라이언트로부터 FCM 수신 START===");
         fcmService.saveToken(userId, token);
+        System.out.println(token);
         log.info("===클라이언트로부터 FCM 수신 END===");
         return ResponseEntity.ok(Response.<Void>builder()
                 .code(200L)

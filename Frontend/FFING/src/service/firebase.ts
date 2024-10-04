@@ -2,14 +2,25 @@ import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import axios from "../api/axiosConfig";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAARBiN91sAOuOWcXLvWdy7yVjPs5LDPFo",
-  authDomain: "ffing-9c142.firebaseapp.com",
-  projectId: "ffing-9c142",
-  storageBucket: "ffing-9c142.appspot.com",
-  messagingSenderId: "288287873787",
-  appId: "1:288287873787:web:ed19eb9f0b101bf3b12e5e",
-  measurementId: "G-1KYWB1FN61",
+interface FirebaseMessage {
+  notification?: {
+    title?: string;
+    body?: string;
+    icon?: string;
+  };
+  data?: {
+    [key: string]: string;
+  };
+}
+
+export const firebaseConfig = {
+  apiKey: import.meta.env.VITE_APP_FCM_API_KEY,
+  authDomain: import.meta.env.VITE_APP_FCM_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_APP_FCM_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_APP_FCM_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_APP_FCM_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_APP_FCM_APP_ID,
+  measurementId: import.meta.env.VITE_APP_FCM_MEASUREMENT_ID,
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
@@ -26,7 +37,6 @@ export const requestPermissionAndGetToken = async (
       });
       if (token) {
         console.log("FCM Token:", token);
-        // Send token to backend
         await sendTokenToServer(userId, token);
         return token;
       } else {
@@ -57,15 +67,74 @@ export const sendTokenToServer = async (
   }
 };
 
-onMessage(messaging, (payload) => {
-  // Handle received message while app is running
-  console.log("Message received. ", payload);
-});
+export const setupMessageListener = () => {
+  onMessage(messaging, (payload: FirebaseMessage) => {
+    console.log("Message received. ", payload);
 
-// This function might need to be adjusted based on your backend implementation
-// export const getNoti = async (userRoomId: number): Promise<any> => {
-//   const { data } = await axios.get("/noti", {
-//     params: { userRoomId },
-//   });
-//   return data;
-// };
+    // payload.notification이 존재하는지 확인
+    if (payload.notification) {
+      const notificationTitle =
+        payload.notification.title || "New Notification";
+      const notificationOptions: NotificationOptions = {
+        body: payload.notification.body,
+        icon: payload.notification.icon,
+        // 필요한 경우 추가 옵션을 여기에 포함시킬 수 있습니다.
+      };
+
+      // 브라우저 알림 표시
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification(notificationTitle, notificationOptions);
+      } else {
+        console.log(
+          "Notification not shown:",
+          notificationTitle,
+          notificationOptions
+        );
+      }
+    }
+
+    // UI 업데이트
+    updateUI(payload);
+  });
+};
+
+// updateUI 함수의 타입을 명확히 지정
+const updateUI = (payload: FirebaseMessage) => {
+  console.log("Updating UI with new message", payload);
+
+  // 예시: 알림 메시지를 UI에 표시
+  if (payload.notification) {
+    const messageElement = document.getElementById("latest-message");
+    if (messageElement) {
+      messageElement.textContent =
+        payload.notification.body || "New message received";
+    }
+  }
+
+  // 예시: 데이터 필드를 사용하여 UI 업데이트
+  if (payload.data) {
+    Object.entries(payload.data).forEach(([key, value]) => {
+      const element = document.getElementById(`data-${key}`);
+      if (element) {
+        element.textContent = value;
+      }
+    });
+  }
+
+  // 여기에 추가적인 UI 업데이트 로직을 구현할 수 있습니다.
+};
+
+// 서비스 워커 등록 (public 폴더에 firebase-messaging-sw.js 파일 필요)
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker
+    .register("/firebase-messaging-sw.js")
+    .then((registration) => {
+      console.log("Service Worker registered with scope:", registration.scope);
+    })
+    .catch((error) => {
+      console.error("Service Worker registration failed:", error);
+    });
+}
+
+// 앱 초기화 시 메시지 리스너 설정
+setupMessageListener();
