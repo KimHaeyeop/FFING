@@ -1,6 +1,7 @@
 package com.tbtr.ffing.domain.finance.controller;
 
 import com.tbtr.ffing.domain.finance.dto.request.goal.GoalReq;
+import com.tbtr.ffing.domain.finance.dto.request.goal.SpendingReq;
 import com.tbtr.ffing.domain.finance.dto.response.goal.GoalDetailRes;
 import com.tbtr.ffing.domain.finance.dto.response.goal.GoalRes;
 import com.tbtr.ffing.domain.finance.dto.response.goal.SpendingRes;
@@ -85,8 +86,8 @@ public class GoalController {
      * 목표 소비액 설정
      */
     @PostMapping("/set-spending")
-    public ResponseEntity<?> setSpending(@RequestBody GoalReq goalReq) {
-        SpendingRes spendingRes = goalService.setSpending(goalReq);
+    public ResponseEntity<?> setSpending(@RequestBody SpendingReq spendingReq) {
+        SpendingRes spendingRes = goalService.setSpending(spendingReq);
 
         Response<Object> response = Response.builder()
                                             .code(200L)
