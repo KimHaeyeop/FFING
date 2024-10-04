@@ -54,7 +54,6 @@ logging:
     org.springframework.boot.autoconfigure.jdbc: DEBUG
 jwt:
   secret: ${JWT_SECRET}
-
 ---
 spring:
   config:
