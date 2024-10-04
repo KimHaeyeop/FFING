@@ -5,6 +5,8 @@ import com.tbtr.ffing.domain.finance.dto.response.goal.GoalDetailRes;
 import com.tbtr.ffing.domain.finance.dto.response.goal.GoalRes;
 import com.tbtr.ffing.domain.finance.dto.response.goal.SpendingRes;
 import com.tbtr.ffing.domain.finance.entity.Goal;
+import com.tbtr.ffing.domain.finance.repository.AccountTransactionRepository;
+import com.tbtr.ffing.domain.finance.repository.AssetRepository;
 import com.tbtr.ffing.domain.finance.repository.GoalRepository;
 import com.tbtr.ffing.domain.finance.service.GoalService;
 import java.math.BigDecimal;
@@ -19,15 +21,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class GoalServiceImpl implements GoalService {
 
     private final GoalRepository goalRepository;
+    private final AssetRepository assetRepository;
+    private final AccountTransactionRepository accountTransactionRepository;
 
     @Override
     @Transactional
-    public GoalDetailRes getGoal(Long userId) {
+    public GoalDetailRes getGoal(Long userId, Long ssafyUserId) {
+        LocalDate today = LocalDate.now();
+
         // 현재 총 자산 : asset 테이블에서 가져오기
-        BigDecimal totalAsset = new BigDecimal(10000000);
+        BigDecimal totalAsset = assetRepository.findCurrentAssetByUserId(userId).getTotalAsset();
 
         // 고정 수입 : 현재 기준 한 달 전 account_transaction 에서 transaction_type_name = 입금(고정) 에서 가져오기
-        BigDecimal fixedIncome = new BigDecimal(4000000);
+        String yearMonth = today.getYear() + "" + today.getMonthValue();
+        BigDecimal fixedIncome = accountTransactionRepository.getTotalFixedIncomeForMonthBySsafyUserId(yearMonth,
+                ssafyUserId);
+        System.out.println(yearMonth);
+        System.out.println(fixedIncome.toString());
 
         // 남은 개월 수
         int leftMonths = 12 - LocalDate.now().getMonthValue() + 1;
@@ -59,17 +69,17 @@ public class GoalServiceImpl implements GoalService {
     public GoalRes setGoal(GoalReq goalReq) {
         // 현재 년도 및 월 정보 가져오기
         LocalDate now = LocalDate.now();
-        int currentYear = now.getYear();
-        int currentMonth = now.getMonthValue();
+        String year = now.getYear()+"";
+        String yearMonth = year + now.getMonthValue();
 
         // 해당 년도에 목표가 존재하는지 확인
-        Goal existingGoal = goalRepository.findByUserIdAndGoalTypeAndYear(goalReq.getUserId(), "1", currentYear);
+        Goal existingGoal = goalRepository.findByUserIdAndGoalTypeAndYear(goalReq.getUserId(), "1", year);
         if (existingGoal != null) {
             goalRepository.delete(existingGoal);
         }
 
         // 해당 월에 소비가 존재하는지 확인
-        Goal existingSpending = goalRepository.findByUserIdAndGoalTypeAndMonth(goalReq.getUserId(), "2", currentMonth);
+        Goal existingSpending = goalRepository.findByUserIdAndGoalTypeAndYearMonth(goalReq.getUserId(), "2", yearMonth);
         if (existingSpending != null) {
             goalRepository.delete(existingSpending);
         }
@@ -93,7 +103,8 @@ public class GoalServiceImpl implements GoalService {
     @Transactional
     public SpendingRes setSpending(GoalReq goalReq) {
         // 해당 월에 소비가 존재하는지 확인
-        Goal existingSpending = goalRepository.findByUserIdAndGoalTypeAndMonth(goalReq.getUserId(), "2", LocalDate.now().getMonthValue());
+        Goal existingSpending = goalRepository.findByUserIdAndGoalTypeAndYearMonth(goalReq.getUserId(), "2",
+                LocalDate.now().getMonthValue()+"");
         if (existingSpending != null) {
             goalRepository.delete(existingSpending);
         }
