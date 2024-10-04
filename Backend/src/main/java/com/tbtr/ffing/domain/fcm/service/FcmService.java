@@ -7,5 +7,5 @@ public interface FcmService {
     void sendNotification(final String title, final String body, final String token) throws
             FirebaseMessagingException;
 
-    void saveToken(final Long userId, final String token);
+    String saveToken(final Long userId, final String token);
 }

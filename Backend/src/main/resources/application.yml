@@ -50,6 +50,7 @@ spring:
 #      initialize-schema: always
 logging:
   level:
+    com.tbtr.ffing.domain.fcm.service: DEBUG
     org.springframework.batch: DEBUG
     org.springframework.jdbc: TRACE
     org.hibernate.SQL: DEBUG
