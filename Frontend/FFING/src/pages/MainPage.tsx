@@ -6,7 +6,9 @@ import TextHeader from '../components/Common/TextHeader'
 import NavBar from "../components/Common/Navbar";
 import useViewportStore from "../store/useViewportStore";
 import MonthlyDoughnutChart from "../components/Spending/MonthlyDoughnutChart";
+import PetSprite from "../components/Game/PetSprite";
 import { get1, get2, get3, get4, get5, get6, get7 } from '../api/assetApi'
+import SpeechBubble from "../components/Common/SpeechBubble";
 
 
 
@@ -42,7 +44,14 @@ const MainPage: React.FC = () => {
           </div>
           {/* 게임 화면 관련 */}
           <div className="border-black border-x-4 rounded-lg" style={{height: '40%'}}>
-            펫 화면
+            {/* 배경 화면 넣기 */}
+            <div className="bg-cover bg-bottom h-full w-full relative" style={{ backgroundImage: "url('/backgrounds/pet-idle-background.png')" }}>
+              {/* 펫 sprite sheet 넣기 */}
+              <div className="absolute bottom-8 left-8 p-2 w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32">
+                <PetSprite imageUrl="/pets/penguin.png" isUnlocked={true} />
+              </div>
+              <SpeechBubble text="안녕하세요." x={1} y={1} />
+            </div>
           </div>
           {/* 지출 내역 관련 */}
           <div className="border-black border-4 rounded-lg" style={{height: '40%'}}>
