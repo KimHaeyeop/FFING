@@ -5,6 +5,7 @@ import static com.tbtr.ffing.domain.finance.constants.GoalConstants.GOAL_TYPE_SP
 
 import com.tbtr.ffing.domain.finance.dto.request.goal.GoalReq;
 import com.tbtr.ffing.domain.finance.dto.request.goal.SpendingReq;
+import com.tbtr.ffing.domain.finance.dto.response.goal.CheckRes;
 import com.tbtr.ffing.domain.finance.dto.response.goal.GoalDetailRes;
 import com.tbtr.ffing.domain.finance.dto.response.goal.GoalRes;
 import com.tbtr.ffing.domain.finance.dto.response.goal.SpendingRes;
@@ -115,13 +116,26 @@ public class GoalServiceImpl implements GoalService {
         return SpendingRes.of(leftMonths, spendingBalance);
     }
 
+    @Override
+    public CheckRes checkGoal(Long userId) {
+        LocalDate today = LocalDate.now();
+        String year = String.valueOf(today.getYear());
+        String yearMonth = year + today.getMonthValue();
+
+        Goal goal = goalRepository.findByUserIdAndGoalTypeAndYear(userId, "1", year);
+        Goal spending = goalRepository.findByUserIdAndGoalTypeAndYearMonth(userId, "2", yearMonth);
+
+        String goalBalance = (goal != null) ? goal.getBalance().toString() : "설정되지 않았습니다";
+        String spendingBalance = (spending != null) ? spending.getBalance().toString() : "설정되지 않았습니다";
+
+        return CheckRes.of(goalBalance, spendingBalance);
+    }
+
+
     private void deleteExistingGoal(Long userId, String goalType, String date) {
-        Goal existingGoal = null;
-        if (date.length() == 4) {
-            existingGoal = goalRepository.findByUserIdAndGoalTypeAndYear(userId, goalType, date);
-        } else if (date.length() == 6) {
-            existingGoal = goalRepository.findByUserIdAndGoalTypeAndYearMonth(userId, goalType, date);
-        }
+        Goal existingGoal = (goalType.equals(GOAL_TYPE_ASSET))
+                            ? goalRepository.findByUserIdAndGoalTypeAndYear(userId, goalType, date)
+                            : goalRepository.findByUserIdAndGoalTypeAndYearMonth(userId, goalType, date);
 
         if (existingGoal != null) {
             goalRepository.delete(existingGoal);
