@@ -12,7 +12,7 @@ export interface get2Interface {
 }
 
 // 현재 전체 자산 조회 인터페이스
-export interface get3Interface {
+export interface getTotalAssetInterface {
   userId: string;
 }
 
@@ -52,9 +52,9 @@ export async function get2(ssafyUserId: string, stockAccountId: string) {
 }
 
 // 현재 전체 자산 조회
-export async function get3(userId: string) {
+export async function getTotalAsset(userId: string) {
   try {
-    const response = await axios.get<get3Interface>(`/asset?userId=${userId}`);
+    const response = await axios.get<getTotalAssetInterface>(`/asset?userId=${userId}`);
     console.log(response);
     return response;
   } catch (error) {
@@ -66,7 +66,7 @@ export async function get3(userId: string) {
 // 예적금 계좌 정보 조회
 export async function get4(userId: string) {
   try {
-    const response = await axios.get<get3Interface>(`/asset/deposit?userId=${userId}`);
+    const response = await axios.get<getTotalAssetInterface>(`/asset/deposit?userId=${userId}`);
     console.log(response);
     return response
   } catch (error) {
@@ -126,7 +126,7 @@ export async function get8() {
 export default {
   get1,
   get2,
-  get3,
+  getTotalAsset,
   get4,
   get5,
   get6,
