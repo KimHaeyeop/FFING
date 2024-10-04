@@ -8,7 +8,7 @@ import useViewportStore from "../store/useViewportStore";
 import MonthlyDoughnutChart from "../components/Spending/MonthlyDoughnutChart";
 import PetSprite from "../components/Game/PetSprite";
 import { get1, get2, get3, get4, get5, get6, get7 } from '../api/AssetApi'
-import SpeechBubble from "../components/Common/SpeechBubble";
+import PetSpeechBubble from "../components/Common/PetSpeechBubble";
 import { getMonthlyExpense } from '../api/SpendingApi';
 
 
@@ -50,10 +50,12 @@ const MainPage: React.FC = () => {
             {/* 배경 화면 넣기 */}
             <div className="bg-cover bg-bottom h-full w-full relative" style={{ backgroundImage: "url('/backgrounds/pet-idle-background.png')" }}>
               {/* 펫 sprite sheet 넣기 */}
-              <div className="absolute bottom-8 left-8 p-2 w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32">
+              <div className="absolute bottom-4 left-4 p-2 w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32">
                 <PetSprite imageUrl="/pets/penguin.png" isUnlocked={true} />
+                <PetSpeechBubble text="is_not_unfair = [[False] * (V + 1) for _ in range(V + 1)]]! for i in range(N): for j in range(N): print('hi')" x={dvw * 15} y={0} />
               </div>
-              {/* <SpeechBubble text="안녕하세요." x={1} y={1} /> */}
+              {/* 게임 화면으로 이동하는 버튼 */}
+              <Link to='/game' className="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-white bg-black rounded-lg p-1 m-2">Let's Game</Link>
             </div>
           </div>
           {/* 지출 내역 관련 */}
