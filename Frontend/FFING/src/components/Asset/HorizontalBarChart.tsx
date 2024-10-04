@@ -7,8 +7,9 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, LinearScale);
 
 
 const HorizontalBarChart: React.FC = () => {
-  const [property, setProperty] = React.useState(0);
-  const [target, setTarget] = React.useState(0);
+  // API 연동 필요
+  const [property, setProperty] = React.useState(100000);
+  const [target, setTarget] = React.useState(1000000);
 
   // 이번 달 지출액을 가져오는 함수
   const fetchData = async () => {

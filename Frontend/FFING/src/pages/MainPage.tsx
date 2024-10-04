@@ -42,16 +42,20 @@ const MainPage: React.FC = () => {
         </header>
         <main className='mx-auto'style={{height: `${dvh * 80}px`, width: `${dvw * 90}px`}}>
           {/* 자산 목표 달성 관련 */}
-          <div className="border-black border-4 rounded-lg">
+          <div className="border-black border-4 rounded-lg" style={{height: '20%'}}>
             {/* 자산 부분 링크와 소제목 */}
             <div className="flex justify-between p-2">
               <p>목표 달성까지</p>
-              <Icon path={mdiChevronRight} size={1} style={{color: '#F55322'}}/>
+              <Link to="/asset">
+                <Icon path={mdiChevronRight} size={1} style={{color: '#F55322'}}/>
+              </Link>
             </div>
             {/* 현재 보유액과 목표액을 보여주는 바 그래프 */}
-            <div className="flex justify-center">
+            <div className="flex justify-center pl-3">
               <HorizontalBarChart />
             </div>
+            {/* 목표 달성까지 남은 금액 표시 */}
+            <p className="mb-2">13,354,204원 남았습니다.</p>
           </div>
           {/* 게임 화면 관련 */}
           <div className="border-black border-x-4 rounded-lg" style={{height: '40%'}}>
