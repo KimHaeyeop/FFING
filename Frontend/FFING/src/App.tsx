@@ -12,6 +12,7 @@ import SpendingCategoryPage from './pages/SpendingCategoryPage';
 import SpendingMonthlyPage from './pages/SpendingMonthlyPage';
 import SpendingMonthlyAnalysisPage from './pages/SpendingMonthlyAnalysisPage';
 import SpendingWeeklyPage from './pages/SpendingWeeklyPage'
+import ApiTest from './components/Property/ApiTest';
 
 const App: React.FC = () => {
   return (
@@ -19,6 +20,8 @@ const App: React.FC = () => {
       <Routes>
         {/* 메인 페이지 */}
         <Route path="/" element={<MainPage />} />
+        {/* 자산 페이지 */}
+        <Route path="/assets" element={<ApiTest />} />
         {/* 지출 페이지 */}
         <Route path="/spending" element={<SpendingCategoryPage />} />
         {/* 월간 지출 페이지 */}
