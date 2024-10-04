@@ -27,12 +27,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // 매칭용
         registry.addEndpoint("/match")
-                .setAllowedOriginPatterns("*");
-//                .withSockJS();
-//        //배틀용
-//        registry.addEndpoint("/battle")
-//                .setAllowedOriginPatterns("*")
-//                .withSockJS();
+                .setAllowedOriginPatterns("*")
+                .withSockJS();
+        //배틀용
+        registry.addEndpoint("/battle")
+                .setAllowedOriginPatterns("*")
+                .withSockJS();
     }
 
 }

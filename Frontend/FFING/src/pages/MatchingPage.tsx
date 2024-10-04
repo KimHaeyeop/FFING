@@ -127,7 +127,7 @@ const MatchingPageModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   // const socketRef = useRef<WebSocket | null>(null);
 
   const connect = () => {
-    const socket = new WebSocket("ws://localhost:8900/match/");
+    const socket = new WebSocket("ws://localhost:8900/match")
     stompClientRef.current = Stomp.over(socket);
     stompClientRef.current?.connect({}, () => {
       stompClientRef.current?.subscribe(`/sub/chatroom/1`, (message) => {
@@ -150,7 +150,7 @@ const MatchingPageModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
         // debug: (str) => {
         //   console.log(str);
         // },
-        brokerURL: 'http://localhost:8900/match/',
+        brokerURL: 'http://localhost:8900/match',
         reconnectDelay: 5000,
         heartbeatIncoming: 100000, // 서버에서 클라이언트로 보내는 심장박동 간격
         heartbeatOutgoing: 100000, // 클라이언트에서 서버로 보내는 심장박동 간격
