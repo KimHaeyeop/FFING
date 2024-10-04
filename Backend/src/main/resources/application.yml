@@ -1,6 +1,8 @@
 spring:
   application:
     name: ffing
+  profiles:
+    active: develop
   jpa:
     hibernate:
       ddl-auto: update
@@ -21,6 +23,11 @@ spring:
 #      initialize-schema: always
     job:
       enabled: false
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+    deserialization:
+      ADJUST_DATES_TO_CONTEXT_TIME_ZONE: false
 
 server:
   port: 8900
@@ -46,10 +53,10 @@ spring:
 logging:
   level:
     org.springframework.batch: DEBUG
-    org.springframework.jdbc: TRACE
+#    org.springframework.jdbc: TRACE
     org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql: TRACE
-    org.springframework.jdbc.datasource: TRACE
+#    org.hibernate.type.descriptor.sql: TRACE
+#    org.springframework.jdbc.datasource: TRACE
     com.zaxxer.hikari: DEBUG
     org.springframework.boot.autoconfigure.jdbc: DEBUG
 jwt:

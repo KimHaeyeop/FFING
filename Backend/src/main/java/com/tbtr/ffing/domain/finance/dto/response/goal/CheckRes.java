@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class GoalRes {
+public class CheckRes {
 
     String goalBalance;
-    SpendingRes spending;
+    String spendingBalance;
 
-    public static GoalRes of(String goalBalance, SpendingRes spending) {
-        return GoalRes.builder()
-                      .goalBalance(goalBalance)
-                      .spending(spending).build();
+    public static CheckRes of(String goalBalance, String spendingBalance) {
+        return CheckRes.builder()
+                       .goalBalance(goalBalance)
+                       .spendingBalance(spendingBalance).build();
     }
 }
