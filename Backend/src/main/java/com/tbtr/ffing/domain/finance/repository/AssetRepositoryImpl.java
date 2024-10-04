@@ -32,7 +32,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                         asset.accountBalance,
                         asset.depositSavingsBalance,
                         asset.stockBalance,
-                        asset.othersBalance,
+                        asset.othersBalance))
                 .from(asset)
                 .where(asset.user.userId.eq(userId))
                 .limit(1)
@@ -50,7 +50,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                         asset.accountBalance,
                         asset.depositSavingsBalance,
                         asset.stockBalance,
-                        asset.othersBalance,
+                        asset.othersBalance))
                 .from(asset)
                 .where(asset.user.userId.eq(userId))
                 .limit(6)
@@ -158,9 +158,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                         accountTransaction.transactionMemo,
                         accountTransaction.transactionBalance,
                         accountTransaction.transactionAfterBalance))
-//                        Expressions.numberTemplate(BigDecimal.class,
-//                                "SUM({0}) OVER (ORDER BY {1})",
-//                                accountTransaction.transactionBalance, accountTransaction.accountTransactionId)))
                 .from(accountTransaction)
                 .where(accountTransaction.account.accountId.eq(accountId))
                 .orderBy(accountTransaction.transactionDate.desc(), accountTransaction.transactionTime.desc())
