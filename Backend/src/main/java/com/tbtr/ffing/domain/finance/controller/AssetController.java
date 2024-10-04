@@ -5,6 +5,7 @@ import com.tbtr.ffing.domain.finance.dto.response.asset.AccountTransactionAssetR
 import com.tbtr.ffing.domain.finance.dto.response.asset.AssetRes;
 import com.tbtr.ffing.domain.finance.dto.response.asset.DepositAssetRes;
 import com.tbtr.ffing.domain.finance.service.AssetService;
+import com.tbtr.ffing.global.common.dto.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,30 +29,65 @@ public class AssetController {
         resultMap.put("currentAsset", currentAsset);
         List<AssetRes> assets = assetService.getAssetHistory(userId);
         resultMap.put("assets", assets);
-        return new ResponseEntity<>(resultMap, HttpStatus.OK);
+
+        Response<Object> response = Response.builder()
+                .code(200L)
+                .message("성공")
+                .result(resultMap)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/deposit")
     public ResponseEntity<Object> selectDepositAsset(@RequestParam long userId) {
         List<Object> deposits = assetService.getDepositList(userId);
-        return new ResponseEntity<>(deposits, HttpStatus.OK);
+
+        Response<Object> response = Response.builder()
+                .code(200L)
+                .message("성공")
+                .result(deposits)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/deposit/{type}/{accountId}")
     public ResponseEntity<Object> selectDepositTransactionList(@PathVariable String type, @PathVariable long accountId) {
         List<?> transactions = assetService.getDepositTransactionList(type, accountId);
-        return new ResponseEntity<>(transactions, HttpStatus.OK);
+
+        Response<Object> response = Response.builder()
+                .code(200L)
+                .message("성공")
+                .result(transactions)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/account")
     public ResponseEntity<Object> selectAccountAsset(@RequestParam long userId) {
         List<AccountAssetRes> accounts = assetService.getAccountList(userId);
-        return new ResponseEntity<>(accounts, HttpStatus.OK);
+
+        Response<Object> response = Response.builder()
+                .code(200L)
+                .message("성공")
+                .result(accounts)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/account/{accountId}")
     public ResponseEntity<Object> selectAccountTransactionList(@PathVariable long accountId) {
         List<AccountTransactionAssetRes> transactions = assetService.getAccountTransactionList(accountId);
-        return new ResponseEntity<>(transactions, HttpStatus.OK);
+
+        Response<Object> response = Response.builder()
+                .code(200L)
+                .message("성공")
+                .result(transactions)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
