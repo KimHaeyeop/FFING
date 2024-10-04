@@ -1,4 +1,4 @@
-package com.tbtr.ffing.domain.game.dto.battle;
+package com.tbtr.ffing.domain.game.dto.internal;
 
 import com.tbtr.ffing.domain.game.dto.request.DirectMatchReq;
 import lombok.AllArgsConstructor;
