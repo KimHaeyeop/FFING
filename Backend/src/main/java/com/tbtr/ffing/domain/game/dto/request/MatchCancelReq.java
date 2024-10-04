@@ -7,6 +7,6 @@ import lombok.ToString;
 @ToString
 public class MatchCancelReq {
     private String requestId;
-    private String userId;
-    private String opponentUserId;
+    private Long fromUserId;
+    private Long toUserId;
 }
