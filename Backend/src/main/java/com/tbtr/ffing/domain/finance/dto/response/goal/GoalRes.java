@@ -14,4 +14,10 @@ public class GoalRes {
 
     String goalBalance;
     SpendingRes spending;
+
+    public static GoalRes of(String goalBalance, SpendingRes spending) {
+        return GoalRes.builder()
+                      .goalBalance(goalBalance)
+                      .spending(spending).build();
+    }
 }
