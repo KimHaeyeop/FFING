@@ -46,9 +46,20 @@ export default defineConfig({
       },
     }),
   ],
+
   server: {
     headers: {
       "Service-Worker-Allowed": "/",
     },
   },
 });
+
+// server: {
+//   proxy: {
+//     '/match': {
+//       target: 'http://localhost:8900',
+//       changeOrigin: true,
+//       rewrite: (path) => path.replace(/^\/match/, ''),
+//     }
+//   }
+// }
