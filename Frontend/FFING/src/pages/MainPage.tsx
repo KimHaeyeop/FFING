@@ -17,8 +17,7 @@ const MainPage: React.FC = () => {
   // 테스트
   const fetchData = async () => {
     try {
-      const response = await get3();
-      console.log(response)
+      await get3('1');
     } catch (error) {
       console.error('Error fetching certain spending data:', error);
     }

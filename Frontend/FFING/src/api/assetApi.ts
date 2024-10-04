@@ -11,6 +11,11 @@ export interface get2Interface {
   stockAccountId: string
 }
 
+// 현재 전체 자산 조회 인터페이스
+export interface get3Interface {
+  userId: string;
+}
+
 // 예적금 계좌별 입출금 조회 인터페이스
 export interface get5Interface {
   accountId: string;
@@ -25,7 +30,7 @@ export interface get7Interface {
 // 현재 보유 중인 증권사별 자산 개요 불러오기
 export async function get1(ssafyUserId: string) {
   try {
-    const response = await axios.get<get1Interface>(`/stock${ssafyUserId}`);
+    const response = await axios.get<get1Interface>(`/stock/${ssafyUserId}`);
     console.log(response);
     return response;
   } catch (error) {
@@ -47,9 +52,9 @@ export async function get2(ssafyUserId: string, stockAccountId: string) {
 }
 
 // 현재 전체 자산 조회
-export async function get3() {
+export async function get3(userId: string) {
   try {
-    const response = await axios.get('/asset');
+    const response = await axios.get<get3Interface>(`/asset?userId=${userId}`);
     console.log(response);
     return response;
   } catch (error) {
@@ -59,9 +64,9 @@ export async function get3() {
 }
 
 // 예적금 계좌 정보 조회
-export async function get4() {
+export async function get4(userId: string) {
   try {
-    const response = await axios.get('/asset/deposit');
+    const response = await axios.get<get3Interface>(`/asset/deposit?userId=${userId}`);
     console.log(response);
     return response
   } catch (error) {
@@ -83,9 +88,9 @@ export async function get5(type: string, accountId: string) {
 }
 
 // 수시입출금 계좌 정보 조회
-export async function get6() {
+export async function get6(userId: string) {
   try {
-    const response = await axios.get('/asset/account');
+    const response = await axios.get<get3Interface>(`/asset/account?userId=${userId}`);
     console.log(response);
     return response;
   } catch (error) {
