@@ -1,5 +1,5 @@
 import React from 'react';
-import { mdiFood, mdiTrainCar, mdiShopping, mdiSofaSingleOutline, mdiTheater, mdiCashMultiple } from '@mdi/js';
+import { mdiFood, mdiTrainCar, mdiShopping, mdiSofaSingleOutline, mdiCashMultiple, mdiBikePedalMountain } from '@mdi/js';
 import Icon from '@mdi/react';
 
 interface ExpenseDetailProps {
@@ -10,16 +10,18 @@ interface ExpenseDetailProps {
 }
 
 const ExpenseDetail: React.FC<ExpenseDetailProps> = ({ category, title, date, cost }) => {
-  const categoryIconMap = {
-    '식비': mdiFood,
-    '교통': mdiTrainCar,
-    '쇼핑': mdiShopping,
-    '생활/문화': mdiSofaSingleOutline,
-    '금융': mdiCashMultiple,
+  const categoryIconMap:  { [key: string]: string } = {
+    'FOOD_BAKERY': mdiFood,
+    'TRANSPORTATION': mdiTrainCar,
+    'SHOPPING': mdiShopping,
+    'LIFE_CULTURE': mdiSofaSingleOutline,
+    'FINANCE': mdiCashMultiple,
+    'OVERSEAS': mdiBikePedalMountain,  // 오류 대비
   };
 
   return (
     <>
+    <hr className='border-1 border-black'/>
       <div className="flex justify-between items-center m-4">
         {/* 왼편 아이콘과 타이틀 */}
         <div className="flex items-center">
@@ -31,10 +33,9 @@ const ExpenseDetail: React.FC<ExpenseDetailProps> = ({ category, title, date, co
         </div>
         {/* 오른편 비용 */}
         <div>
-          <p className="font-bold">-{cost.toLocaleString()}원</p>
+          <p className="font-bold">-{cost.toLocaleString()}</p>
         </div>
       </div>
-      <hr className='border-1 border-black'/>
     </>
   );
 };

@@ -1,11 +1,15 @@
 import React from "react";
 import { Radar } from "react-chartjs-2";
+import { usePetStats } from "../../hook/usePetStats";
+
 import 'chart.js/auto';
 
 const PetStatusChart: React.FC = () => {
 
-  const currentWeek = { 식비: 6, 쇼핑: 8, 교통: 6, 생활: 6, 문화: 6 };
-  const previousWeek = { 식비: 8, 쇼핑: 6, 교통: 6, 생활: 8, 문화: 8 };
+  const { data: petData } = usePetStats();
+
+  const currentWeek = petData?.currentWeek || { 식비: 0, 쇼핑: 0, 교통: 0, 생활: 0, 문화: 0 };
+  const previousWeek = petData?.previousWeek || { 식비: 0, 쇼핑: 0, 교통: 0, 생활: 0, 문화: 0 };
 
   const labels = ['식비', '쇼핑', '교통', '생활', '문화'];
 

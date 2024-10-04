@@ -5,24 +5,25 @@ import { mdiChevronRight } from "@mdi/js";
 import TextHeader from "../components/Common/TextHeader";
 import NavBar from "../components/Common/Navbar";
 import useViewportStore from "../store/useViewportStore";
-import SpendingMonthlyChart from "../components/Spending/MonthlyChart";
-import { requestPermissionAndGetToken } from "../service/firebase";
+import MonthlyDoughnutChart from "../components/Spending/MonthlyDoughnutChart";
+import { get1, get2, get3, get4, get5, get6, get7 } from "../api/assetApi";
+
 const MainPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
 
-  useEffect(() => {
-    const initializeFCM = async () => {
-      const userId = 1; // 예시 사용자 ID, 실제 존재하는 ID로 변경해야 함
-      try {
-        const token = await requestPermissionAndGetToken(userId);
-        console.log("Obtained FCM Token:", token);
-      } catch (error) {
-        console.error("Error obtaining FCM token:", error);
-      }
-    };
+  // 테스트
+  const fetchData = async () => {
+    try {
+      const response = await get3();
+      console.log(response);
+    } catch (error) {
+      console.error("Error fetching certain spending data:", error);
+    }
+  };
 
-    initializeFCM();
+  useEffect(() => {
+    fetchData();
   }, []);
 
   return (
@@ -33,8 +34,9 @@ const MainPage: React.FC = () => {
         </header>
         <main
           className="mx-auto"
-          style={{ height: `${dvh * 75}px`, width: `${dvw * 90}px` }}
+          style={{ height: `${dvh * 80}px`, width: `${dvw * 90}px` }}
         >
+          {/* 자산 목표 달성 관련 */}
           <div
             className="border-black border-4 rounded-lg"
             style={{ height: "20%" }}
@@ -58,7 +60,8 @@ const MainPage: React.FC = () => {
                 <Icon path={mdiChevronRight} size={1} color="#F55322" />
               </Link>
             </div>
-            <SpendingMonthlyChart chartData={[20, 5, 15, 25, 20, 15]} />
+            {/* 이번 달 지출 내역을 나타내는 차트 API 연동 필요*/}
+            <MonthlyDoughnutChart />
           </div>
         </main>
         <footer style={{ height: `${dvh * 10}px` }}>
