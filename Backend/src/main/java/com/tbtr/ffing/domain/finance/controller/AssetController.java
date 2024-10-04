@@ -21,6 +21,7 @@ public class AssetController {
 
     private final AssetService assetService;
 
+
     @GetMapping("")
     public ResponseEntity<Object> selectTotalAsset(@RequestParam long userId) {
         Map<String, Object> resultMap = new HashMap<>();
