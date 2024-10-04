@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import Icon from '@mdi/react';
 import { mdiChevronRight } from '@mdi/js';
@@ -7,19 +7,22 @@ import NavBar from "../components/Common/Navbar";
 import useViewportStore from "../store/useViewportStore";
 import MonthlyDoughnutChart from "../components/Spending/MonthlyDoughnutChart";
 import PetSprite from "../components/Game/PetSprite";
-import { get1, get2, get3, get4, get5, get6, get7 } from '../api/assetApi'
+import { get1, get2, get3, get4, get5, get6, get7 } from '../api/AssetApi'
 import SpeechBubble from "../components/Common/SpeechBubble";
-
+import { getMonthlyExpense } from '../api/SpendingApi';
 
 
 const MainPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
+  const [thisMonthExpense, setThisMonthExpese ] = useState(0) // 이번 달 지출액 관리
 
-  // 테스트
+  // 이번 달 지출액을 가져오는 함수
   const fetchData = async () => {
     try {
-      await get3('1');
+      const yyyyMm = new Date().toISOString().split('T')[0].replace(/-/g, '').slice(0, 6);
+      const response = await getMonthlyExpense(yyyyMm);
+      setThisMonthExpese(response.data.result.totalExpense);
     } catch (error) {
       console.error('Error fetching certain spending data:', error);
     }
@@ -50,7 +53,7 @@ const MainPage: React.FC = () => {
               <div className="absolute bottom-8 left-8 p-2 w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32">
                 <PetSprite imageUrl="/pets/penguin.png" isUnlocked={true} />
               </div>
-              <SpeechBubble text="안녕하세요." x={1} y={1} />
+              {/* <SpeechBubble text="안녕하세요." x={1} y={1} /> */}
             </div>
           </div>
           {/* 지출 내역 관련 */}
@@ -59,7 +62,7 @@ const MainPage: React.FC = () => {
               <p className="text-xl">이번달 지출내역</p>
               <Link to='/spending' className='flex items-center'>
                 {/* 사용 금액 API 가져오기 */}
-                <p style={{color: '#F55322'}}>9,123,456원</p>
+                <p style={{color: '#F55322'}}>{thisMonthExpense.toLocaleString(undefined, {maximumFractionDigits: 0})}원</p>
                 <Icon path={mdiChevronRight} size={1} color='#F55322'/>
               </Link>
             </div>
