@@ -43,4 +43,13 @@ export default defineConfig({
     })
   
   ],
+  // server: {
+  //   proxy: {
+  //     '/match': {
+  //       target: 'http://localhost:8900',
+  //       changeOrigin: true,
+  //       rewrite: (path) => path.replace(/^\/match/, ''),
+  //     }
+  //   }
+  // }
 })
