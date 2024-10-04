@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 
@@ -29,6 +30,14 @@ public class MatchingController {
     private final BattleService battleService;
 
     private static final String MATCH_REQUEST_KEY = "match_request-";
+
+    @MessageMapping("/")
+    @SendTo("/sub/")
+    public String test(){
+        System.out.println("socket test");
+
+        return "socket hi";
+    }
 
     // TODO: 랜덤 매칭 추가
     @MessageMapping("/match/random/request")
