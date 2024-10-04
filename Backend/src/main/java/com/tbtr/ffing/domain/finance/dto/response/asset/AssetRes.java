@@ -17,6 +17,6 @@ public class AssetRes {
 	private BigDecimal depositSavingsBalance;
 	private BigDecimal stockBalance;
 	private BigDecimal othersBalance;
-	private LocalDate updatedAt;
+	private String updatedDate;
 
 }
