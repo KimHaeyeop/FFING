@@ -7,9 +7,9 @@ import com.tbtr.ffing.domain.finance.dto.response.goal.SpendingRes;
 
 public interface GoalService {
 
+    GoalDetailRes getGoal(Long userId, Long ssafyUserId);
+
     GoalRes setGoal(GoalReq goalReq);
 
     SpendingRes setSpending(GoalReq goalReq);
-
-    GoalDetailRes getGoal(Long userId);
 }
