@@ -1,5 +1,6 @@
 package com.tbtr.ffing.domain.game.entity;
 
+import com.tbtr.ffing.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,12 +19,15 @@ public class PetCollection {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long petCollectionId;
 
-    @Column(nullable = false)
-    private LocalDate obtainedAt;
+    @Column(nullable = false, length = 8)
+    private String createdDate;
 
-    @Column(nullable = false)
-    private Long petId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pet_id", nullable = false)
+    private PetList petList;
 
-    @Column(nullable = false)
-    private Long gameProfileId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
 }
