@@ -1,4 +1,4 @@
-import axios from "./axiosConfig";
+import axios from "./AxiosConfig";
 
 // // 현재 보유 중인 증권사별 자산 개요 인터페이스
 export interface get1Interface {

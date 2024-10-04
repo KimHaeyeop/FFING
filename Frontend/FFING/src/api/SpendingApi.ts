@@ -1,4 +1,4 @@
-import axios from "./axiosConfig";
+import axios from "./AxiosConfig";
 
 // 지출 내역 인터페이스
 export interface ExpenseDetail {
