@@ -1,6 +1,8 @@
 spring:
   application:
     name: ffing
+  profiles:
+    active: develop
   jpa:
     hibernate:
       ddl-auto: update
@@ -46,14 +48,18 @@ spring:
 logging:
   level:
     org.springframework.batch: DEBUG
-    org.springframework.jdbc: TRACE
+#    org.springframework.jdbc: TRACE
     org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql: TRACE
-    org.springframework.jdbc.datasource: TRACE
+#    org.hibernate.type.descriptor.sql: TRACE
+#    org.springframework.jdbc.datasource: TRACE
     com.zaxxer.hikari: DEBUG
     org.springframework.boot.autoconfigure.jdbc: DEBUG
 jwt:
   secret: ${JWT_SECRET}
+  access:
+    expiration: ${ACCESS_TOKEN_EXPIRATION_PERIOD}
+  refresh:
+    expiration: ${REFRESH_TOKEN_EXPIRATION_PERIOD}
 
 ---
 spring:
