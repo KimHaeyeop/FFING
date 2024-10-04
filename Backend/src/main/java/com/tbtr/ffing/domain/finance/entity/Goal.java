@@ -20,7 +20,7 @@ public class Goal {
     private Long goalId;
 
     @Column(nullable = false)
-    private Boolean goalType;  // 0: 목표 달성액, 1: 목표 소비액
+    private String goalType;  // 1:자산, 2: 소비
 
     @Column(nullable = false, precision = 16, scale = 2)
     private BigDecimal balance;
@@ -33,4 +33,15 @@ public class Goal {
 
     @Column(nullable = false)
     private Long userId;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDate.now();
+        this.updatedAt = LocalDate.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDate.now();
+    }
 }
