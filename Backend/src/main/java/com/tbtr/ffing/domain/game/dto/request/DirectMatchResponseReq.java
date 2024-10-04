@@ -1,4 +1,4 @@
-package com.tbtr.ffing.domain.game.dto.response;
+package com.tbtr.ffing.domain.game.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @ToString
-public class DirectMatchNotification {
+public class DirectMatchResponseReq {
     private String requestId;
-    private String opponentUserId;
+    private String toUserId;
 }
