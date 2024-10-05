@@ -1,14 +1,15 @@
 package com.tbtr.ffing.domain.user.service;
 
-import com.tbtr.ffing.domain.user.dto.UserInfoDTO;
-import com.tbtr.ffing.domain.user.dto.UserSigninDTO;
-import java.util.Map;
+import com.tbtr.ffing.domain.user.dto.request.UserInfoReq;
+import com.tbtr.ffing.domain.user.dto.request.UserSigninReq;
+import com.tbtr.ffing.domain.user.dto.response.SigninRes;
+import com.tbtr.ffing.domain.user.dto.response.UserInfoRes;
 
 public interface AuthService {
 
-    UserInfoDTO.Response signup(UserInfoDTO.Request requestDTO);
+    UserInfoRes signup(UserInfoReq userInfoReq);
 
-    Map<String, Object> signin(UserSigninDTO.Request requestDTO);
+    SigninRes signin(UserSigninReq userSigninReq);
 
     Boolean isNicknameDuplication(String nickname);
 }
