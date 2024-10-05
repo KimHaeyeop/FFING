@@ -36,6 +36,7 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
+    @Transactional
     public List<Object> getDepositList(long userId) {
         User user = userRepository.findByUserId(userId);
         long ssafyUserId = user.getSsafyUserId();
@@ -52,6 +53,7 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
+    @Transactional
     public List<AccountAssetRes> getAccountList(long userId) {
         User user = userRepository.findByUserId(userId);
         long ssafyUserId = user.getSsafyUserId();
@@ -59,6 +61,7 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
+    @Transactional
     public List<?> getDepositTransactionList(String type, long accountId) {
         List<?> resultList = new ArrayList<>();
         if (type.equals("deposit")) {
@@ -70,6 +73,7 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
+    @Transactional
     public List<AccountTransactionAssetRes> getAccountTransactionList(long accountId) {
         return assetRepository.findAccountTransactionByAccountId(accountId);
     }
