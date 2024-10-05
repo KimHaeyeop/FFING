@@ -13,6 +13,8 @@ import SpendingMonthlyPage from './pages/SpendingMonthlyPage';
 import SpendingMonthlyAnalysisPage from './pages/SpendingMonthlyAnalysisPage';
 import SpendingWeeklyPage from './pages/SpendingWeeklyPage'
 import AssetMainPage from './pages/AssetMainPage';
+import DepositSavingsPage from './pages/DepositSavingsPage';
+import DepositSavingDetailPage from './pages/DepositSavingDetailPage';
 
 const App: React.FC = () => {
   return (
@@ -28,8 +30,12 @@ const App: React.FC = () => {
         <Route path="/spending/monthly/analysis" element={<SpendingMonthlyAnalysisPage />} />
         {/* 주간 지출 페이지 */}
         <Route path="/spending/monthly/weekly" element={<SpendingWeeklyPage />} />
-        {/* 주간 지출 페이지 */}
+        {/* 자산 메인 페이지 */}
         <Route path="/asset" element={<AssetMainPage />} />
+        {/* 예금 적금 페이지 */}
+        <Route path="/asset/product" element={<DepositSavingsPage />} />
+        {/* 예금 적금 페이지 */}
+        <Route path="/asset/product/detail" element={<DepositSavingDetailPage />} />
         {/* 게임 페이지 */}
         <Route path="/game" element={<GamePage />} />
         {/* 매칭 잡는 페이지 */}
