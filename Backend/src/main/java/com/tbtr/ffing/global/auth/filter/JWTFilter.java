@@ -11,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,10 +28,10 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        String[] excludePath = {"/api/v1/auth"};
+        String[] excludePath = {"/api/v1/auth/signup", "/api/v1/auth/signin", "/api/v1/auth/check-email", "/api/v1/auth/check-nickname"};
         String path = request.getRequestURI();
-//        return Arrays.stream(excludePath).anyMatch(path::startsWith);
-        return true; // 테스트를 위해 모두 true로 열어둠(임시)
+        return Arrays.stream(excludePath).anyMatch(path::startsWith);
+//        return true; // 테스트를 위해 모두 true로 열어둠(임시)
     }
 
     @Override
