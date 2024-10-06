@@ -25,6 +25,7 @@
     "react-router-dom": "^6.26.2",
     "sockjs-client": "^1.6.1",
     "tailwind": "^4.0.0",
+    "three-dots": "^0.3.2",
     "zustand": "^5.0.0-rc.2"
   },
   "devDependencies": {
