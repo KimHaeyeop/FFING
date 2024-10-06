@@ -1,4 +1,4 @@
-package com.tbtr.ffing.global.auth;
+package com.tbtr.ffing.global.auth.filter;
 
 import com.tbtr.ffing.domain.user.dto.CustomUserDetails;
 import com.tbtr.ffing.domain.user.entity.User;
@@ -11,7 +11,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
