@@ -1,28 +1,36 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import LinkHeader from "../components/Common/LinkHeader";
 import useViewportStore from "../store/useViewportStore";
 import NavBar from "../components/Common/Navbar";
 import DepositSavingCard from "../components/Asset/DepositSavingCard";
-import { getDepositSaving } from '../api/AssetApi';
+import { getDepositSaving, getAccount } from '../api/AssetApi';
 
 const DepositSavingsPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
   const [ financialProducts, setFinancialProducts ] = useState([]) // 보유 예금적금 자산 관리
 
+  const type = useLocation().state as { text: string }; // useNavigate를 통해 가져온 데이터를 사용
+
   // 이번 달 지출액을 가져오는 함수
-  const fetchData = async () => {
+  const fetchData = async (type: string) => {
     try {
-      // 실제 사용자 이름으로 진행
-      const response = await getDepositSaving('1');
-      setFinancialProducts(response.data.result)
+      if (type === '예금/적금') {
+        // 실제 사용자 이름으로 진행
+        const response = await getDepositSaving('1');
+        setFinancialProducts(response.data.result)
+      } else if (type === '입출금 통장') {
+        const response = await getAccount('1');
+        setFinancialProducts(response.data.result)
+      }
     } catch (error) {
       console.error('Error fetching certain spending data:', error);
     }
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData(type.text);
   }, []);
 
   return (

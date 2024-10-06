@@ -1,10 +1,13 @@
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
+import { useNavigate } from 'react-router-dom'
+import { ChartEvent, LegendItem } from 'chart.js';  // chart.js 안에 chart의 타입이 있다.
 // import { Chart as ChartJS, ArcElement, Tooltip, Legend, layouts } from 'chart.js';
-
 // ChartJS.register(ArcElement, Tooltip, Legend);
 
 const AssetPortfolioHorizontalBarChart: React.FC = () => {
+  const navigate = useNavigate()
+
   const data = {
     labels: ['자산 구성'],
     datasets: [
@@ -37,6 +40,10 @@ const AssetPortfolioHorizontalBarChart: React.FC = () => {
     plugins: {
       legend: {
         position: 'bottom' as const, // 차트 아래에 범례
+        onClick: (e: ChartEvent, legendItem: LegendItem) => {
+          const text = legendItem.text
+          navigate('product', { state: { text }});
+        },
       },
     },
     title: {

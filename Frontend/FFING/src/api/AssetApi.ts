@@ -88,13 +88,13 @@ export async function getTransaction(type: string, accountId: string) {
 }
 
 // 수시입출금 계좌 정보 조회
-export async function get6(userId: string) {
+export async function getAccount(userId: string) {
   try {
     const response = await axios.get<getTotalAssetInterface>(`/asset/account?userId=${userId}`);
     console.log(response);
     return response;
   } catch (error) {
-    console.error('Error fetching get6:', error);
+    console.error('Error fetching getAccount:', error);
     throw error;
   }
 }
@@ -129,7 +129,7 @@ export default {
   getTotalAsset,
   getDepositSaving,
   getTransaction,
-  get6,
+  getAccount,
   get7,
   get8,
 };
