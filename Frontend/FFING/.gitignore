@@ -1,3 +1,7 @@
+# Secret Environments
+*.env
+*.env.*
+
 # Logs
 logs
 *.log
@@ -25,7 +29,6 @@ dist-ssr
 
 # dev-dist 무시
 dev-dist/
-.env
 
 # node_modules 무시
 node_modules/
