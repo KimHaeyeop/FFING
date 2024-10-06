@@ -68,7 +68,7 @@ public class JWTUtil {
     public String createJwt(String category, CustomUserDetails userDetails) {
 
         Long expirationPeriod =
-                category.equals("access") ? ACCESS_TOKEN_EXPIRATION_PERIOD : 30;
+                category.equals("access") ? ACCESS_TOKEN_EXPIRATION_PERIOD : REFRESH_TOKEN_EXPIRATION_PERIOD;
 
         return Jwts.builder()
                    .claims(userDetails.getClaims())

@@ -30,8 +30,8 @@ public class JWTFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String[] excludePath = {"/api/v1/auth"};
         String path = request.getRequestURI();
-        return Arrays.stream(excludePath).anyMatch(path::startsWith);
-//        return true; // 테스트를 위해 모두 true로 열어둠(임시)
+//        return Arrays.stream(excludePath).anyMatch(path::startsWith);
+        return true; // 테스트를 위해 모두 true로 열어둠(임시)
     }
 
     @Override
