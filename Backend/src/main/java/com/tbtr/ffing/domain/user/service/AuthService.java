@@ -11,5 +11,7 @@ public interface AuthService {
 
     SigninRes signin(UserSigninReq userSigninReq);
 
+    Boolean isEmialDuplication(String email);
+
     Boolean isNicknameDuplication(String nickname);
 }
