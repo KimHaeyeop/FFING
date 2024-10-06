@@ -11,20 +11,19 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Builder
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
-    private final Long userId, ssafyUserId;
-    private final String email, password;
-    private final UserRole role;
+    private Long userId, ssafyUserId;
+    private String email, password;
+    private UserRole role;
 
     public static CustomUserDetails of(User user) {
         return CustomUserDetails.builder()

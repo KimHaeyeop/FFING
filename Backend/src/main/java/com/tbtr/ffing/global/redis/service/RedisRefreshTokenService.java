@@ -14,11 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Log4j2
 public class RedisRefreshTokenService {
 
-    private final RedisRefreshTokenRepository redisRefreshTokenRepository;;
+    private final RedisRefreshTokenRepository redisRefreshTokenRepository;
     @Value("${REFRESH_TOKEN_EXPIRATION_PERIOD}")
     private Long REFRESH_TOKEN_EXPIRATION_PERIOD;
 
-    public void saveRedisData(Long userId, String accessToken, String refreshToken) {
+    public void saveRedisData(Long userId, String refreshToken) {
         log.info("[Redis] : saveRedisData");
         RedisRefreshToken refreshTokenRedis = new RedisRefreshToken(String.valueOf(userId), refreshToken,
                 REFRESH_TOKEN_EXPIRATION_PERIOD);
@@ -27,7 +27,7 @@ public class RedisRefreshTokenService {
 
     public void deleteRedisDataById(Long userId) {
         log.info("[Redis] : deleteRedisData by userId");
-        redisRefreshTokenRepository.findByUserId(userId.toString())
+        redisRefreshTokenRepository.findById(userId.toString())
                                    .ifPresent(redisRefreshTokenRepository::delete);
     }
 }
