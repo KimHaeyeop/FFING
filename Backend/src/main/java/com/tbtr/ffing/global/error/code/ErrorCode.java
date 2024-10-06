@@ -15,10 +15,12 @@ public enum ErrorCode {
     User, Auth 관련 오류
      */
     AUTH_DEFAULT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH-001", "회원 관련 오류가 발생했습니다."),
+    INCORRECT_PASSWORD(HttpStatus.UNAUTHORIZED, "AUTH-002", "이메일 또는 비밀번호가 올바르지 않습니다."),
+    TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH-003", "토큰이 만료되었습니다."),
 
-    NICKNAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "USER-001", "이미 사용 중인 이메일입니다."),
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER-002", "사용자가 발견되지 않았습니다."),
-    INCORRECT_PASSWORD(HttpStatus.UNAUTHORIZED, "USER-003", "아이디 또는 비밀번호가 올바르지 않습니다."),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER-001", "사용자가 발견되지 않았습니다."),
+    EMAIL_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "USER-002", "이미 사용 중인 이메일입니다."),
+    NICKNAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "USER-003", "이미 사용 중인 닉네임입니다."),
 
     /*
     Stock 관련 오류

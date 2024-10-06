@@ -6,8 +6,11 @@ import com.tbtr.ffing.domain.user.dto.response.SigninRes;
 import com.tbtr.ffing.domain.user.dto.response.UserInfoRes;
 import com.tbtr.ffing.domain.user.service.AuthService;
 import com.tbtr.ffing.global.common.dto.Response;
+import com.tbtr.ffing.global.error.code.ErrorCode;
+import com.tbtr.ffing.global.error.exception.CustomException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@Log4j2
 @RequestMapping("/auth")
 public class AuthController {
 
@@ -40,18 +44,30 @@ public class AuthController {
         Response<Object> response = Response.builder()
                                                 .code(200L)
                                                 .message("로그인에 성공하였습니다.")
-                                                .result(signinRes.getUserSigninRes()) // 로그인 응답 데이터
-                                                .build();
+                                                .result(signinRes.getUserSigninRes()).build();
 
         return new ResponseEntity<>(response, signinRes.getHttpHeaders(), HttpStatus.OK);
+    }
+
+    @GetMapping("/check-email")
+    public ResponseEntity<?> checkEmail(@RequestParam String email) {
+        Boolean isEmailDuplication = authService.isEmialDuplication(email);
+        if (!isEmailDuplication) {
+            return ResponseEntity.ok(Response.builder()
+                    .code(200L)
+                    .message(email + " 은(는) 사용 가능한 이메일입니다.").build());
+        }
+        throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS);
     }
 
     @GetMapping("/check-nickname")
     public ResponseEntity<?> checkNickname(@RequestParam String nickname) {
         Boolean isNicknameDuplication = authService.isNicknameDuplication(nickname);
         if (!isNicknameDuplication) {
-            return new ResponseEntity<>(nickname + " 은(는) 사용가능한 닉네임입니다.", HttpStatus.OK);
+            return ResponseEntity.ok(Response.builder()
+                                             .code(200L)
+                                             .message(nickname + " 은(는) 사용 가능한 닉네임입니다.").build());
         }
-        return new ResponseEntity<>(nickname + " 은(는) 중복된 닉네임입니다.", HttpStatus.BAD_REQUEST);
+        throw new CustomException(ErrorCode.NICKNAME_ALREADY_EXISTS);
     }
 }
