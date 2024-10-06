@@ -101,24 +101,27 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public void reissue(HttpServletRequest request, HttpServletResponse response) {
-
         // 1. refresh token 추출
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            throw new CustomException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
+        }
         String refresh = Arrays.stream(request.getCookies())
                                .filter(cookie -> cookie.getName().equals("refresh"))
                                .map(Cookie::getValue)
                                .findFirst()
                                .orElseThrow(() -> new CustomException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
-        System.out.println(refresh);
+
         // 2. 유효성 및 만료 체크
         if (jwtUtil.isExpired(refresh)) {
-            throw new CustomException(ErrorCode.REFRESH_TOKEN_EXPIRED);
+            throw new CustomException(ErrorCode.EXPIRED_REFRESH_TOKEN);
         }
 
         // 3. redis 에 있는 값과 비교
         Long userId = jwtUtil.getUserId(refresh);
         RedisRefreshToken storedRefreshToken = redisRefreshTokenRepository.findById(userId.toString())
                                                                           .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REFRESH_TOKEN));
-        log.info("redis refresh: "+storedRefreshToken.getRefreshToken());
+        log.info("redis refresh: {}", storedRefreshToken.getRefreshToken());
         if (!storedRefreshToken.getRefreshToken().equals(refresh)) {
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
