@@ -124,7 +124,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // 4. 새로운 access, refresh token 생성
-        User user = findUserByUserId(userId);
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         CustomUserDetails customUserDetails = CustomUserDetails.of(user);
         String newAccessToken = jwtUtil.createJwt("access", customUserDetails);
         String newRefreshToken = jwtUtil.createJwt("refresh", customUserDetails);
@@ -138,15 +138,6 @@ public class AuthServiceImpl implements AuthService {
         for (String headerName : httpHeaders.keySet()) {
             response.setHeader(headerName, httpHeaders.getFirst(headerName));
         }
-    }
-
-    // 유저 아이디로 찾기
-    private User findUserByUserId(Long userId) {
-        User user = userRepository.findByUserId(userId);
-        if (user == null) {
-            throw new CustomException(ErrorCode.USER_NOT_FOUND);
-        }
-        return user;
     }
 
     // 이메일 중복 체크
