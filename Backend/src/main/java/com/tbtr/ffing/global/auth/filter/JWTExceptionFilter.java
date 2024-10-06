@@ -20,7 +20,7 @@ public class JWTExceptionFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } catch (CustomJWTException e) {
-            SecurityErrorResponseUtil.setSecurityErrorResponse(e, response, request);
+            SecurityErrorResponseUtil.setSecurityErrorResponse(e, response);
         }
 
     }

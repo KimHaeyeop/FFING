@@ -32,11 +32,10 @@ public class JWTUtil {
     /**
      * 토큰 유효성 검사 (expired 제외) - 토큰의 유효기간 만료는 다른 메소드로 관리함
      */
-    public boolean validateToken(String token) {
+    public void validateToken(String token) {
 
         try {
             Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
-            return true;
         } catch (ExpiredJwtException e) {
             throw e;
         } catch (MalformedJwtException e) {

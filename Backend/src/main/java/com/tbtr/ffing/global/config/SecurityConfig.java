@@ -44,9 +44,7 @@ public class SecurityConfig {
         // jwt 토큰 확인 필터
         http.addFilterBefore(new JWTFilter(jwtUtil, userRepository), UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(new JWTExceptionFilter(), JWTFilter.class)
-            .exceptionHandling(config -> {
-                config.accessDeniedHandler(new CustomAccessDeniedHandler());
-            });
+            .exceptionHandling(config -> config.accessDeniedHandler(new CustomAccessDeniedHandler()));
         return http.build();
     }
 

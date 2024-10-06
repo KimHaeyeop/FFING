@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tbtr.ffing.global.error.code.ErrorCode;
 import com.tbtr.ffing.global.error.entity.ErrorResponseEntity;
 import com.tbtr.ffing.global.error.exception.exceptionType.CustomJWTException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -12,7 +11,7 @@ public class SecurityErrorResponseUtil {
     /**
      * Security Filter 에서 발생한 예외 사항을 ErrorResponse 형태로 변환함
      */
-    public static void setSecurityErrorResponse(CustomJWTException e, HttpServletResponse response, HttpServletRequest request)
+    public static void setSecurityErrorResponse(CustomJWTException e, HttpServletResponse response)
             throws IOException {
         ErrorCode errorCode = e.getErrorCode();
         int status = errorCode.getHttpStatus().value();
