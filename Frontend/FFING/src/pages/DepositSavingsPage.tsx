@@ -11,7 +11,7 @@ const DepositSavingsPage: React.FC = () => {
   const dvh = useViewportStore((state) => state.dvh);
   const [ financialProducts, setFinancialProducts ] = useState([]) // 보유 예금적금 자산 관리
 
-  const type = useLocation().state as { text: string }; // useNavigate를 통해 가져온 데이터를 사용
+  const type = useLocation().state as { title: string }; // useNavigate를 통해 가져온 데이터를 사용
 
   // 이번 달 지출액을 가져오는 함수
   const fetchData = async (type: string) => {
@@ -30,7 +30,7 @@ const DepositSavingsPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchData(type.text);
+    fetchData(type.title);
   }, []);
 
   return (
