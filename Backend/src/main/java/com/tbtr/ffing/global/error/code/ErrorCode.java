@@ -23,6 +23,8 @@ public enum ErrorCode {
     UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH-007", "지원하지 않는 토큰입니다."),
     TOKEN_DEFAULT_ERROR(HttpStatus.BAD_REQUEST, "AUTH-008","토큰 처리 중 오류가 발생했습니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH-009", "유효하지 않은 토큰입니다."),
+    ACCESS_DENIED_ERROR(HttpStatus.FORBIDDEN, "AUTH-010", "접근할 수 없습니다."),
+
 
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER-001", "사용자가 발견되지 않았습니다."),
     EMAIL_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "USER-002", "이미 사용 중인 이메일입니다."),

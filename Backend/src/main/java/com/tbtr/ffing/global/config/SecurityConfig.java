@@ -1,7 +1,9 @@
 package com.tbtr.ffing.global.config;
 
 import com.tbtr.ffing.domain.user.repository.UserRepository;
-import com.tbtr.ffing.global.auth.JWTFilter;
+import com.tbtr.ffing.global.auth.filter.JWTExceptionFilter;
+import com.tbtr.ffing.global.auth.filter.JWTFilter;
+import com.tbtr.ffing.global.auth.handler.CustomAccessDeniedHandler;
 import com.tbtr.ffing.global.auth.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -34,14 +36,17 @@ public class SecurityConfig {
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests((auth) -> auth
-//                    .requestMatchers("/", "/auth/**").permitAll()
 //                    .requestMatchers("/admin/**").hasRole("ADMIN")
-//                    .anyRequest().authenticated())
-                    .anyRequest().permitAll()) // 임시로 모두 허용
+                    .anyRequest().permitAll())
             .sessionManagement(session -> session
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // 세션 관리 설정
-        http.addFilterBefore(new JWTFilter(jwtUtil, userRepository),
-                UsernamePasswordAuthenticationFilter.class);
+
+        // jwt 토큰 확인 필터
+        http.addFilterBefore(new JWTFilter(jwtUtil, userRepository), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new JWTExceptionFilter(), JWTFilter.class)
+            .exceptionHandling(config -> {
+                config.accessDeniedHandler(new CustomAccessDeniedHandler());
+            });
         return http.build();
     }
 
