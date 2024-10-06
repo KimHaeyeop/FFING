@@ -17,7 +17,12 @@ interface DepositSavingCardProps {
 
 const DepositSavingCard: React.FC<DepositSavingCardProps> = ({ key, product }) => {
   const navigate = useNavigate();
-
+  
+  const bankCodeBgColor: { [key: string]: string } = {
+    '001': 'linear-gradient(100deg, #6C64AA 0%, #B6ADF4 100%)',
+    '002': 'linear-gradient(100deg, #DD29C3 0%, #FBB18E 100%)',
+    '003': 'linear-gradient(100deg, #50AB55 0%, #90E13D 100%)',
+  }
   const handleProductClick = (product: FinancialProductInterface) => {
     navigate('/asset/product/detail', { state: { key, product }})
   }
@@ -26,7 +31,7 @@ const DepositSavingCard: React.FC<DepositSavingCardProps> = ({ key, product }) =
     <div
       key={key}
       className="flex justify-around items-end rounded-md m-4"
-      style={{background: 'linear-gradient(100deg, #6C64AA 0%, #B6ADF4 100%)'}}
+      style={{background: bankCodeBgColor[product.bankCode]}}
       onClick={() => handleProductClick(product)}
     >
       <div className="text-white text-left text-xs m-2">

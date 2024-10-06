@@ -4,26 +4,13 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const AssetCurrentTargetHorizonBarChart: React.FC = () => {
-  const [property, setProperty] = React.useState(100000);
-  const [target, setTarget] = React.useState(1000000);
+interface AssetPortfolioHorizontalBarChartProps {
+  property: number;
+  target: number;
+}
 
-  // // 이번 달 지출액을 가져오는 함수
-  // const fetchData = async () => {
-  //   try {
-  //     // 적절한 유저 이름 설정 필요
-  //     const response = await getTotalAsset('1');
-  //     console.log(response)
-  //     // setProperty(response.data.result.totalExpense);
-  //     // setTarget(response.data.result.totalExpense)
-  //   } catch (error) {
-  //     console.error('Error fetching certain spending data:', error);
-  //   }
-  // };
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
+const AssetCurrentTargetHorizonBarChart: React.FC<AssetPortfolioHorizontalBarChartProps> = ({ property, target }) => {
 
   const data = {
     labels: ['달성'],
