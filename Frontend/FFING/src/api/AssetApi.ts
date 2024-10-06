@@ -17,7 +17,7 @@ export interface getTotalAssetInterface {
 }
 
 // 예적금 계좌별 입출금 조회 인터페이스
-export interface get5Interface {
+export interface getTransactionInterface {
   accountId: string;
   type: string;
 }
@@ -64,37 +64,37 @@ export async function getTotalAsset(userId: string) {
 }
 
 // 예적금 계좌 정보 조회
-export async function get4(userId: string) {
+export async function getDepositSaving(userId: string) {
   try {
     const response = await axios.get<getTotalAssetInterface>(`/asset/deposit?userId=${userId}`);
     console.log(response);
     return response
   } catch (error) {
-    console.error('Error fetching get4:', error);
+    console.error('Error fetching getDepositSaving:', error);
     throw error;
   }
 }
 
 // 예적금 계좌별 입출금 조회
-export async function get5(type: string, accountId: string) {
+export async function getTransaction(type: string, accountId: string) {
   try {
-    const response = await axios.get<get5Interface>(`/asset/deposit/${type}/${accountId}`);
+    const response = await axios.get<getTransactionInterface>(`/asset/deposit/${type}/${accountId}`);
     console.log(response);
     return response;
   } catch (error) {
-    console.log('Error fetching get5:', error)
+    console.log('Error fetching getTransaction:', error)
     throw error
   }
 }
 
 // 수시입출금 계좌 정보 조회
-export async function get6(userId: string) {
+export async function getAccount(userId: string) {
   try {
-    const response = await axios.get<get3Interface>(`/asset/account?userId=${userId}`);
+    const response = await axios.get<getTotalAssetInterface>(`/asset/account?userId=${userId}`);
     console.log(response);
     return response;
   } catch (error) {
-    console.error('Error fetching get6:', error);
+    console.error('Error fetching getAccount:', error);
     throw error;
   }
 }
@@ -127,9 +127,9 @@ export default {
   get1,
   get2,
   getTotalAsset,
-  get4,
-  get5,
-  get6,
+  getDepositSaving,
+  getTransaction,
+  getAccount,
   get7,
   get8,
 };
