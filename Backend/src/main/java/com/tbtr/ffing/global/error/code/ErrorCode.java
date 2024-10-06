@@ -16,7 +16,12 @@ public enum ErrorCode {
      */
     AUTH_DEFAULT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH-001", "회원 관련 오류가 발생했습니다."),
     INCORRECT_PASSWORD(HttpStatus.UNAUTHORIZED, "AUTH-002", "이메일 또는 비밀번호가 올바르지 않습니다."),
-    TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH-003", "토큰이 만료되었습니다."),
+    ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH-003", "액세스 토큰이 만료되었습니다."),
+    REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH-004", "리프레시 토큰이 만료되었습니다."),
+    ACCESS_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "AUTH-005", "액세스 토큰이 존재하지 않습니다."),
+    REFRESH_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "AUTH-006", "리프레시 토큰이 존재하지 않습니다."),
+    INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH-007", "유효하지 않은 액세스 토큰입니다."),
+    INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH-008", "유효하지 않은 리프레시 토큰입니다."),
 
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER-001", "사용자가 발견되지 않았습니다."),
     EMAIL_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "USER-002", "이미 사용 중인 이메일입니다."),
