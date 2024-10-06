@@ -8,6 +8,8 @@ import com.tbtr.ffing.domain.user.service.AuthService;
 import com.tbtr.ffing.global.common.dto.Response;
 import com.tbtr.ffing.global.error.code.ErrorCode;
 import com.tbtr.ffing.global.error.exception.CustomException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -28,6 +30,9 @@ public class AuthController {
 
     private final AuthService authService;
 
+    /**
+     * 회원가입
+     */
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody UserInfoReq userInfoReq) {
         UserInfoRes signupResponse = authService.signup(userInfoReq);
@@ -37,6 +42,9 @@ public class AuthController {
                                          .result(signupResponse).build());
     }
 
+    /**
+     * 로그인
+     */
     @PostMapping("/signin")
     public ResponseEntity<?> signin(@Valid @RequestBody UserSigninReq userSigninReq) {
         SigninRes signinRes = authService.signin(userSigninReq);
@@ -49,6 +57,9 @@ public class AuthController {
         return new ResponseEntity<>(response, signinRes.getHttpHeaders(), HttpStatus.OK);
     }
 
+    /**
+     * 이메일 중복 체크
+     */
     @GetMapping("/check-email")
     public ResponseEntity<?> checkEmail(@RequestParam String email) {
         Boolean isEmailDuplication = authService.isEmialDuplication(email);
@@ -60,6 +71,9 @@ public class AuthController {
         throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS);
     }
 
+    /**
+     * 닉네임 중복 체크
+     */
     @GetMapping("/check-nickname")
     public ResponseEntity<?> checkNickname(@RequestParam String nickname) {
         Boolean isNicknameDuplication = authService.isNicknameDuplication(nickname);
@@ -69,5 +83,16 @@ public class AuthController {
                                              .message(nickname + " 은(는) 사용 가능한 닉네임입니다.").build());
         }
         throw new CustomException(ErrorCode.NICKNAME_ALREADY_EXISTS);
+    }
+
+    /**
+     * access token 만료 시 refresh token 기반 재발급 요청
+     */
+    @PostMapping("/reissue")
+    public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
+        authService.reissue(request, response);
+        return ResponseEntity.ok(Response.builder()
+                                         .code(200L)
+                                         .message("access token 재발급 성공").build());
     }
 }
