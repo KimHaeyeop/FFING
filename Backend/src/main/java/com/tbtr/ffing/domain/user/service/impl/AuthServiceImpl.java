@@ -114,6 +114,7 @@ public class AuthServiceImpl implements AuthService {
 
         // 2. 유효성 및 만료 체크
         if (jwtUtil.isExpired(refresh)) {
+            clearCookie(response, "refresh");
             throw new CustomException(ErrorCode.EXPIRED_REFRESH_TOKEN);
         }
 
@@ -184,5 +185,13 @@ public class AuthServiceImpl implements AuthService {
         headers.add(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
 
         return headers;
+    }
+
+    // 쿠키 초기화
+    private void clearCookie(HttpServletResponse response, String cookieName) {
+        Cookie cookie = new Cookie(cookieName, null); // 쿠키 값 초기화
+        cookie.setMaxAge(0); // 유효 기간 0으로 설정하여 삭제
+        cookie.setPath("/"); // 모든 경로에 적용
+        response.addCookie(cookie); // 클라이언트에 삭제된 쿠키 전송
     }
 }
