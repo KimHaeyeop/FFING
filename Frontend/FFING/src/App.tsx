@@ -12,7 +12,9 @@ import SpendingCategoryPage from './pages/SpendingCategoryPage';
 import SpendingMonthlyPage from './pages/SpendingMonthlyPage';
 import SpendingMonthlyAnalysisPage from './pages/SpendingMonthlyAnalysisPage';
 import SpendingWeeklyPage from './pages/SpendingWeeklyPage'
-import ApiTest from './components/Property/ApiTest';
+import AssetMainPage from './pages/AssetMainPage';
+import DepositSavingsPage from './pages/DepositSavingsPage';
+import DepositSavingDetailPage from './pages/DepositSavingDetailPage';
 
 const App: React.FC = () => {
   return (
@@ -21,7 +23,7 @@ const App: React.FC = () => {
         {/* 메인 페이지 */}
         <Route path="/" element={<MainPage />} />
         {/* 자산 페이지 */}
-        <Route path="/assets" element={<ApiTest />} />
+        {/* <Route path="/assets" element={<ApiTest />} /> */}
         {/* 지출 페이지 */}
         <Route path="/spending" element={<SpendingCategoryPage />} />
         {/* 월간 지출 페이지 */}
@@ -30,6 +32,12 @@ const App: React.FC = () => {
         <Route path="/spending/monthly/analysis" element={<SpendingMonthlyAnalysisPage />} />
         {/* 주간 지출 페이지 */}
         <Route path="/spending/monthly/weekly" element={<SpendingWeeklyPage />} />
+        {/* 자산 메인 페이지 */}
+        <Route path="/asset" element={<AssetMainPage />} />
+        {/* 예금 적금 페이지 */}
+        <Route path="/asset/product" element={<DepositSavingsPage />} />
+        {/* 예금 적금 페이지 */}
+        <Route path="/asset/product/detail" element={<DepositSavingDetailPage />} />
         {/* 게임 페이지 */}
         <Route path="/game" element={<GamePage />} />
         {/* 매칭 잡는 페이지 */}
