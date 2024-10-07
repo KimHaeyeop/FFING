@@ -7,12 +7,14 @@ export const login = async (email: string, password: string) => {
       email,
       password,
     });
+    // console.log("테스트", response);
 
     // 응답 처리
     if (response.status === 200) {
-      console.log('로그인 성공', response);
+      // console.log('로그인 성공', response);
       // 토큰을 반환하여 페이지에서 처리할 수 있게 함
       const accessToken = response.headers.authorization;
+      // console.log(accessToken);
       const user = response.data.result;
       return { accessToken, user };
     }
