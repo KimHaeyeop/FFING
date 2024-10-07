@@ -18,9 +18,9 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
-  batch:
-#    jdbc:
-#      initialize-schema: always
+    #  batch:
+    #    jdbc:
+    #      initialize-schema: always
     job:
       enabled: false
   jackson:
@@ -32,7 +32,6 @@ spring:
 # firebase
 fcm:
   certification: certification.json
-
 
 server:
   port: 8900
@@ -59,11 +58,11 @@ logging:
   level:
     com.tbtr.ffing.domain.fcm.service: DEBUG
     org.springframework.batch: DEBUG
-#    org.springframework.jdbc: TRACE
+    #    org.springframework.jdbc: TRACE
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql: TRACE
     org.springframework.jdbc.datasource: TRACE
-#    com.zaxxer.hikari: DEBUG
+    #    com.zaxxer.hikari: DEBUG
     org.springframework.boot.autoconfigure.jdbc: DEBUG
 jwt:
   secret: ${JWT_SECRET}
