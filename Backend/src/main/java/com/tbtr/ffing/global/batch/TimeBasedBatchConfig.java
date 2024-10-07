@@ -54,7 +54,7 @@ public class TimeBasedBatchConfig {
     @Bean
     public Step addExpenseStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
         return new StepBuilder("addExpenseStep", jobRepository)
-                .<User, Expense>chunk(10, transactionManager)
+                .<User, Expense>chunk(1, transactionManager)
                 .reader(expenseItemReader)
                 .processor(expenseItemProcessor)
                 .writer(expenseItemWriter)

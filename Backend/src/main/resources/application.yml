@@ -18,9 +18,9 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
-  batch:
-#    jdbc:
-#      initialize-schema: always
+    #  batch:
+    #    jdbc:
+    #      initialize-schema: always
     job:
       enabled: false
   jackson:
@@ -28,6 +28,10 @@ spring:
       WRITE_DATES_AS_TIMESTAMPS: false
     deserialization:
       ADJUST_DATES_TO_CONTEXT_TIME_ZONE: false
+
+# firebase
+fcm:
+  certification: certification.json
 
 server:
   port: 8900
@@ -52,12 +56,13 @@ spring:
 #      initialize-schema: always
 logging:
   level:
+    com.tbtr.ffing.domain.fcm.service: DEBUG
     org.springframework.batch: DEBUG
-#    org.springframework.jdbc: TRACE
+    #    org.springframework.jdbc: TRACE
     org.hibernate.SQL: DEBUG
-#    org.hibernate.type.descriptor.sql: TRACE
-#    org.springframework.jdbc.datasource: TRACE
-    com.zaxxer.hikari: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
+    org.springframework.jdbc.datasource: TRACE
+    #    com.zaxxer.hikari: DEBUG
     org.springframework.boot.autoconfigure.jdbc: DEBUG
 jwt:
   secret: ${JWT_SECRET}
@@ -65,6 +70,7 @@ jwt:
     expiration: ${ACCESS_TOKEN_EXPIRATION_PERIOD}
   refresh:
     expiration: ${REFRESH_TOKEN_EXPIRATION_PERIOD}
+
 ---
 spring:
   config:
