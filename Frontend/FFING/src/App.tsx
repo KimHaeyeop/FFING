@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import GamePage from "./pages/GamePage";
@@ -12,12 +12,36 @@ import SpendingCategoryPage from "./pages/SpendingCategoryPage";
 import SpendingMonthlyPage from "./pages/SpendingMonthlyPage";
 import SpendingMonthlyAnalysisPage from "./pages/SpendingMonthlyAnalysisPage";
 import SpendingWeeklyPage from "./pages/SpendingWeeklyPage";
+
+import { requestPermissionAndGetToken } from "./service/firebase";
+
 import AssetMainPage from "./pages/AssetMainPage";
 import DepositSavingsPage from "./pages/DepositSavingsPage";
 import DepositSavingDetailPage from "./pages/DepositSavingDetailPage";
 import AdminPage from "./pages/AdminPage";
 
 const App: React.FC = () => {
+  useEffect(() => {
+    const initializeFCM = async () => {
+      try {
+        // 여기서 사용자 ID를 가져오는 로직이 필요합니다.
+        // 예를 들어, 로컬 스토리지나 상태 관리 라이브러리에서 가져올 수 있습니다.
+        const userId = 1; // 이 함수는 실제로 구현해야 합니다.
+        if (userId) {
+          await requestPermissionAndGetToken(1);
+        } else {
+          console.log(
+            "사용자가 로그인하지 않았습니다. FCM 토큰을 요청하지 않습니다."
+          );
+        }
+      } catch (error) {
+        console.error("FCM 초기화 중 오류 발생:", error);
+      }
+    };
+
+    initializeFCM();
+  }, []);
+
   return (
     <Router>
       <Routes>

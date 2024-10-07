@@ -1,6 +1,8 @@
 package com.tbtr.ffing.domain.finance.controller;
 
 import com.tbtr.ffing.domain.finance.dto.request.goal.GoalReq;
+import com.tbtr.ffing.domain.finance.dto.request.goal.SpendingReq;
+import com.tbtr.ffing.domain.finance.dto.response.goal.CheckRes;
 import com.tbtr.ffing.domain.finance.dto.response.goal.GoalDetailRes;
 import com.tbtr.ffing.domain.finance.dto.response.goal.GoalRes;
 import com.tbtr.ffing.domain.finance.dto.response.goal.SpendingRes;
@@ -9,10 +11,10 @@ import com.tbtr.ffing.global.common.dto.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -22,17 +24,26 @@ public class GoalController {
 
     private final GoalService goalService;
 
-    @GetMapping("/test")
-    public ResponseEntity<?> test() {
-        return ResponseEntity.ok("goal test");
+    /**
+     * 목표 달성, 소비액 확인
+     */
+    @GetMapping("/check")
+    public ResponseEntity<?> checkGoal(@RequestParam("userId") Long userId) {
+        CheckRes checkRes = goalService.checkGoal(userId);
+        Response<Object> response = Response.builder()
+                                            .code(200L)
+                                            .message("성공")
+                                            .result(checkRes).build();
+        return ResponseEntity.ok(response);
     }
 
     /**
      * 목표 설정 입장시
      */
-    @GetMapping("/{userId}")
-    public ResponseEntity<?> getGoal(@PathVariable("userId") Long userId) {
-        GoalDetailRes goalDetailRes = goalService.getGoal(userId);
+    @GetMapping
+    public ResponseEntity<?> getGoal(@RequestParam("userId") Long userId,
+                                     @RequestParam("ssafyUserId") Long ssafyUserId) {
+        GoalDetailRes goalDetailRes = goalService.getGoal(userId, ssafyUserId);
         Response<Object> response = Response.builder()
                                             .code(200L)
                                             .message("성공")
@@ -41,7 +52,7 @@ public class GoalController {
     }
 
     /**
-     * 목표 달성액 설정
+     * 목표 달성액 및 소비액 설정 - 달성액은 변경 X
      */
     @PostMapping("/set-goal")
     public ResponseEntity<?> setGoal(@RequestBody GoalReq goalReq) {
@@ -58,8 +69,8 @@ public class GoalController {
      * 목표 소비액 설정
      */
     @PostMapping("/set-spending")
-    public ResponseEntity<?> setSpending(@RequestBody GoalReq goalReq) {
-        SpendingRes spendingRes = goalService.setSpending(goalReq);
+    public ResponseEntity<?> setSpending(@RequestBody SpendingReq spendingReq) {
+        SpendingRes spendingRes = goalService.setSpending(spendingReq);
 
         Response<Object> response = Response.builder()
                                             .code(200L)
