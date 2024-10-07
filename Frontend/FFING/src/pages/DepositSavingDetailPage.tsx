@@ -36,6 +36,7 @@ const DepositSavingDetailPage: React.FC = () => {
       // 실제 사용자 이름으로 진행
       const response = await getTransaction('deposit', '1'); // 타입과 계좌 idx
       setTransActions(response.data.result)
+      console.log(response.data.result)
     } catch (error) {
       console.error('Error fetching certain spending data:', error);
     }
@@ -50,11 +51,24 @@ const DepositSavingDetailPage: React.FC = () => {
       <div className="w-screen h-screen">
         <header style={{height: `${dvh * 10}px`}}>
           {/* 사용자의 정보와 알람 API 연동 필요*/}
-          <LinkHeader contentName="예금, 적금" contentRoute="/asset"/> 
+          <LinkHeader contentName={product.accountName} contentRoute="/asset"/> 
         </header>
         <main className='mx-auto' style={{height: `${dvh * 80}px`, width: `${dvw * 90}px`}}>
           {/* 특정 상품을 보여주는 칸 */}
-          <DepositSavingCard key={key} product={product} />
+          <div>
+            <DepositSavingCard key={key} product={product} />
+          </div>
+          <div>
+            {transactions.map((transaction) => (
+              <div key={transaction.transactionId}>
+                <div>
+
+                </div>
+                <p>{transaction.paymentBalance}</p>
+                <p>{transaction.totalBalance}</p>
+              </div>
+            ))}
+          </div>
         </main>
         {/* 페이지 이동을 위한 footer */}
         <footer>

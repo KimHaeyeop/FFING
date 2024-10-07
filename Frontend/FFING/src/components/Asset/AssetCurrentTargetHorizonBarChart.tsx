@@ -13,7 +13,7 @@ interface AssetPortfolioHorizontalBarChartProps {
 const AssetCurrentTargetHorizonBarChart: React.FC<AssetPortfolioHorizontalBarChartProps> = ({ property, target }) => {
 
   const data = {
-    labels: ['달성'],
+    labels: ['달성', '목표'],
     datasets: [
       {
         data: [property],
@@ -35,6 +35,9 @@ const AssetCurrentTargetHorizonBarChart: React.FC<AssetPortfolioHorizontalBarCha
       legend: {
         display: false, // 범례 숨기기
       },
+      tooltip: {
+        enabled: false, // 툴팁 비활성화
+      },
     },
     title: {
       display: false, // 차트 제목 숨기기
@@ -45,9 +48,9 @@ const AssetCurrentTargetHorizonBarChart: React.FC<AssetPortfolioHorizontalBarCha
           display: false, // x축 배경 grid 삭제
         },
         stacked: true,
-        ticks: {
-          display: false, // x축 인덱스 삭제
-        },
+        // ticks: {
+        //   display: false, // x축 인덱스 삭제
+        // },
         border: {
           display: false,
         },
@@ -68,7 +71,7 @@ const AssetCurrentTargetHorizonBarChart: React.FC<AssetPortfolioHorizontalBarCha
   };
 
   return (
-    <div className="h-full w-full flex justify-center items-center">
+    <div className="h-full w-full flex justify-center items-center relative">
       <Bar data={data} options={options} />
     </div>
   );
