@@ -1,16 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // import GameBar from "../components/Game/GameBar";
 import NavBar from "../components/Common/Navbar";
 import Header from "../components/Common/LinkHeader";
 import RecordSection from "../components/Game/RecordSection";
 import PetPediaSection from "../components/Game/PetPediaSection";
 import useViewportStore from "../store/useViewportStore";  // store import
+import { getPets, getPetPedia, getPetHistroy } from "../api/PetPediaApi";
 
 // PetPediaPage 메인 컴포넌트
 const PetPediaPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("record");
   // zustand에서 dvw 값을 가져옴
   const dvw = useViewportStore((state) => state.dvw); 
+
+  // 테스트 데이터를 가져오는 함수
+  const fetchData = async (userId: string) => {
+    try {
+      const response = await getPets(userId);
+      console.log(response)
+    } catch (error) {
+      console.error('Error fetching spending data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData('1');
+  }, []);
 
   return (
     <div className="flex justify-center items-center">
