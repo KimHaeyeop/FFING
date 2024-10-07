@@ -95,7 +95,7 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
         <div 
           className="bg-[#BBBBBB] w-48 h-48 rounded-full mt-12 flex justify-center items-center mx-auto"
         >
-          <PetSprite imageUrl={petImageUrl} isUnlocked={true} size="20"/>
+          <PetSprite imageUrl={petImageUrl} isUnlocked={true} />
         </div>
 
         {/* 펫 이름과 도감 인덱스 */}
