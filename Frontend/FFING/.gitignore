@@ -27,8 +27,13 @@ dist-ssr
 *.sln
 *.sw?
 
-# dev-dist 무시
-dev-dist/
+<<<<<<< HEAD
 
 # node_modules 무시
 node_modules/
+=======
+# dev-dist 무시
+dev-dist/
+.env
+.vite
+>>>>>>> backend/develop
