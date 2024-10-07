@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // 메인, 기타
 import MainPage from './pages/MainPage';  // 서비스 메인 페이지
 import NotFoundPage from './pages/NotFoundPage';  // 404 페이지
+import AlarmPage from './pages/AlarmPage';  // 알람 페이지
 // 게임
 import GamePage from './pages/GamePage';  // 게임 메인 페이지
 // import MatchingPage from './pages/MatchingPage';
@@ -46,6 +47,8 @@ const App: React.FC = () => {
         <Route path="/game/ranking" element={<RankingPage />} />
         {/* 도감 */}
         <Route path="/petpedia" element={<PetPediaPage />} />
+        {/* 알림 */}
+        <Route path="/alarm" element={<AlarmPage />} />
       </Routes>
     </Router> 
   );

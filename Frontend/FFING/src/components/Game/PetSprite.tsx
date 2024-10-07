@@ -3,9 +3,10 @@ import React, { useEffect, useRef } from "react";
 interface PetSpriteProps {
   imageUrl: string;  // 스프라이트시트 이미지 URL
   isUnlocked: boolean; // 펫이 잠금 해제되었는지 여부
+  size: string; // sprite의 사이즈
 }
 
-const PetSprite: React.FC<PetSpriteProps> = ({ imageUrl, isUnlocked }) => {
+const PetSprite: React.FC<PetSpriteProps> = ({ imageUrl, isUnlocked, size }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -39,7 +40,7 @@ const PetSprite: React.FC<PetSpriteProps> = ({ imageUrl, isUnlocked }) => {
     ref={canvasRef} 
     width={512}
     height={640}
-    className="size-20"
+    className={`size-${size}`}
     style={{filter: isUnlocked ? "none" : "grayscale(100%) contrast(50%) brightness(0%)"}}  // canvas 위에 필터를 씌움
   />
   )

@@ -61,7 +61,7 @@ const MainPage: React.FC = () => {
             <div className="bg-cover bg-bottom h-full w-full relative" style={{ backgroundImage: "url('/backgrounds/pet-idle-background.png')" }}>
               {/* 펫 sprite sheet 넣기 */}
               <div className="absolute bottom-4 left-4 p-2 w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32">
-                <PetSprite imageUrl="/pets/penguin.png" isUnlocked={true} />
+                <PetSprite imageUrl="/pets/penguin.png" isUnlocked={true} size="20" />
                 <PetSpeechBubble text="is_not_unfair = [[False] * (V + 1) for _ in range(V + 1)]]! for i in range(N): for j in range(N): print('hi')" x={dvw * 15} y={0} />
               </div>
               {/* 게임 화면으로 이동하는 버튼 */}

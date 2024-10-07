@@ -33,6 +33,7 @@ const PetRecord: React.FC<PetRecordProps> = ({ week, petName, wins, losses, petI
         <PetSprite 
           imageUrl={petImageUrl}
           isUnlocked={true}
+          size="20"
           />
       </div>
     </div>
