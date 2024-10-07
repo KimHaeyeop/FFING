@@ -16,9 +16,12 @@ public class PetList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long petId;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 3)
+    private String petCode;
+
+    @Column(nullable = false, length = 20)
     private String petName;
 
-    @Column(nullable = false)
-    private int petCategory; // 음식 같은 카테고리
+    @Column
+    private String imageUrl;
 }

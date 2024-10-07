@@ -3,6 +3,7 @@ package com.tbtr.ffing.global.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -13,6 +14,9 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @RequiredArgsConstructor
 @Slf4j
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+    private final StompHandler stompHandler;
+    private final HttpSessionHandshakeInterceptor httpSessionHandshakeInterceptor;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
@@ -25,14 +29,18 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     // Client에서 websocket 연결할 때 사용할 API 경로를 설정
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // 매칭용
-        registry.addEndpoint("/match")
+        // 웹 소켓 연결 포인트
+        registry.addEndpoint("/ws")
                 .setAllowedOriginPatterns("*")
-                .withSockJS();
-        //배틀용
-        registry.addEndpoint("/battle")
-                .setAllowedOriginPatterns("*")
-                .withSockJS();
+//                .addInterceptors(httpSessionHandshakeInterceptor)
+//                .withSockJS()
+        ;
+
     }
 
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        // connect / disconnect 인터셉터
+        registration.interceptors(stompHandler);
+    }
 }

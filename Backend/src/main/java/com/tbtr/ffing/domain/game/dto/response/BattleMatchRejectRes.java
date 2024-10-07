@@ -8,5 +8,6 @@ import lombok.ToString;
 @Getter
 @ToString
 public class BattleMatchRejectRes {
-    private String opponentUserId;
+    private String requestId;
+    private Long toUserId;
 }
