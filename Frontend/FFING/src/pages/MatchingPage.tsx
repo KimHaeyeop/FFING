@@ -100,8 +100,9 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import SockJS from 'sockjs-client';
 import { Stomp, Client } from '@stomp/stompjs';
+
+const { VITE_WEBSOCKET_ENDPOINT } = import.meta.env
 
 interface PlayerInfo {
   nickname: string;
@@ -126,19 +127,19 @@ const MatchingPageModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   const stompClientRef = useRef<Client | null>(null);
   // const socketRef = useRef<WebSocket | null>(null);
 
-  const connect = () => {
-    const socket = new WebSocket("ws://localhost:8900/match")
-    stompClientRef.current = Stomp.over(socket);
-    stompClientRef.current?.connect({}, () => {
-      stompClientRef.current?.subscribe(`/sub/chatroom/1`, (message) => {
-        const newMessage = JSON.parse(message.body);
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
-      });
-    });
-  };
+  // const connect = () => {
+  //   const socket = new WebSocket(VITE_WEBSOCKET_ENDPOINT)
+  //   stompClientRef.current = Stomp.over(socket);
+  //   stompClientRef.current?.connect({}, () => {
+  //     stompClientRef.current?.subscribe(`/sub/chatroom/1`, (message) => {
+  //       const newMessage = JSON.parse(message.body);
+  //       setMessages((prevMessages) => [...prevMessages, newMessage]);
+  //     });
+  //   });
+  // };
 
   useEffect(() => {
-    connect();
+    // connect();
     console.log("connect 성공");
     if (isOpen) {
       console.log("일단 실행");
@@ -150,33 +151,48 @@ const MatchingPageModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
         // debug: (str) => {
         //   console.log(str);
         // },
-        brokerURL: 'http://localhost:8900/match',
+        brokerURL: VITE_WEBSOCKET_ENDPOINT,
         reconnectDelay: 5000,
         heartbeatIncoming: 100000, // 서버에서 클라이언트로 보내는 심장박동 간격
         heartbeatOutgoing: 100000, // 클라이언트에서 서버로 보내는 심장박동 간격
         onConnect: () => {
           console.log('STOMP Client connected');
-
-          // 유저 정보 전송
-          console.log("유저 정보 전송");
-          stompClient.subscribe('/topic/match', (message) => {
-            const response = JSON.parse(message.body);
-            if (response.type === 'OPPONENT_INFO') {
-              setOpponentInfo(response.data);
-            }
+  
+          // test용 구독
+          stompClient.subscribe('/sub/', (message) => {
+            console.log(message.body);
           });
-
+  
+          // stompClient.subscribe(`/sub/match/battle-request/${myUserId}`, (message) => {
+          //   console.log(message.body)
+          //   const response = JSON.parse(message.body);
+          //   console.log(response);
+          // });
+  
+          // test용 발행
           stompClient.publish({
-            destination: '/pub/match/direct/request',
-            body: JSON.stringify({ type: 'PLAYER_INFO', data: myInfo }),
+            destination: '/pub/',
           });
+          
+          // stompClient.publish({
+          //   destination: '/pub/match/direct/request',
+          //   body: JSON.stringify(directMatchReq),
+          // });
+  
         },
         onStompError: (frame) => {
           console.error('Broker error: ' + frame.headers['message']);
         },
-      });
+        onWebSocketClose: (error) => {
+          console.error('WebSocket closed: ', error)
+        },
+        onWebSocketError: (error) => {
+          console.error('WebSocket error: ', error)
+        }
+      })
 
-      stompClient.activate();
+      stompClient.activate()
+
       stompClientRef.current = stompClient;
     }
 
