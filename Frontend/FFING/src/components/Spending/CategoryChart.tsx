@@ -72,18 +72,17 @@ const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({ onClick }
 
   const config = {
     data: {
-      labels: [...filteredData.map((item) => mapKrUs[item.category]), '잔여'],
+      labels: [...filteredData.map((item) => mapKrUs[item.category])],
       datasets: [
         {
           label: '총 지출 대비(%)',
-          data: [...filteredData.map((item) => item.totalAmount), targetSpending],
+          data: [...filteredData.map((item) => item.totalAmount)],
           backgroundColor: [
             '#80B2FF',
             '#FF80EB',
             '#FFCC80',
             '#FF808F',
             '#80FF8D',
-            '#FFFFFF',
           ],
         },
       ],
