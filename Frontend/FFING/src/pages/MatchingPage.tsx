@@ -45,6 +45,7 @@ const MatchingPageModal: React.FC<ModalProps> = ({ isOpen, onClose, myUserId, op
 
   useEffect(() => {
     if (isOpen) {
+      console.log('hi');
       const stompClient = new Client({
         brokerURL: VITE_WEBSOCKET_ENDPOINT,
         reconnectDelay: 5000,
