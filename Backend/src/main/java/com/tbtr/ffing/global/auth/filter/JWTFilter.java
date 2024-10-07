@@ -28,10 +28,10 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        String[] excludePath = {"/api/v1/auth/signup", "/api/v1/auth/signin", "/api/v1/auth/check-email", "/api/v1/auth/check-nickname"};
+        String[] excludePath = {"/api/v1/auth"};
         String path = request.getRequestURI();
-//        return Arrays.stream(excludePath).anyMatch(path::startsWith);
-        return true; // 테스트를 위해 모두 true로 열어둠(임시)
+        return Arrays.stream(excludePath).anyMatch(path::startsWith);
+//        return true; // 테스트를 위해 모두 true로 열어둠(임시)
     }
 
     @Override
@@ -42,9 +42,11 @@ public class JWTFilter extends OncePerRequestFilter {
         // 1. 헤더에서 Access Token 추출
         String accessToken = extractToken(request);
         if (accessToken == null || accessToken.isEmpty()) {
+            log.info("accessToken is null or empty");
             sendErrorResponse(response, "Access token is missing", HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
+
 
         // 2. Access Token 만료 여부 확인
         if (jwtUtil.isExpired(accessToken)) {
