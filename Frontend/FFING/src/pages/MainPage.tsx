@@ -9,7 +9,8 @@ import MonthlyDoughnutChart from "../components/Spending/MonthlyDoughnutChart";
 import PetSprite from "../components/Game/PetSprite";
 import PetSpeechBubble from "../components/Common/PetSpeechBubble";
 import HorizontalBarChart from "../components/Asset/HorizontalBarChart";
-import { getMonthlyExpense } from "../api/SpendingApi";
+import { getMonthlyExpense } from '../api/SpendingApi';
+import { getTotalAsset } from "../api/AssetApi";
 
 const MainPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
@@ -25,6 +26,8 @@ const MainPage: React.FC = () => {
         .replace(/-/g, "")
         .slice(0, 6);
       const response = await getMonthlyExpense(yyyyMm);
+      // const response1 = await getTotalAsset('1');
+      // console.log(response1);
       setThisMonthExpese(response.data.result.totalExpense);
     } catch (error) {
       console.error("Error fetching certain spending data:", error);
@@ -63,11 +66,9 @@ const MainPage: React.FC = () => {
               </Link>
             </div>
             {/* 현재 보유액과 목표액을 보여주는 바 그래프 */}
-            <div className="flex justify-center pl-3">
+            <div className="flex justify-center">
               <HorizontalBarChart />
             </div>
-            {/* 목표 달성까지 남은 금액 표시 */}
-            <p className="mb-2">13,354,204원 남았습니다.</p>
           </div>
           {/* 게임 화면 관련 */}
           <div
