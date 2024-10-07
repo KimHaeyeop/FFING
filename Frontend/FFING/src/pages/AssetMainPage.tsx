@@ -79,6 +79,7 @@ const AssetMainPage: React.FC = () => {
             {/* 월 평균 저축 */}
             <div className="flex justify-around my-4">
               <p >월 평균 저축</p>
+              {/* API 연동 필요 */}
               <div>
                 <p style={{color: '#67BA82'}}>540,982원</p>
                 <p className="text-sm">목표 적금액 60만 원</p>
