@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api/LoginApi';  // 로그인 API 호출
 import { useAuthStore } from '../store/authStore';
-import axios from 'axios';
+import axios from '../api/AxiosConfig';
 
 const LoginPage: React.FC = () => {
 
-  // const login = async () => {
+  // const login3 = async () => {
   //   const response3 = await axios.get('/user/test', {
   //   });
   //   console.log(response3);
@@ -26,16 +26,18 @@ const LoginPage: React.FC = () => {
     try {
       // LoginApi.ts에서 정의한 login 함수를 호출
       const { accessToken, user } = await login(email, password);
-      console.log('accessToken:', accessToken);
+      // console.log('accessToken:', accessToken);
 
       // 로그인 성공 후 토큰 저장
       localStorage.setItem('ACCESS_TOKEN', accessToken);
+      // console.log(localStorage);
 
       // Zustand에 사용자 정보 저장
       setAuth(user.username, user.nickname);
-      console.log("Username:", user.username);
-      console.log("Nickname:", user.nickname);
+      // console.log("Username:", user.username);
+      // console.log("Nickname:", user.nickname);
 
+      // login3();
       navigate('/'); // 페이지 이동 로직
     } catch (error: any) {
       // 에러 메시지 설정
