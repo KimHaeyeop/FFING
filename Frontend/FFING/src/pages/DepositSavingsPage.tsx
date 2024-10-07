@@ -17,7 +17,7 @@ const DepositSavingsPage: React.FC = () => {
   const fetchData = async (type: string) => {
     try {
       if (type === '예금/적금') {
-        // 실제 사용자 이름으로 진행
+        // userId를 가져올 수 있는 시점에 store 활용해서 가져오기
         const response = await getDepositSaving('1');
         setFinancialProducts(response.data.result)
       } else if (type === '입출금 통장') {

@@ -19,7 +19,6 @@ export interface WeeklyExpense {
 export async function getExpenseDetail(category: string) {
   try {
     const response = await axios.get<ExpenseDetail>(`/expense/monthly?category=${category}`);
-    console.log(response);
     return response;
   } catch (error) {
     console.error('Error fetching expense detail:', error);
@@ -31,7 +30,6 @@ export async function getExpenseDetail(category: string) {
 export async function getWeeklyCategorySpending(when: string) {
   try {
     const response = await axios.get<WeeklyExpense>(`/expense/weekly/category/${when}`); // this(이번주) or last(저번주)
-    console.log(response);
     return response;
   } catch (error) {
     console.error('Error fetching weekly category spending:', error);
@@ -43,7 +41,6 @@ export async function getWeeklyCategorySpending(when: string) {
 export async function getThisMonthCategorySpending() {
   try {
     const response = await axios.get('/expense/monthly/category');
-    console.log(response);
     return response;
   } catch (error) {
     console.error('Error fetching this month category spending:', error);
@@ -55,7 +52,6 @@ export async function getThisMonthCategorySpending() {
 export async function getMonthlyExpense(yyyyMm: string) {
   try {
     const response = await axios.get<MonthlyExpense>(`/expense/monthly/${yyyyMm}`);
-    console.log(response);
     return response
   } catch (error) {
     console.error('Error fetching monthly expense:', error);
@@ -67,7 +63,6 @@ export async function getMonthlyExpense(yyyyMm: string) {
 export async function getCertainDateExpense(yyyyMmDd: string) {
   try {
     const response = await axios.get(`/expense?date=${yyyyMmDd}`);
-    console.log(response);
     return response;
   } catch (error) {
     console.log('Error fetching certain expense:', error)
@@ -79,7 +74,6 @@ export async function getCertainDateExpense(yyyyMmDd: string) {
 export async function getSixMonthExpense() {
   try {
     const response = await axios.get('/expense/monthly');
-    console.log(response);
     return response;
   } catch (error) {
     console.error('Error fetching six month expense:', error);
