@@ -10,8 +10,9 @@ import MainPage from "./pages/MainPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import SpendingCategoryPage from "./pages/SpendingCategoryPage";
 import SpendingMonthlyPage from "./pages/SpendingMonthlyPage";
-import SpendingMonthlyAnalysisPage from "./pages/SpendingMonthlyAnalysisPage";
+import SpendingAnalysisPage from "./pages/SpendingAnalysisPage";
 import SpendingWeeklyPage from "./pages/SpendingWeeklyPage";
+import AlarmPage from "./pages/AlarmPage";
 
 import { requestPermissionAndGetToken } from "./service/firebase";
 
@@ -59,7 +60,7 @@ const App: React.FC = () => {
         {/* 월간 지출 분석 페이지 */}
         <Route
           path="/spending/monthly/analysis"
-          element={<SpendingMonthlyAnalysisPage />}
+          element={<SpendingAnalysisPage />}
         />
         {/* 주간 지출 페이지 */}
         <Route
@@ -85,6 +86,8 @@ const App: React.FC = () => {
         <Route path="/game/ranking" element={<RankingPage />} />
         {/* 도감 페이지 */}
         <Route path="/petpedia" element={<PetPediaPage />} />
+        {/* 알림 */}
+        <Route path="/alarm" element={<AlarmPage />} />
         {/* Admin 페이지 */}
         <Route path="/admin" element={<AdminPage />} />
         {/* 404 페이지 */}

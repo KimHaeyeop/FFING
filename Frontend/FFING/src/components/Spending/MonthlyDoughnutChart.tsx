@@ -63,7 +63,7 @@ const MonthlyDoughnutChart: React.FC = () => {
             '#FFCC80',
             '#FF808F',
             '#80FF8D',
-            '#FFFFFF',
+            '#D9D9D9',
           ],
         },
       ],

@@ -1,75 +1,37 @@
-import React, { useEffect } from 'react';
-import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-
-ChartJS.register(ArcElement, Tooltip, Legend);
+import React from 'react';
 
 interface AssetPortfolioHorizontalBarChartProps {
   property: number;
   target: number;
 }
 
-
 const AssetCurrentTargetHorizonBarChart: React.FC<AssetPortfolioHorizontalBarChartProps> = ({ property, target }) => {
-
-  const data = {
-    labels: ['달성'],
-    datasets: [
-      {
-        data: [property],
-        backgroundColor: '#BBEAED',
-        barThickness: 30, // 막대 두께 설정
-      },
-      {
-        data: [target],
-        backgroundColor: '#828181',
-        barThickness: 30, // 막대 두께 설정
-      },
-    ],
-  };
-
-  const options = {
-    indexAxis: 'y', // 수평 바 차트
-    responsive: false,
-    plugins: {
-      legend: {
-        display: false, // 범례 숨기기
-      },
-    },
-    title: {
-      display: false, // 차트 제목 숨기기
-    },
-    scales: {
-      x: {
-        grid: {
-          display: false, // x축 배경 grid 삭제
-        },
-        stacked: true,
-        ticks: {
-          display: false, // x축 인덱스 삭제
-        },
-        border: {
-          display: false,
-        },
-      },
-      y: {
-        grid: {
-          display: false, // y축 배경 grid 삭제
-        },
-        stacked: true,
-        ticks: {
-          display: false, // y축 인덱스 삭제
-        },
-        border: {
-          display: false,
-        },
-      },
-    },
-  };
+  const progressPercentage = (property / target) * 100;
 
   return (
-    <div className="h-full w-full flex justify-center items-center">
-      <Bar data={data} options={options} />
+    <div className="h-full w-full flex flex-col justify-center items-center relative">
+      {/* 전체 목표 바 */}
+      <div className="w-4/5 h-8 relative rounded-e-2xl" style={{ backgroundColor: '#828181' }}>
+        {/* 달성한 자산 바 */}
+        <div
+          className="h-full transition-width duration-300 ease-in-out rounded-e-2xl"
+          style={{ width: `${progressPercentage}%`, backgroundColor: '#BBEAED' }}
+        >
+          {/* 시작점 표시 */}
+          <div className="absolute bottom-[-20px] left-0 transform -translate-x-1/2 text-xs">
+            0원
+          </div>
+          {/* 달성율 표시 */}
+          <div className="absolute bottom-[-30px] transform -translate-x-1/2 text-xs p-1 mt-2 rounded-2xl"
+               style={{ left: `${progressPercentage}%`, backgroundColor: '#59DEE7' }}>
+            {`${progressPercentage.toFixed(1)}%`}
+          </div>
+          {/* 목표액 표시 */}
+          <div className="absolute bottom-[-20px] -right-10 transform -translate-x-1/2 text-xs">
+            {`${(target / 10000).toLocaleString()}만 원`}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
