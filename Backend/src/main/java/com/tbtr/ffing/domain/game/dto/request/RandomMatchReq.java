@@ -8,6 +8,6 @@ import java.io.Serializable;
 @RedisHash
 @RequiredArgsConstructor
 public class RandomMatchReq implements Serializable {
-    private String userId;
+    private Long fromUserId;
 
 }

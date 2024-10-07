@@ -9,5 +9,6 @@ import lombok.ToString;
 @ToString
 public class DirectMatchRes {
     private String requestId;
-    private String userId;
+    private Long fromUserId;
+    private Long toUserId;
 }
