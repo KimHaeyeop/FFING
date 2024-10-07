@@ -33,7 +33,6 @@ const AssetMainPage: React.FC = () => {
       // 적절한 유저 이름 설정 필요
       const response = await getTotalAsset('1');
       setProperty(response.data.result.currentAsset.totalAsset);
-      console.log(response.data.result.currentAsset)
       setCurrentAsset(response.data.result.currentAsset)
       // 목표 가져오는 API 연동 필요
       // setTarget(response.data.result.totalExpense)
