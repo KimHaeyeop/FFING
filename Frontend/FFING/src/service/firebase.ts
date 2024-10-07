@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
-import axios from "../api/axiosConfig";
+import axios from "../api/AxiosConfig";
 
 interface FirebaseMessage {
   notification?: {
