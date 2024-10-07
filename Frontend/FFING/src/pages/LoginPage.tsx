@@ -1,34 +1,45 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { login } from '../api/LoginApi';  // 로그인 API 호출
+import { useAuthStore } from '../store/authStore';
 import axios from 'axios';
 
 const LoginPage: React.FC = () => {
+
+  // const login = async () => {
+  //   const response3 = await axios.get('/user/test', {
+  //   });
+  //   console.log(response3);
+  // }
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  const setAuth = useAuthStore((state) => state.setAuth); // zustand에서 setAuth 가져옴
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null); // 에러 초기화
 
     try {
-      const response = await axios.post('/auth/signin', {
-        email,
-        password
-      });
-      console.log(response.data);
+      // LoginApi.ts에서 정의한 login 함수를 호출
+      const { accessToken, user } = await login(email, password);
+      console.log('accessToken:', accessToken);
 
-      if (response.status === 200) {
-        console.log('로그인 성공!', response.data);
-        // 로그인 성공 후 로직 (예: 토큰 저장 및 페이지 리다이렉트)
-        // localStorage.setItem('token', response.data.token);
-        // navigate('/dashboard'); // 성공 후 페이지 이동
-      }
+      // 로그인 성공 후 토큰 저장
+      localStorage.setItem('ACCESS_TOKEN', accessToken);
+
+      // Zustand에 사용자 정보 저장
+      setAuth(user.username, user.nickname);
+      console.log("Username:", user.username);
+      console.log("Nickname:", user.nickname);
+
+      navigate('/'); // 페이지 이동 로직
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        setError('아이디 또는 비밀번호가 잘못되었습니다.');
-      } else {
-        setError('로그인 중 오류가 발생하였습니다.');
-      }
+      // 에러 메시지 설정
+      setError(error.message);
     }
   };
 
