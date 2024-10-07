@@ -1,20 +1,21 @@
-import React from 'react'
-import './App.css'
+import React from "react";
+import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import GamePage from './pages/GamePage';
-import BattlePage from './pages/BattlePage';
-import RankingPage from './pages/RankingPage';
+import GamePage from "./pages/GamePage";
+import BattlePage from "./pages/BattlePage";
+import RankingPage from "./pages/RankingPage";
 // import MatchingPage from './pages/MatchingPage';
-import PetPediaPage from './pages/PetPediaPage';
-import MainPage from './pages/MainPage';
-import NotFoundPage from './pages/NotFoundPage';
-import SpendingCategoryPage from './pages/SpendingCategoryPage';
-import SpendingMonthlyPage from './pages/SpendingMonthlyPage';
-import SpendingMonthlyAnalysisPage from './pages/SpendingMonthlyAnalysisPage';
-import SpendingWeeklyPage from './pages/SpendingWeeklyPage'
-import AssetMainPage from './pages/AssetMainPage';
-import DepositSavingsPage from './pages/DepositSavingsPage';
-import DepositSavingDetailPage from './pages/DepositSavingDetailPage';
+import PetPediaPage from "./pages/PetPediaPage";
+import MainPage from "./pages/MainPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import SpendingCategoryPage from "./pages/SpendingCategoryPage";
+import SpendingMonthlyPage from "./pages/SpendingMonthlyPage";
+import SpendingMonthlyAnalysisPage from "./pages/SpendingMonthlyAnalysisPage";
+import SpendingWeeklyPage from "./pages/SpendingWeeklyPage";
+import AssetMainPage from "./pages/AssetMainPage";
+import DepositSavingsPage from "./pages/DepositSavingsPage";
+import DepositSavingDetailPage from "./pages/DepositSavingDetailPage";
+import AdminPage from "./pages/AdminPage";
 
 const App: React.FC = () => {
   return (
@@ -27,15 +28,24 @@ const App: React.FC = () => {
         {/* 월간 지출 페이지 */}
         <Route path="/spending/monthly" element={<SpendingMonthlyPage />} />
         {/* 월간 지출 분석 페이지 */}
-        <Route path="/spending/monthly/analysis" element={<SpendingMonthlyAnalysisPage />} />
+        <Route
+          path="/spending/monthly/analysis"
+          element={<SpendingMonthlyAnalysisPage />}
+        />
         {/* 주간 지출 페이지 */}
-        <Route path="/spending/monthly/weekly" element={<SpendingWeeklyPage />} />
+        <Route
+          path="/spending/monthly/weekly"
+          element={<SpendingWeeklyPage />}
+        />
         {/* 자산 메인 페이지 */}
         <Route path="/asset" element={<AssetMainPage />} />
         {/* 예금 적금 페이지 */}
         <Route path="/asset/product" element={<DepositSavingsPage />} />
         {/* 예금 적금 페이지 */}
-        <Route path="/asset/product/detail" element={<DepositSavingDetailPage />} />
+        <Route
+          path="/asset/product/detail"
+          element={<DepositSavingDetailPage />}
+        />
         {/* 게임 페이지 */}
         <Route path="/game" element={<GamePage />} />
         {/* 매칭 잡는 페이지 */}
@@ -46,10 +56,12 @@ const App: React.FC = () => {
         <Route path="/game/ranking" element={<RankingPage />} />
         {/* 도감 페이지 */}
         <Route path="/petpedia" element={<PetPediaPage />} />
+        {/* Admin 페이지 */}
+        <Route path="/admin" element={<AdminPage />} />
         {/* 404 페이지 */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-    </Router> 
+    </Router>
   );
 };
 
