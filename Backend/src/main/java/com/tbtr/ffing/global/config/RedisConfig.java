@@ -27,6 +27,16 @@ public class RedisConfig {
     }
 
     @Bean
+    public RedisTemplate<String, String> randomMatchRedisTemplate() {
+        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+
+        return redisTemplate;
+    }
+
+    @Bean
     public RedisTemplate<String, MatchInfo> matchRedisTemplate(RedisConnectionFactory connectionFactory) {
         // key-value를 사용할 데이터 셋 타입으로 지정
         RedisTemplate<String, MatchInfo> redisTemplate = new RedisTemplate<>();
