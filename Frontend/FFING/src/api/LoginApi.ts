@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from './AxiosConfig';
 
 // API 요청을 담당하는 함수
 export const login = async (email: string, password: string) => {
