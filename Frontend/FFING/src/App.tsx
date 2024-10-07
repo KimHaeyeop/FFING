@@ -19,6 +19,7 @@ import AssetMainPage from "./pages/AssetMainPage";
 import DepositSavingsPage from "./pages/DepositSavingsPage";
 import DepositSavingDetailPage from "./pages/DepositSavingDetailPage";
 import AdminPage from "./pages/AdminPage";
+import LoginPage from './pages/LoginPage';
 
 const App: React.FC = () => {
   useEffect(() => {
@@ -45,8 +46,12 @@ const App: React.FC = () => {
   return (
     <Router>
       <Routes>
+        {/* 로그인 페이지 */}
+        <Route path="/login" element={<LoginPage />} />
         {/* 메인 페이지 */}
         <Route path="/" element={<MainPage />} />
+        {/* 자산 페이지 */}
+        {/* <Route path="/assets" element={<ApiTest />} /> */}
         {/* 지출 페이지 */}
         <Route path="/spending" element={<SpendingCategoryPage />} />
         {/* 월간 지출 페이지 */}
