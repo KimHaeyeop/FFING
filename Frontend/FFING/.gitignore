@@ -27,8 +27,6 @@ dist-ssr
 *.sln
 *.sw?
 
-# dev-dist 무시
-dev-dist/
 
 # node_modules 무시
 node_modules/
