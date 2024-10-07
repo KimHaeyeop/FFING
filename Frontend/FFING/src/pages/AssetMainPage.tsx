@@ -121,6 +121,7 @@ const AssetMainPage: React.FC = () => {
                 )
                 }
               </div>
+            {/* 월 별 자산 증감 내역 확인하는 차트 API 연동 필요 */}
             <div>
               <AssetTimeSeriesChart />
             </div>

@@ -1,12 +1,12 @@
 import axios from "./AxiosConfig";
 
 // // 현재 보유 중인 증권사별 자산 개요 인터페이스
-export interface get1Interface {
+export interface getStocksInterface {
   ssafyUserId: string;
 }
 
 // 증권사의 각 주식 종목 자산 개요 인터페이스
-export interface get2Interface {
+export interface getStockDetailInterface {
   ssafyUserId: string;
   stockAccountId: string
 }
@@ -28,23 +28,23 @@ export interface getAcTransactionInterface {
 }
 
 // 현재 보유 중인 증권사별 자산 개요 불러오기
-export async function get1(ssafyUserId: string) {
+export async function getStocks(ssafyUserId: string) {
   try {
-    const response = await axios.get<get1Interface>(`/stock/${ssafyUserId}`);
+    const response = await axios.get<getStocksInterface>(`/stock/${ssafyUserId}`);
     return response;
   } catch (error) {
-    console.error('Error fetching get1:', error);
+    console.error('Error fetching getStocks:', error);
     throw error;
   }
 }
 
 // 증권사의 각 주식 종목 자산 개요 불러오기
-export async function get2(ssafyUserId: string, stockAccountId: string) {
+export async function getStockDetail(ssafyUserId: string, stockAccountId: string) {
   try {
-    const response = await axios.get<get2Interface>(`/stock/${ssafyUserId}/${stockAccountId}`);
+    const response = await axios.get<getStockDetailInterface>(`/stock/${ssafyUserId}/${stockAccountId}`);
     return response;
   } catch (error) {
-    console.error('Error fetching get1:', error);
+    console.error('Error fetching getStocks:', error);
     throw error;
   }
 }
@@ -116,8 +116,8 @@ export async function get8() {
 }
 
 export default {
-  get1,
-  get2,
+  getStocks,
+  getStockDetail,
   getTotalAsset,
   getDepositSaving,
   getDsTransaction,

@@ -42,7 +42,7 @@ const MainPage: React.FC = () => {
         </header>
         <main className='mx-auto'style={{height: `${dvh * 80}px`, width: `${dvw * 90}px`}}>
           {/* 자산 목표 달성 관련 */}
-          <div className="border-black border-4 rounded-lg" style={{height: '20%'}}>
+          <div className="border-black border-4 rounded-lg" style={{height: '25%'}}>
             {/* 자산 부분 링크와 소제목 */}
             <div className="flex justify-between py-2 px-4">
               <p className="text-lg">목표 달성까지</p>
@@ -56,7 +56,7 @@ const MainPage: React.FC = () => {
             </div>
           </div>
           {/* 게임 화면 관련 */}
-          <div className="border-black border-x-4 rounded-lg" style={{height: '40%'}}>
+          <div className="border-black border-x-4 rounded-lg" style={{height: '35%'}}>
             {/* 배경 화면 넣기 */}
             <div className="bg-cover bg-bottom h-full w-full relative" style={{ backgroundImage: "url('/backgrounds/pet-idle-background.png')" }}>
               {/* 펫 sprite sheet 넣기 */}
