@@ -14,4 +14,10 @@ public class SpendingRes {
 
     int leftMonths;
     String spendingBalance;
+
+    public static SpendingRes of(int leftMonths, String spendingBalance) {
+        return SpendingRes.builder()
+                          .leftMonths(leftMonths)
+                          .spendingBalance(spendingBalance).build();
+    }
 }

@@ -85,7 +85,12 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+	// FCM
+	implementation 'com.google.firebase:firebase-admin:7.1.1'
 }
+
+
 
 dependencyManagement {
 	imports {
