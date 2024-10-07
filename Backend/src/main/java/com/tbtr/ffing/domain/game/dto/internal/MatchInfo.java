@@ -1,4 +1,4 @@
-package com.tbtr.ffing.domain.game.dto.battle;
+package com.tbtr.ffing.domain.game.dto.internal;
 
 import com.tbtr.ffing.domain.game.dto.request.DirectMatchReq;
 import lombok.AllArgsConstructor;
@@ -11,10 +11,10 @@ import lombok.ToString;
 @Setter
 @ToString
 public class MatchInfo {
-    private String fromUserId;
-    private String toUserId;
+    private Long fromUserId;
+    private Long toUserId;
 
     public static MatchInfo from(DirectMatchReq directMatchReq) {
-        return new MatchInfo(directMatchReq.getUserId(), directMatchReq.getOpponentUserId());
+        return new MatchInfo(directMatchReq.getFromUserId(), directMatchReq.getToUserId());
     }
 }
