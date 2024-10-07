@@ -12,7 +12,13 @@ import SpendingCategoryPage from "./pages/SpendingCategoryPage";
 import SpendingMonthlyPage from "./pages/SpendingMonthlyPage";
 import SpendingMonthlyAnalysisPage from "./pages/SpendingMonthlyAnalysisPage";
 import SpendingWeeklyPage from "./pages/SpendingWeeklyPage";
+
 import { requestPermissionAndGetToken } from "./service/firebase";
+
+import AssetMainPage from "./pages/AssetMainPage";
+import DepositSavingsPage from "./pages/DepositSavingsPage";
+import DepositSavingDetailPage from "./pages/DepositSavingDetailPage";
+import AdminPage from "./pages/AdminPage";
 
 const App: React.FC = () => {
   useEffect(() => {
@@ -55,6 +61,15 @@ const App: React.FC = () => {
           path="/spending/monthly/weekly"
           element={<SpendingWeeklyPage />}
         />
+        {/* 자산 메인 페이지 */}
+        <Route path="/asset" element={<AssetMainPage />} />
+        {/* 예금 적금 페이지 */}
+        <Route path="/asset/product" element={<DepositSavingsPage />} />
+        {/* 예금 적금 페이지 */}
+        <Route
+          path="/asset/product/detail"
+          element={<DepositSavingDetailPage />}
+        />
         {/* 게임 페이지 */}
         <Route path="/game" element={<GamePage />} />
         {/* 매칭 잡는 페이지 */}
@@ -65,6 +80,8 @@ const App: React.FC = () => {
         <Route path="/game/ranking" element={<RankingPage />} />
         {/* 도감 페이지 */}
         <Route path="/petpedia" element={<PetPediaPage />} />
+        {/* Admin 페이지 */}
+        <Route path="/admin" element={<AdminPage />} />
         {/* 404 페이지 */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

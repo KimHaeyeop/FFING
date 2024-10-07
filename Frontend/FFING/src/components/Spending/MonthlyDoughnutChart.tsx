@@ -44,9 +44,11 @@ const MonthlyDoughnutChart: React.FC = () => {
   }
 
   // 해외 카테고리 삭제 전까지 이 걸로 진행해야 함
-  const filteredData = spendingData
-  .filter(item => item.category !== 'OVERSEAS')
-  .sort((a, b) => b.totalAmount - a.totalAmount); // 차트 정렬하기
+  const filteredData = Array.isArray(spendingData)
+  ? spendingData
+      .filter(item => item.category !== 'OVERSEAS')
+      .sort((a, b) => b.totalAmount - a.totalAmount) // 차트 정렬하기
+  : []; // 값이 없으면 빈배열 반환
 
   const config = {
     data: {
