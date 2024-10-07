@@ -78,7 +78,7 @@ const MainPage: React.FC = () => {
                 <Icon path={mdiChevronRight} size={1} color='#F55322'/>
               </Link>
             </div>
-            {/* 이번 달 지출 내역을 나타내는 차트 API 연동 필요*/}
+            {/* 이번 달 지출 내역을 나타내는 차트 */}
             <MonthlyDoughnutChart />
           </div>
         </main>
