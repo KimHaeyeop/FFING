@@ -16,12 +16,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserSigninRes {
 
+    private Long userId;
     private String email;
     private String username;
     private String nickname;
 
     public static UserSigninRes of(User user) {
         return UserSigninRes.builder()
+                            .userId(user.getUserId())
                             .email(user.getEmail())
                             .username(user.getUsername())
                             .nickname(user.getNickname()).build();
