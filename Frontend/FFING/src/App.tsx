@@ -1,6 +1,6 @@
 import React from 'react'
 import './App.css'
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 import GamePage from './pages/GamePage';
 import BattlePage from './pages/BattlePage';
 import RankingPage from './pages/RankingPage';
@@ -15,11 +15,22 @@ import SpendingWeeklyPage from './pages/SpendingWeeklyPage'
 import AssetMainPage from './pages/AssetMainPage';
 import DepositSavingsPage from './pages/DepositSavingsPage';
 import DepositSavingDetailPage from './pages/DepositSavingDetailPage';
+import LoginPage from './pages/LoginPage';
 
 const App: React.FC = () => {
+  // const navigate = useNavigate();
+
+  // 로그인 성공시
+  // const handleLoginSuccess = () => {
+  //   // 리다이렉트
+  //   navigate('/');
+  // };
+
   return (
     <Router>
       <Routes>
+        {/* 로그인 페이지 */}
+        <Route path="/login" element={<LoginPage />} />
         {/* 메인 페이지 */}
         <Route path="/" element={<MainPage />} />
         {/* 자산 페이지 */}
@@ -51,7 +62,7 @@ const App: React.FC = () => {
         {/* 404 페이지 */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-    </Router> 
+    </Router>
   );
 };
 

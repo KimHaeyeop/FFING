@@ -37,8 +37,6 @@ const GamePage: React.FC = () => {
           {/* 게임 시작 버튼 */}
           <button onClick={handleOpenModal} className="flex-grow-[7] bg-[#FFD874] text-black py-2 rounded-l-lg font-galmuri-11-bold text-2xl">매칭 시작</button>
           {/* <Link to="/game/battle" className="flex-grow-[7] bg-[#FFD874] text-black py-2 rounded-l-lg font-galmuri-11-bold text-2xl">게임으로 바로 이동(test)</Link> */}
-          {/* 도감 버튼 */}
-          <Link to="/petpedia" className="flex-grow-[3] bg-[#FFA1A1] text-black py-2 rounded-r-lg font-galmuri-11-bold">도감</Link>
         </div>
         {isModalOpen && (
           <MatchingPageModal isOpen={isModalOpen} onClose={handleCloseModal} myUserId={"1"} opponentUserId={"1"} />
