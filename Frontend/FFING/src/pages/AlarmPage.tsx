@@ -75,7 +75,7 @@ const AlarmPage: React.FC = () => {
                 <div className="w-1/5">
                   {/* 펫 이미지는 자신의 펫으로 */}
                   <div className="relative flex flex-col jusitfy-end">
-                    <PetSprite imageUrl="/pets/computer.png" isUnlocked={true} size="10"/>
+                    <PetSprite imageUrl="/pets/computer.png" isUnlocked={true} />
                     {/* 말풍선 */}
                     <div className={`absolute -top-8   left-0 p-1 rounded ${getBubbleColor(alarm.alarmType)}`}>
                       <p className="text-xs p-1">{alarm.alarmType}</p>
