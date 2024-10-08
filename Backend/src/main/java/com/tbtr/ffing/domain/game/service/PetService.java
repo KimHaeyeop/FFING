@@ -1,7 +1,16 @@
 package com.tbtr.ffing.domain.game.service;
 
-import com.tbtr.ffing.domain.game.dto.response.CurrentPetInfoRes;
+import com.tbtr.ffing.domain.game.dto.response.PetCollectionRes;
+import com.tbtr.ffing.domain.game.dto.response.PetHistoryRes;
+import com.tbtr.ffing.domain.game.dto.response.PetInfoRes;
+
+import java.util.List;
+import java.util.Map;
 
 public interface PetService {
-    CurrentPetInfoRes getCurrentPetInfo(long userId);
+    Map<String, PetInfoRes> getHomePetInfo(long userId);
+
+    List<PetHistoryRes> getPetHistory(long userId, String yearMonth);
+
+    List<PetCollectionRes> getPetCollection(long userId);
 }

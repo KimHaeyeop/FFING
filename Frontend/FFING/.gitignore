@@ -29,4 +29,6 @@ dist-ssr
 
 # dev-dist 무시
 dev-dist
+*.env
+.env.*
 .vite
