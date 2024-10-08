@@ -6,12 +6,12 @@ interface petInterface {
 }
 
 // 펫 조회
-export async function getPets(userId: string) {
+export async function getPets (userId: string) {
   try {
     const response = await axios.get<petInterface>(`/pet?userId=${userId}`);
     return response;
   } catch (error) {
-    console.error('Error fetching get goal:', error);
+    console.error('Error fetching get pets:', error);
     throw error;
   }
 }
@@ -22,7 +22,7 @@ export async function getPetPedia(userId: string) {
     const response = await axios.get<petInterface>(`/pet/collection?userId=${userId}`);
     return response;
   } catch (error) {
-    console.error('Error fetching get goal:', error);
+    console.error('Error fetching get petpedias:', error);
     throw error;
   }
 }
@@ -33,7 +33,7 @@ export async function getPetHistroy(userId: string, yearMonth: string) {
     const response = await axios.get<petInterface>(`/goal/history/${yearMonth}?userId=${userId}`);
     return response;
   } catch (error) {
-    console.error('Error fetching get goal:', error);
+    console.error('Error fetching get pet histories:', error);
     throw error;
   }
 }
