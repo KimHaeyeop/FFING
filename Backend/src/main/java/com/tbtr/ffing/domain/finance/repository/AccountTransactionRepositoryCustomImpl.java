@@ -29,7 +29,7 @@ public class AccountTransactionRepositoryCustomImpl implements AccountTransactio
     }
 
     @Override
-    public BigDecimal getTotalFixedIncomeForMonthBySsafyUserId(String yearMonth, Long ssafyUserId) {
+    public BigDecimal getTotalFixedIncomeForYearMonthBySsafyUserId(String yearMonth, Long ssafyUserId) {
         QAccountTransaction transaction = QAccountTransaction.accountTransaction;
         return queryFactory
                 .select(transaction.transactionBalance.sum().coalesce(BigDecimal.ZERO))
