@@ -5,8 +5,6 @@ import com.tbtr.ffing.global.auth.filter.JWTExceptionFilter;
 import com.tbtr.ffing.global.auth.filter.JWTFilter;
 import com.tbtr.ffing.global.auth.handler.CustomAccessDeniedHandler;
 import com.tbtr.ffing.global.auth.util.JWTUtil;
-import jakarta.servlet.http.HttpServletRequest;
-import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -22,7 +20,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -37,18 +34,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
-                @Override
-                public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                    CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOriginPatterns(List.of("*"));
-                    config.setAllowedMethods(Collections.singletonList("*"));
-                    config.setAllowCredentials(true);
-                    config.setAllowedHeaders(List.of("Authorization", "*"));
-                    config.setExposedHeaders(List.of("Authorization", "Content-Type"));
-                    config.setMaxAge(3600L); //1시간
-                    return config;
-                }
+        http.cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
+                CorsConfiguration config = new CorsConfiguration();
+                config.setAllowedOriginPatterns(List.of("*"));
+                config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+                config.setAllowCredentials(true);
+                config.setAllowedHeaders(List.of("Authorization", "*"));
+                config.setExposedHeaders(List.of("Authorization", "Content-Type"));
+                config.setMaxAge(3600L); //1시간
+                return config;
             }))
             .csrf(AbstractHttpConfigurer::disable)
             .formLogin(AbstractHttpConfigurer::disable)
