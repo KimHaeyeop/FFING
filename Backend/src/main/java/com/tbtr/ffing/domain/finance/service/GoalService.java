@@ -11,9 +11,9 @@ public interface GoalService {
 
     GoalDetailRes getGoal(Long userId, Long ssafyUserId);
 
-    GoalRes setGoal(GoalReq goalReq);
+    GoalRes setGoal(Long userId, GoalReq goalReq);
 
-    SpendingRes setSpending(SpendingReq spendingReq);
+    SpendingRes setSpending(Long userId, SpendingReq spendingReq);
 
     CheckRes checkGoal(Long userId);
 }

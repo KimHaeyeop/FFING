@@ -1,13 +1,11 @@
 package com.tbtr.ffing.domain.game.dto.internal;
 
 import com.tbtr.ffing.domain.game.dto.request.DirectMatchReq;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @AllArgsConstructor
 @Getter
+@Builder
 @Setter
 @ToString
 public class MatchInfo {
