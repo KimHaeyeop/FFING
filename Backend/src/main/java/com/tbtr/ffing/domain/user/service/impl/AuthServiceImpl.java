@@ -101,32 +101,39 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public void reissue(HttpServletRequest request, HttpServletResponse response) {
+        log.info("---reissue enter---");
         // 1. refresh token 추출
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
+            log.info("cookies is null");
             throw new CustomException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
+        log.info("---reissue cookies---");
         String refresh = Arrays.stream(request.getCookies())
                                .filter(cookie -> cookie.getName().equals("refresh"))
                                .map(Cookie::getValue)
                                .findFirst()
                                .orElseThrow(() -> new CustomException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
 
+        log.info("---reissue refresh---");
         // 2. 유효성 및 만료 체크
         if (jwtUtil.isExpired(refresh)) {
             clearCookie(response, "refresh");
             throw new CustomException(ErrorCode.EXPIRED_REFRESH_TOKEN);
         }
 
+        log.info("---reissue redis---");
         // 3. redis 에 있는 값과 비교
         Long userId = jwtUtil.getUserId(refresh);
         RedisRefreshToken storedRefreshToken = redisRefreshTokenRepository.findById(userId.toString())
-                                                                          .orElseThrow(() -> new CustomException(ErrorCode.INVALID_REFRESH_TOKEN));
+                                                                          .orElseThrow(() -> new CustomException(
+                                                                                  ErrorCode.INVALID_REFRESH_TOKEN));
         log.info("redis refresh: {}", storedRefreshToken.getRefreshToken());
         if (!storedRefreshToken.getRefreshToken().equals(refresh)) {
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
 
+        log.info("---reissue new token---");
         // 4. 새로운 access, refresh token 생성
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         CustomUserDetails customUserDetails = CustomUserDetails.of(user);
@@ -140,6 +147,7 @@ public class AuthServiceImpl implements AuthService {
         // 6. 응답 헤더에 추가
         HttpHeaders httpHeaders = createHeadersWithTokens(newAccessToken, newRefreshToken);
         for (String headerName : httpHeaders.keySet()) {
+
             response.setHeader(headerName, httpHeaders.getFirst(headerName));
         }
     }
@@ -180,7 +188,7 @@ public class AuthServiceImpl implements AuthService {
                                                           .httpOnly(true)
                                                           .path("/")
                                                           .maxAge(Long.parseLong(REFRESH_TOKEN_EXPIRATION_PERIOD))
-                                                          .secure(true)
+                                                          .secure(false) // true : https 에서만 쿠키가 전송됨.
                                                           .build();
         headers.add(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
 

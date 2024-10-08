@@ -50,9 +50,9 @@ public class AuthController {
         SigninRes signinRes = authService.signin(userSigninReq);
 
         Response<Object> response = Response.builder()
-                                                .code(200L)
-                                                .message("로그인에 성공하였습니다.")
-                                                .result(signinRes.getUserSigninRes()).build();
+                                            .code(200L)
+                                            .message("로그인에 성공하였습니다.")
+                                            .result(signinRes.getUserSigninRes()).build();
 
         return new ResponseEntity<>(response, signinRes.getHttpHeaders(), HttpStatus.OK);
     }
@@ -65,8 +65,8 @@ public class AuthController {
         Boolean isEmailDuplication = authService.isEmialDuplication(email);
         if (!isEmailDuplication) {
             return ResponseEntity.ok(Response.builder()
-                    .code(200L)
-                    .message(email + " 은(는) 사용 가능한 이메일입니다.").build());
+                                             .code(200L)
+                                             .message(email + " 은(는) 사용 가능한 이메일입니다.").build());
         }
         throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS);
     }
