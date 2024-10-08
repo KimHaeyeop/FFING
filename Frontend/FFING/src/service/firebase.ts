@@ -17,18 +17,24 @@ export const messaging = getMessaging(firebaseApp);
 
 export const initializeFirebaseMessaging = async (userId: number) => {
   try {
-    const currentToken = await getToken(messaging, {
-      vapidKey: import.meta.env.VITE_FCM_KEY,
-    });
+    const permission = await Notification.requestPermission();
+    if (permission === "granted") {
+      const currentToken = await getToken(messaging, {
+        vapidKey: import.meta.env.VITE_FCM_KEY,
+      });
 
-    if (currentToken) {
-      console.log("FCM Token:", currentToken);
-      await sendTokenToServer(userId, currentToken);
-    } else {
+      if (currentToken) {
+        console.log("FCM Token:", currentToken);
+        await sendTokenToServer(userId, currentToken);
+      } else {
+        console.log(
+          "토큰 등록이 불가능 합니다. 생성하려면 권한을 허용해주세요"
+        );
+      }
+    } else if (permission === "denied") {
       console.log(
-        "No registration token available. Request permission to generate one."
+        "web push 권한이 차단되었습니다. 알림을 사용하시려면 권한을 허용해주세요"
       );
-      // 여기에 사용자에게 권한을 요청하는 로직을 추가할 수 있습니다.
     }
   } catch (err) {
     console.error("An error occurred while retrieving token: ", err);
@@ -38,7 +44,6 @@ export const initializeFirebaseMessaging = async (userId: number) => {
 // 포그라운드 메시지 수신
 onMessage(messaging, (payload) => {
   console.log("Message received. ", payload);
-  // 여기에 메시지 처리 로직을 추가할 수 있습니다.
 });
 
 export const sendTokenToServer = async (
