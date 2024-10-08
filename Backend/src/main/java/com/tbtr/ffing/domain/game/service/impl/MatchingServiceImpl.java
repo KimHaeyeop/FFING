@@ -1,16 +1,54 @@
 package com.tbtr.ffing.domain.game.service.impl;
 
+import com.tbtr.ffing.domain.game.dto.request.RandomMatchCancelReq;
+import com.tbtr.ffing.domain.game.dto.request.RandomMatchReq;
 import com.tbtr.ffing.domain.game.service.MatchingService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class MatchingServiceImpl implements MatchingService {
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private static final Logger log = LoggerFactory.getLogger(MatchingServiceImpl.class);
+    private final RedisTemplate<String, String> randomMatchRedisTemplate;
+
+    private static final String RANDOM_MATCH_KEY = "random_match_key";
+
+    @Override
+    public String preferMatching(RandomMatchReq randomMatchReq) {
+        Long curUserId = randomMatchReq.getFromUserId();
+        int curUserPetTotalStat = randomMatchReq.getPetTotalStat();
+
+        Set<String> queue = randomMatchRedisTemplate.opsForZSet().rangeByScore(RANDOM_MATCH_KEY,
+                curUserPetTotalStat - 50, curUserPetTotalStat + 50);
+
+        if (queue == null || queue.isEmpty()) {
+            randomMatchRedisTemplate.opsForZSet().add(RANDOM_MATCH_KEY, curUserId+"", curUserPetTotalStat);
+            return null;
+        } else {
+            String matchedUserId = queue.iterator().next();
+            randomMatchRedisTemplate.opsForZSet().remove(RANDOM_MATCH_KEY, matchedUserId);
+
+//            // Notify both users about the match
+//            notifyMatch(userId, matchedUserId);
+            return matchedUserId;
+        }
+
+    }
+
+    @Override
+    public void cancelRandomMatch(RandomMatchCancelReq randomMatchCancelReq) {
+        Long curUserId = randomMatchCancelReq.getFromUserId();
+        randomMatchRedisTemplate.opsForZSet().remove(RANDOM_MATCH_KEY, curUserId);
+        log.info("random match cancelled for userId: {}", curUserId);
+    }
 
 //    @Transactional
 //    public ChatRoom addUserOptions(long timeMillis, MatchReq req) {

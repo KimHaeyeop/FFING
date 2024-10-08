@@ -71,17 +71,17 @@ public class GoalServiceImpl implements GoalService {
 
     @Override
     @Transactional
-    public GoalRes setGoal(GoalReq goalReq) {
+    public GoalRes setGoal(Long userId, GoalReq goalReq) {
         // 현재 년도 및 월 정보 가져오기
         LocalDate now = LocalDate.now();
         String year = now.getYear() + "";
         String yearMonth = toYearMonths(now.getYear(), now.getMonthValue());
 
         // 해당 년도에 목표가 존재하는지 확인
-        deleteExistingGoal(goalReq.getUserId(), GOAL_TYPE_ASSET, year);
+        deleteExistingGoal(userId, GOAL_TYPE_ASSET, year);
 
         // 해당 월에 소비 목표가 존재하는지 확인 후 제거
-        deleteExistingGoal(goalReq.getUserId(), GOAL_TYPE_SPENDING, yearMonth);
+        deleteExistingGoal(userId, GOAL_TYPE_SPENDING, yearMonth);
 
         // 목표 자산, 소비액 저장
         Goal goal = GoalReq.goalTo(goalReq);
@@ -99,10 +99,10 @@ public class GoalServiceImpl implements GoalService {
 
     @Override
     @Transactional
-    public SpendingRes setSpending(SpendingReq spendingReq) {
+    public SpendingRes setSpending(Long userId, SpendingReq spendingReq) {
         LocalDate now = LocalDate.now();
         // 해당 월에 소비 목표가 존재하는지 확인 후 제거
-        deleteExistingGoal(spendingReq.getUserId(), GOAL_TYPE_SPENDING,
+        deleteExistingGoal(userId, GOAL_TYPE_SPENDING,
                 toYearMonths(now.getYear(), now.getMonthValue()));
 
         // 목표 소비액 저장
@@ -125,8 +125,8 @@ public class GoalServiceImpl implements GoalService {
         Goal goal = goalRepository.findByUserIdAndGoalTypeAndYear(userId, "1", year);
         Goal spending = goalRepository.findByUserIdAndGoalTypeAndYearMonth(userId, "2", yearMonth);
 
-        String goalBalance = (goal != null) ? goal.getBalance().toString() : "설정되지 않았습니다";
-        String spendingBalance = (spending != null) ? spending.getBalance().toString() : "설정되지 않았습니다";
+        String goalBalance = (goal != null) ? goal.getBalance().toString() : null;
+        String spendingBalance = (spending != null) ? spending.getBalance().toString() : null;
 
         return CheckRes.of(goalBalance, spendingBalance);
     }
