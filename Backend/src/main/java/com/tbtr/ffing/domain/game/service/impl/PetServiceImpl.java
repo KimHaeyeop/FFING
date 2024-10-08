@@ -110,7 +110,7 @@ public class PetServiceImpl implements PetService {
         int weeks = (dayLast - dayOfWeek + 13)/7;
 
         String yearMonth = String.valueOf(startDate.getYear()) + String.format("%02d", startDate.getMonthValue());
-        Goal spending = goalRepository.findByUserIdAndGoalTypeAndYearMonth(userId, "2", yearMonth);
+        Goal spending = goalRepository.findSpendingByUserIdAndYearMonth(userId, yearMonth);
         BigDecimal weekBD = new BigDecimal(weeks);
         BigDecimal weekSpending = spending.getBalance().divide(weekBD, 2, RoundingMode.HALF_UP);
         BigDecimal weekCategorySpending = weekSpending.divide(new BigDecimal(5), 2, RoundingMode.HALF_UP);
