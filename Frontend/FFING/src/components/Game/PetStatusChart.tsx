@@ -1,28 +1,11 @@
 import React, { useEffect } from "react";
 import { Radar } from "react-chartjs-2";
 import { usePetStats } from "../../hook/usePetStats";
-import { getPets } from "../../api/PetPediaApi";
 
 import 'chart.js/auto';
 
 const PetStatusChart: React.FC = () => {
   const { data: petData } = usePetStats('1'); // 유저 ID 추가할 것
-  
-  
-    // 펫 능력치를 가져오는 함수
-    const fetchData = async (userId: string) => {
-      try {
-        const response = await getPets(userId);
-        console.log(response.data.result)
-      } catch (error) {
-        console.error("Error fetching certain spending data:", error);
-      }
-    };
-  
-    useEffect(() => {
-      fetchData('1')
-    })
-
   const currentWeek = petData?.currentWeek || { 식비: 0, 쇼핑: 0, 교통: 0, 생활: 0, 문화: 0 };
   const previousWeek = petData?.previousWeek || { 식비: 0, 쇼핑: 0, 교통: 0, 생활: 0, 문화: 0 };
 
