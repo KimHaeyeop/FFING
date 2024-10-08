@@ -41,7 +41,7 @@ public class GoalServiceImpl implements GoalService {
         LocalDate previousMonth = now.minusMonths(1);
         String yearMonth = toYearMonths(previousMonth.getYear(), previousMonth.getMonthValue());
 
-        BigDecimal fixedIncome = accountTransactionRepository.getTotalFixedIncomeForMonthBySsafyUserId(yearMonth,
+        BigDecimal fixedIncome = accountTransactionRepository.getTotalFixedIncomeForYearMonthBySsafyUserId(yearMonth,
                 ssafyUserId);
 
         // 남은 개월 수
@@ -122,8 +122,8 @@ public class GoalServiceImpl implements GoalService {
         String year = String.valueOf(today.getYear());
         String yearMonth = year + today.getMonthValue();
 
-        Goal goal = goalRepository.findByUserIdAndGoalTypeAndYear(userId, "1", year);
-        Goal spending = goalRepository.findByUserIdAndGoalTypeAndYearMonth(userId, "2", yearMonth);
+        Goal goal = goalRepository.findGoalByUserIdAndYear(userId, year);
+        Goal spending = goalRepository.findSpendingByUserIdAndYearMonth(userId, yearMonth);
 
         String goalBalance = (goal != null) ? goal.getBalance().toString() : null;
         String spendingBalance = (spending != null) ? spending.getBalance().toString() : null;
@@ -134,8 +134,8 @@ public class GoalServiceImpl implements GoalService {
 
     private void deleteExistingGoal(Long userId, String goalType, String date) {
         Goal existingGoal = (goalType.equals(GOAL_TYPE_ASSET))
-                            ? goalRepository.findByUserIdAndGoalTypeAndYear(userId, goalType, date)
-                            : goalRepository.findByUserIdAndGoalTypeAndYearMonth(userId, goalType, date);
+                            ? goalRepository.findGoalByUserIdAndYear(userId, date)
+                            : goalRepository.findSpendingByUserIdAndYearMonth(userId, date);
 
         if (existingGoal != null) {
             goalRepository.delete(existingGoal);
