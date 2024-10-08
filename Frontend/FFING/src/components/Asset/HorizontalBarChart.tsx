@@ -19,7 +19,8 @@ const HorizontalBarChart: React.FC = () => {
       const response = await getTotalAsset('1');
       const responseGoal = await getTargetPropertySpending('1')
       setProperty(response.data.result.currentAsset.totalAsset);
-      setTarget(responseGoal.data.result.goalBalance)
+      setTarget(responseGoal.data.result.goalBalance);
+      console.log(target);
     } catch (error) {
       console.error('Error fetching certain spending data:', error);
     }
