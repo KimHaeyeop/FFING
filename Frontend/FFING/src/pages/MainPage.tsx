@@ -12,13 +12,14 @@ import HorizontalBarChart from "../components/Asset/HorizontalBarChart";
 import { getMonthlyExpense } from '../api/SpendingApi';
 import { getTotalAsset } from "../api/AssetApi";
 
+
 const MainPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
   const [thisMonthExpense, setThisMonthExpese] = useState(0); // 이번 달 지출액 관리
 
   // 이번 달 지출액을 가져오는 함수
-  const fetchData = async () => {
+  const fetchData = async (userId: string) => {
     try {
       const yyyyMm = new Date()
         .toISOString()
@@ -35,7 +36,7 @@ const MainPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData('1');
   }, []);
 
   return (
