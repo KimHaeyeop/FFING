@@ -1,48 +1,77 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import TextHeader from "../components/Common/TextHeader";
 import NavBar from "../components/Common/Navbar";
 import PetIdle from "../components/Game/PetIdle";
 import PetStatusChart from "../components/Game/PetStatusChart";
-import MatchingPageModal from "./MatchingPage";
+import RandomMatching from "./RandomMatching";
+import DirectMatching from "./DirectMatching";
+import useViewportStore from "../store/useViewportStore";
 
 const GamePage: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRandomModalOpen, setIsRandomModalOpen] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const dvw = useViewportStore((state) => state.dvw);
+  const dvh = useViewportStore((state) => state.dvh);
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
+  // 랜덤 매칭 모달 열기
+  const handleOpenRandomModal = () => {
+    setIsRandomModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  // 랜덤 매칭 모달 닫기
+  const handleCloseRandomModal = () => {
+    setIsRandomModalOpen(false);
+  };
+
+  // 초대 매칭 모달 열기
+  const handleOpenInviteModal = () => {
+    setIsInviteModalOpen(true);
+  };
+
+  // 초대 매칭 모달 닫기
+  const handleCloseInviteModal = () => {
+    setIsInviteModalOpen(false);
   };
 
   return (
     <div className="flex justify-center items-center">
       <div className="w-screen h-screen">
-        {/* 게임 상단에 사용자 이름?과 알람을 표시하는 header */}
-        <header>
-          <TextHeader title="이규석 님"/>
+        <header style={{ height: `${dvh * 10}px` }}>
+          <TextHeader title="이규석 님" />
         </header>
-        {/* 내 펫이 인사를 하는 컴포넌트*/}
-        <div>
-          <PetIdle />
-        </div>
-        {/* 내 펫의 스탯이 보이는 차트 컴포넌트 */}
-        <div>
-          <PetStatusChart />
-        </div>
-        {/* 버튼 영역 */}
-        <div className="flex rounded-lg overflow-hidden w-full max-w-screen-md mx-auto mt-6 h-16 text-2xl">
-          {/* 게임 시작 버튼 */}
-          <Link to="/game/battle" className="flex-grow-[7] bg-[#FFD874] text-black py-2 rounded-l-lg font-galmuri-11-bold text-2xl">게임으로 바로 이동(test)</Link>
-          {/* 도감 버튼 */}
-          <Link to="/petpedia" className="flex-grow-[3] bg-[#FFA1A1] text-black py-2 rounded-r-lg font-galmuri-11-bold">도감</Link>
-        </div>
-        {isModalOpen && (
-          <MatchingPageModal isOpen={isModalOpen} onClose={handleCloseModal} />
-        )}
-        {/* 경로 이동을 제공하는 footer */}
+        <main className="mx-auto" style={{ height: `${dvh * 80}px`, width: `${dvw * 90}px` }}>
+          {/* 내 펫이 인사를 하는 컴포넌트 */}
+          <div style={{ height: "40%" }}>
+            <PetIdle />
+          </div>
+          {/* 내 펫의 스탯 차트 */}
+          <div style={{ height: "40%" }}>
+            <PetStatusChart />
+          </div>
+          {/* 매칭 시작과 초대 버튼 */}
+          <div className="flex rounded-lg overflow-hidden w-full max-w-screen-md mx-auto mt-6 h-16 text-2xl">
+            <button
+              onClick={handleOpenRandomModal}
+              className="flex-grow bg-[#FFD874] text-black py-2 rounded-l-lg font-bold"
+            >
+              랜덤 매칭
+            </button>
+            <button
+              onClick={handleOpenInviteModal}
+              className="flex-grow bg-[#FFD874] text-black py-2 rounded-r-lg font-bold"
+            >
+              초대 매칭
+            </button>
+          </div>
+          {/* 랜덤 매칭 모달 */}
+          {isRandomModalOpen && (
+            <RandomMatching isOpen={isRandomModalOpen} onClose={handleCloseRandomModal} myUserId={"1"} />
+          )}
+          {/* 초대 매칭 모달 */}
+          {isInviteModalOpen && (
+            <DirectMatching isOpen={isInviteModalOpen} onClose={handleCloseInviteModal} myUserId={"1"} />
+          )}
+        </main>
         <footer>
           <NavBar />
         </footer>

@@ -11,7 +11,6 @@ import com.tbtr.ffing.domain.user.entity.User;
 import com.tbtr.ffing.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -53,8 +52,11 @@ public class FcmServiceImpl implements FcmService {
         // URL 디코딩
         String decodedToken = URLDecoder.decode(encodedToken, StandardCharsets.UTF_8);
 
-        // 불필요한 '=' 제거
-        String cleanToken = decodedToken.endsWith("=") ? decodedToken.substring(0, decodedToken.length() - 1) : decodedToken;
+        // JSON 형식에서 순수 토큰 추출
+        String cleanToken = extractTokenFromJson(decodedToken);
+
+        // 끝에 '=' 문자가 있으면 제거
+        cleanToken = cleanToken.endsWith("=") ? cleanToken.substring(0, cleanToken.length() - 1) : cleanToken;
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + userId));
@@ -69,9 +71,20 @@ public class FcmServiceImpl implements FcmService {
             fcm.setFcmToken(cleanToken);
         }
 
-        System.out.println(fcm.getFcmToken());
+        log.info("Saving FCM token: {}", cleanToken);
 
         fcmRepository.save(fcm);
-        return cleanToken; // 정제된 토큰 반환
+        return cleanToken;
+    }
+
+    private String extractTokenFromJson(String jsonToken) {
+        // Simple JSON parsing to extract the token
+        if (jsonToken.contains("\"token\":")) {
+            int start = jsonToken.indexOf("\"token\":\"") + 9;
+            int end = jsonToken.lastIndexOf("\"");
+            return jsonToken.substring(start, end);
+        }
+        // If it's not in JSON format, return as is
+        return jsonToken;
     }
 }
