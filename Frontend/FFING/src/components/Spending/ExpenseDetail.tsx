@@ -33,7 +33,7 @@ const ExpenseDetail: React.FC<ExpenseDetailProps> = ({ category, title, date, co
         </div>
         {/* 오른편 비용 */}
         <div>
-          <p className="font-bold">-{cost.toLocaleString()}</p>
+          <p className="font-bold">-{cost.toLocaleString(undefined, { maximumFractionDigits: 0 })}원</p>
         </div>
       </div>
     </>

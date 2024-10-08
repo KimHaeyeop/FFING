@@ -14,7 +14,7 @@ const SpendingCategoryPage: React.FC = () => {
 
   // API 연동 필요
   const MonthlyExpenses = [100000, 200000, 300000, 400000, 500000, 600000]
-  const lastMonthExpense = MonthlyExpenses[MonthlyExpenses.length - 1];
+  const lastMonthExpense = MonthlyExpenses[MonthlyExpenses.length - 1]; 
   const previousMonthExpense = MonthlyExpenses[MonthlyExpenses.length - 2];
 
   return (
@@ -58,22 +58,22 @@ const SpendingCategoryPage: React.FC = () => {
               <div className="flex justify-around my-4">
                 <p>올해 총 소비</p>
                 <div className="text-right">
-                  <p className="font-galmuri-11-bold">1080만 원</p>
-                  <p>목표 소비액 880만 원</p>
+                  <p className="font-galmuri-11-bold">※API 연동 필요※만 원</p>
+                  <p>목표 소비액 ※API 연동 필요※만 원</p>
                 </div>
               </div>
               {/* 월 평균 소비 */}
               <div className="flex justify-around my-4">
                 <p>월 평균 소비</p>
                 <div className="text-right">
-                  <p className="font-galmuri-11-bold">540,982원</p>
-                  <p>목표 소비액 60만 원</p>
+                  <p className="font-galmuri-11-bold">※API 연동 필요※원</p>
+                  <p>목표 소비액 ※API 연동 필요※만 원</p>
                 </div>
               </div>
               {/* 목표 달성을 위한 조언 */}
               <div className="mb-4">
                 <p>목표 달성을 위해 매달</p>
-                <p>약 <span className="font-galmuri-11-bold" style={{color: "#C8A1E0"}}>192,929원</span> 이하로 사용해야 합니다.</p>
+                <p>약 <span className="font-galmuri-11-bold" style={{color: "#C8A1E0"}}>※API 연동 필요※원</span> 이하로 사용해야 합니다.</p>
               </div>
             </div>
           </div>

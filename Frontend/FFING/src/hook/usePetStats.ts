@@ -1,18 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
+import { getPets } from "../api/PetPediaApi";
 
-export const usePetStats = () => {
+export const usePetStats = (userId: string) => {
   return useQuery({
-    queryKey: ['petStats'],  // 고유한 쿼리 키
-    queryFn: () => {
-      // 실제 API 호출 대신 임시 데이터를 반환
+    queryKey: ['petStats', userId],  // 고유한 쿼리 키
+    queryFn: async () => {
+      const responsePetStats = await getPets(userId);
       return {
-        currentWeek: { 식비: 6, 쇼핑: 8, 교통: 7, 생활: 6, 문화: 6 },
-        previousWeek: { 식비: 8, 쇼핑: 6, 교통: 6, 생활: 8, 문화: 8 },
-      };
+        currentWeek: responsePetStats.data.result.beforePetInfo,
+        previousWeek: responsePetStats.data.result.currentPetInfo
+      }
     },
     initialData: {
-      currentWeek: { 식비: 5, 쇼핑: 7, 교통: 5, 생활: 7, 문화: 7 },
-      previousWeek: { 식비: 6, 쇼핑: 5, 교통: 7, 생활: 6, 문화: 6 },
+      currentWeek: { 식비: 0, 쇼핑: 0, 교통: 0, 생활: 0, 문화: 0 },
+      previousWeek: { 식비: 0, 쇼핑: 0, 교통: 0, 생활: 0, 문화: 0 },
     }
   });
 };
