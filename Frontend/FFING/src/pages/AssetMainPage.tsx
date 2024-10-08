@@ -27,7 +27,8 @@ const AssetMainPage: React.FC = () => {
 
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
-
+  const todayYear = new Date().toISOString().split('T')[0].replace(/-/g, '').slice(0, 4)
+  
   // 이번 달 지출액을 가져오는 함수
   const fetchData = async () => {
     try {
@@ -62,7 +63,7 @@ const AssetMainPage: React.FC = () => {
             {/* 자산 목표 확인, API 적용 */}
             <div className="text-2xl text-left">
               {/* 현재 연도 정보 가져오기 */}
-              <p>2024년 자산 목표</p>
+              <p>{todayYear}년 자산 목표</p>
               {/* 목표액 API 연동 */}
               <p className="font-galmuri-11-bold">{(target / 10000).toLocaleString()}만 원 모으기</p>
               {/* 목표액 정도를 나타낸 바 차트 */}
