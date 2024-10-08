@@ -7,15 +7,35 @@ import PetStatusChart from "../components/Game/PetStatusChart";
 import MatchingPageModal from "./MatchingPage";
 
 const GamePage: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRandomModalOpen, setIsRandomModalOpen] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
+
+  // 랜덤 모달 열기
+  const handleOpenRandomModal = () => {
+    setIsRandomModalOpen(true);
+  }
+
+  // 랜덤 모달 닫기
+  const handleCloseRandomModal = () => {
+    setIsRandomModalOpen(false);
+  }
+
+  // 초대 모달 열기
+  const handleOpenInviteModal = () => {
+    setIsInviteModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  // 초대 모달 닫기
+  const handleCloseInviteModal = () => {
+    setIsInviteModalOpen(false);
   };
+
+  // 상대방 닉네임 입력 후 초대 매칭 시작
+  const handleStartInviteMatch = (nickname: string) => {
+    setIsInviteModalOpen(false);
+    setIsRandomModalOpen(true);
+  }
 
   return (
     <div className="flex justify-center items-center">
@@ -35,8 +55,9 @@ const GamePage: React.FC = () => {
         {/* 버튼 영역 */}
         <div className="flex rounded-lg overflow-hidden w-full max-w-screen-md mx-auto mt-6 h-16 text-2xl">
           {/* 게임 시작 버튼 */}
-          <button onClick={handleOpenModal} className="flex-grow-[7] bg-[#FFD874] text-black py-2 rounded-l-lg font-galmuri-11-bold text-2xl">매칭 시작</button>
+          <button onClick={handleOpenModal} className="flex-grow-[7] bg-[#FFD874] text-black py-2 rounded-l-lg font-galmuri-11-bold text-2xl">랜덤</button>
           {/* <Link to="/game/battle" className="flex-grow-[7] bg-[#FFD874] text-black py-2 rounded-l-lg font-galmuri-11-bold text-2xl">게임으로 바로 이동(test)</Link> */}
+          <button onClick={handleOpenModal} className="flex-grow-[7] bg-[#FFD874] text-black py-2 rounded-l-lg font-galmuri-11-bold text-2xl">초대</button>
         </div>
         {isModalOpen && (
           <MatchingPageModal isOpen={isModalOpen} onClose={handleCloseModal} myUserId={"1"} opponentUserId={"1"} />
