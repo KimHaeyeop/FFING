@@ -82,7 +82,6 @@ const DepositSavingDetailPage: React.FC = () => {
             {/* 컨텐츠 메뉴 이름 */}
               <p onClick={() => navigate('/asset/product', { state: { productAccountName }})} className='flex items-center'>
                 <Icon path={mdiChevronLeft} size={2} />
-                <p className='text-xl'>{ product.accountName }</p>
               </p>
             <div style={{ position: 'relative' }}> {/* 아이콘 위치 설정 */}
               {/* 종 아이콘 */}
