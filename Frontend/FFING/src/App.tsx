@@ -12,14 +12,11 @@ import SpendingCategoryPage from "./pages/SpendingCategoryPage";
 import SpendingMonthlyPage from "./pages/SpendingMonthlyPage";
 import SpendingMonthlyAnalysisPage from "./pages/SpendingMonthlyAnalysisPage";
 import SpendingWeeklyPage from "./pages/SpendingWeeklyPage";
-
-import { requestPermissionAndGetToken } from "./service/firebase";
-
 import AssetMainPage from "./pages/AssetMainPage";
 import DepositSavingsPage from "./pages/DepositSavingsPage";
 import DepositSavingDetailPage from "./pages/DepositSavingDetailPage";
 import AdminPage from "./pages/AdminPage";
-import LoginPage from './pages/LoginPage';
+// import LoginPage from "./pages/LoginPage";
 
 const App: React.FC = () => {
   useEffect(() => {
@@ -39,7 +36,6 @@ const App: React.FC = () => {
     //     console.error("FCM 초기화 중 오류 발생:", error);
     //   }
     // };
-
     // initializeFCM();
   }, []);
 
@@ -47,7 +43,7 @@ const App: React.FC = () => {
     <Router>
       <Routes>
         {/* 로그인 페이지 */}
-        <Route path="/login" element={<LoginPage />} />
+        {/* <Route path="/login" element={<LoginPage />} /> */}
         {/* 메인 페이지 */}
         <Route path="/" element={<MainPage />} />
         {/* 자산 페이지 */}
