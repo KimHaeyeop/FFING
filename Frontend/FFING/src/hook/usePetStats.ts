@@ -7,13 +7,25 @@ export const usePetStats = (userId: string) => {
     queryFn: async () => {
       const responsePetStats = await getPets(userId);
       return {
-        currentWeek: responsePetStats.data.result.beforePetInfo,
-        previousWeek: responsePetStats.data.result.currentPetInfo
+        currentWeek: {
+          '식비': responsePetStats.data.result.currentPetInfo.foodBakeryStat,
+          '쇼핑': responsePetStats.data.result.currentPetInfo.shoppingStat,
+          '교통': responsePetStats.data.result.currentPetInfo.transportationStat,
+          '생활/문화': responsePetStats.data.result.currentPetInfo.lifeCultureStat,
+          '금융': responsePetStats.data.result.currentPetInfo.financeStat,
+        },
+        previousWeek: {
+          '식비': responsePetStats.data.result.beforePetInfo.foodBakeryStat,
+          '쇼핑': responsePetStats.data.result.beforePetInfo.shoppingStat,
+          '교통': responsePetStats.data.result.beforePetInfo.transportationStat,
+          '생활/문화': responsePetStats.data.result.beforePetInfo.lifeCultureStat,
+          '금융': responsePetStats.data.result.beforePetInfo.financeStat,
+        },
       }
     },
     initialData: {
-      currentWeek: { 식비: 0, 쇼핑: 0, 교통: 0, 생활: 0, 문화: 0 },
-      previousWeek: { 식비: 0, 쇼핑: 0, 교통: 0, 생활: 0, 문화: 0 },
+      currentWeek: { '식비': 0, '쇼핑': 0, '교통': 0, '생활/문화': 0, '금융': 0 },
+      previousWeek: { '식비': 0, '쇼핑': 0, '교통': 0, '생활/문화': 0, '금융': 0 },
     }
   });
 };
