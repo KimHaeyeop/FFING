@@ -41,6 +41,10 @@ public enum ErrorCode {
      */
     BATTLE_NOT_EXISTS(HttpStatus.NOT_FOUND, "BATTLE-001", "해당 배틀이 존재하지 않습니다."),
 
+    /*
+    Alarm 관련 오류
+     */
+    ALARM_NOT_FOUND(HttpStatus.NOT_FOUND, "ALARM-001", "해당 알람이 존재하지 않습니다."),
     ;
 
     private final HttpStatus httpStatus; // HTTP status code associated with the error

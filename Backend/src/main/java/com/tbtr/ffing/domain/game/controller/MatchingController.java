@@ -29,7 +29,6 @@ public class MatchingController {
     private final BattleService battleService;
 
     private static final String MATCH_REQUEST_KEY = "match_request-";
-    private static final String BATTLE_KEY = "battle-";
 
     @MessageMapping("/")
     @SendTo("/sub/")
@@ -39,17 +38,51 @@ public class MatchingController {
         return "socket hi";
     }
 
-    // TODO: 랜덤 매칭 추가
     @MessageMapping("/match/random/request")
     public void handleRandomMatchEvent(RandomMatchReq randomMatchEvent) {
-//        log.info("received random match event: {}", randomMatchEvent.toString());
-//
-//        MatchInfo matchInfo = matchingService.setAndGetMatchInfo(randomMatchEvent);
-//
-//        messagingTemplate.convertAndSend("/sub/match/" + matchInfo.getBattleKey(), matchInfo);
-//        log.info("send random match event to key: {}", matchInfo.getBattleKey().toString());
+        log.info("received random match event: {}", randomMatchEvent.toString());
+
+        String matchedUserId = matchingService.preferMatching(randomMatchEvent);
+
+        if (matchedUserId != null) {
+            // 매치 생성 (matchId)
+            // TODO: matchId 중복 처리
+            String matchId = UUID.randomUUID().toString();
+
+            MatchInfo randomMatchRes = MatchInfo.builder()
+                    .fromUserId(randomMatchEvent.getFromUserId())
+                    .toUserId(Long.valueOf(matchedUserId))
+                    .build();
+
+            BattleInfo battleInfo = battleService.setBattleMatchInfo(matchId, randomMatchRes);
+
+            // 양 사용자에게 매치 성사 알림
+            messagingTemplate.convertAndSend(
+                    "/sub/battle/ready/" + randomMatchRes.getFromUserId(), battleInfo
+            );
+            messagingTemplate.convertAndSend(
+                    "/sub/battle/ready/" + randomMatchRes.getToUserId(), battleInfo
+            );
+
+            log.info("random match accomplished with key: {} - {} vs {}", battleInfo.getMatchId(), randomMatchRes.getFromUserId(), randomMatchRes.getToUserId());
+        }
+
+//        messagingTemplate.convertAndSend("/sub/match/random/" + randomMatchEvent.getFromUserId());
+
     }
 
+    @MessageMapping("/match/random/cancel")
+    public void handleRandomMatchCancelEvent(RandomMatchCancelReq randomMatchCancelReq) {
+
+        matchingService.cancelRandomMatch(randomMatchCancelReq);
+
+//        messagingTemplate.convertAndSend(
+//                "/sub/match/battle-request-cancelled/" + matchCancelReq.getFromUserId(),
+//                new BattleCancelledNotification(matchCancelReq.getRequestId())
+//        );
+    }
+
+    // FIXME: Service Layer로 리팩토링해야 함
     @MessageMapping("/match/direct/request")
     public void handleDirectMatchRequestEvent(DirectMatchReq directMatchRequest) {
         log.info("received direct match request event: {}", directMatchRequest.toString());
@@ -123,7 +156,7 @@ public class MatchingController {
     }
 
     @MessageMapping("/match/cancel")
-    public void handleBattleCancel(MatchCancelReq matchCancelReq) {
+    public void handleDirectMatchCancelEvent(MatchCancelReq matchCancelReq) {
         String redisKey = MATCH_REQUEST_KEY + matchCancelReq.getRequestId();
         matchRedisTemplate.delete(redisKey);
 

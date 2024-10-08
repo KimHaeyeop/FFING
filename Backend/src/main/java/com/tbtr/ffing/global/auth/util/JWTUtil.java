@@ -58,6 +58,9 @@ public class JWTUtil {
     public Boolean isExpired(String token) {
         try {
             validateToken(token);
+            System.out.println(
+                    "@@@@@@@token 만료 : " + Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token)
+                                               .getPayload().getExpiration());
         } catch (ExpiredJwtException e) {
             return true;
         }

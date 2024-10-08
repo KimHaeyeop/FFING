@@ -36,7 +36,7 @@ const MainPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchData('1');
+    fetchData("1");
 
     const initializeFCM = async () => {
       try {
