@@ -23,16 +23,12 @@ interface petRecordInterface {
   week: number,
 }
 
-interface petRecordProps {
-  petDatas: petRecordInterface[];  // petDatas 속성을 정의
-}
-
-const RecordSection: React.FC<petRecordProps> = ({ petDatas }) => {
+const RecordSection: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
-  const petSpriteMetaData = usePetInfoStore((state) => state.petSpriteMetaData)
-  usePetHistoy('1', '202409'); // (유저ID, yyyymm)
+  const petSpriteMetaData = usePetInfoStore((state) => state.petSpriteMetaData);
   const [isModalOpen, setModalOpen] = useState(false); // 모달의 열림 여부를 관리하는 함수
+  const [yearMonth, setYearMonth] = useState('202410'); // 초기 연도와 월 설정
 
   // 모달에 띄울 데이터를 관리
   const [selectedPet, setSelectedPet] = useState<petRecordInterface>({
@@ -53,48 +49,84 @@ const RecordSection: React.FC<petRecordProps> = ({ petDatas }) => {
     week: 0,
   });
 
+  // `usePetHistoy`를 최상위 레벨에서 호출
+  const { data: petDatas, isLoading } = usePetHistoy('1', yearMonth);
+
   // 모달을 여는 함수
   const handleCardClick = (pet: petRecordInterface) => {
-    setSelectedPet(pet) // 특정 펫 지정
-    setModalOpen(true)  // 모달 열기
-  }
+    setSelectedPet(pet); // 특정 펫 지정
+    setModalOpen(true); // 모달 열기
+  };
 
   // 모달을 닫는 함수
-  const handleModalClose = (() => {
-    setModalOpen(false) // 모달 닫기
-  })
-  
+  const handleModalClose = () => {
+    setModalOpen(false); // 모달 닫기
+  };
+
+  // 월 변경 함수
+  const changeMonth = (direction: 'prev' | 'next') => {
+    const year = parseInt(yearMonth.slice(0, 4));
+    const month = parseInt(yearMonth.slice(4, 6));
+    let newYear = year;
+    let newMonth = month;
+
+    if (direction === 'prev') {
+      newMonth -= 1;
+      if (newMonth < 1) {
+        newMonth = 12;
+        newYear -= 1;
+      }
+    } else {
+      newMonth += 1;
+      if (newMonth > 12) {
+        newMonth = 1;
+        newYear += 1;
+      }
+    }
+
+    const newYearMonth = `${newYear}${newMonth.toString().padStart(2, '0')}`;
+    setYearMonth(newYearMonth);
+  };
+
+  // 로딩 중일 경우 처리
+  if (isLoading) {
+    return <p>로딩 중...</p>;
+  }
+
   return (
     <section className="mt-2 pb-20">
-      {/* 현재 연도와 달 표시 (ex: 2024년 9월) API 활용 불가피? */}
-      <h2 className="text-center text-xl font-semibold text-zinc-400">&lt; 2024년 9월 &gt;</h2> 
+      {/* 현재 연도와 달 표시 */}
+      <h2 className="text-center text-xl font-semibold text-zinc-400">
+        {/* YYYY년 MM월 */}
+        <span onClick={() => changeMonth('prev')}>&lt;</span> {`${yearMonth.slice(0, 4)}년 ${yearMonth.slice(4, 6)}월`} <span onClick={() => changeMonth('next')}>&gt;</span>
+      </h2> 
 
-        {/* 주차별 획득한 펫 카드들 */}
-          {petDatas.map(pet => (
-            <PetRecord
-              key={pet.petInfoId}
-              week={pet.week}
-              petName={pet.petName}
-              wins={pet.winCount}
-              losses={pet.loseCount}
-              petImageUrl={petSpriteMetaData.find((sprite) => sprite.petCode === pet.petCode)?.imageUrl || ''}
-              onClick={() => handleCardClick(pet)}  // 클릭시 모달 오픈
-              // 화면 크기에 따른 카드의 너비와 높이 조정
-              style={{
-                width: `${80 * dvw}px`,  // 카드 너비를 뷰포트 너비의 30%로 설정
-                height: `${20 * dvh}px`,  // 카드 높이를 뷰포트 높이의 20%로 설정
-              }}
-            />
-          ))}
+      {/* 주차별 획득한 펫 카드들 */}
+      {petDatas?.map((pet: petRecordInterface) => (
+        <PetRecord
+          key={pet.petInfoId}
+          week={pet.week}
+          petName={pet.petName}
+          wins={pet.winCount}
+          losses={pet.loseCount}
+          petImageUrl={petSpriteMetaData.find((sprite) => sprite.petCode === pet.petCode)?.imageUrl || ''}
+          onClick={() => handleCardClick(pet)}  // 클릭시 모달 오픈
+          style={{
+            width: `${80 * dvw}px`,  // 카드 너비를 뷰포트 너비의 30%로 설정
+            height: `${20 * dvh}px`,  // 카드 높이를 뷰포트 높이의 20%로 설정
+          }}
+        />
+      ))}
+
       {/* 펫 상세 정보 모달 */}
       <PetDetailModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
         petName={selectedPet.petName}
-        petCode={selectedPet.petCode}  // 예시로 No.1
+        petCode={selectedPet.petCode}
         petImageUrl={petSpriteMetaData.find((sprite) => sprite.petCode === selectedPet.petCode)?.imageUrl || ''}
-        petTrait={selectedPet.typeName}  // 예시로 food 특성
-    />
+        petTrait={selectedPet.typeName}
+      />
     </section>
   );
 };
