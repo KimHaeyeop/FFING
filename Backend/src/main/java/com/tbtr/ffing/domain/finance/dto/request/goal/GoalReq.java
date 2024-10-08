@@ -14,13 +14,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GoalReq {
 
-    Long userId;
     String goalBalance;
     String spendingBalance;
 
     public static Goal goalTo(GoalReq goalReq) {
         return Goal.builder()
-                   .userId(goalReq.getUserId())
                    .goalType("1")
                    .balance(new BigDecimal(goalReq.getGoalBalance()))
                    .build();
@@ -28,7 +26,6 @@ public class GoalReq {
 
     public static Goal spendingTo(GoalReq goalReq) {
         return Goal.builder()
-                   .userId(goalReq.getUserId())
                    .goalType("2")
                    .balance(new BigDecimal(goalReq.getSpendingBalance()))
                    .build();

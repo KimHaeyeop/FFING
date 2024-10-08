@@ -14,7 +14,7 @@ public class UserController {
     @GetMapping("/test")
     public ResponseEntity<?> test(@AuthenticationPrincipal CustomUserDetails userDetails) {
         System.out.println("test controller 진입");
-        System.out.println("username: "+ userDetails.getUsername());
+        System.out.println("username: " + userDetails.getUsername());
         return ResponseEntity.ok("test ok");
     }
 }
