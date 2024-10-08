@@ -13,7 +13,6 @@ import { getMonthlyExpense } from "../api/SpendingApi";
 import { getTotalAsset } from "../api/AssetApi";
 import { requestPermissionAndGetToken } from "../service/firebase";
 
-
 const MainPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
@@ -37,7 +36,7 @@ const MainPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchData('1');
+    fetchData("1");
 
     const initializeFCM = async () => {
       try {
