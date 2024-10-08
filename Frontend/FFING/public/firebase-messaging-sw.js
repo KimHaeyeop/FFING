@@ -1,9 +1,12 @@
-importScripts("https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js");
+// public/firebase-messaging-sw.js
 importScripts(
-  "https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"
+  "https://www.gstatic.com/firebasejs/9.5.0/firebase-app-compat.js"
+);
+importScripts(
+  "https://www.gstatic.com/firebasejs/9.5.0/firebase-messaging-compat.js"
 );
 
-// Firebase 구성 객체를 사용해 Firebase를 초기화합니다.
+// Firebase 설정 객체 (firebase.ts와 동일한 값 사용)
 const firebaseConfig = {
   apiKey: "AIzaSyAARBiN91sAOuOWcXLvWdy7yVjPs5LDPFo",
   authDomain: "ffing-9c142.firebaseapp.com",
@@ -14,7 +17,6 @@ const firebaseConfig = {
   measurementId: "G-1KYWB1FN61",
 };
 
-// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
@@ -70,5 +72,24 @@ self.addEventListener("notificationclick", (event) => {
           return clients.openWindow(urlToOpen.href);
         }
       })
+  );
+});
+
+self.addEventListener("push", function (e) {
+  if (!e.data.json()) return;
+
+  const resultData = e.data.json().notification;
+  const notificationTitle = resultData.title;
+
+  const notificationOptions = {
+    body: resultData.body,
+  };
+
+  console.log(resultData.title, {
+    body: resultData.body,
+  });
+
+  e.waitUntil(
+    self.registration.showNotification(notificationTitle, notificationOptions)
   );
 });

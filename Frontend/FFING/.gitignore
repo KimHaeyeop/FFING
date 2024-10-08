@@ -1,3 +1,7 @@
+# Secret Environments
+*.env
+*.env.*
+
 # Logs
 logs
 *.log

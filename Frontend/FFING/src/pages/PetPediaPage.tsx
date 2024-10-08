@@ -1,16 +1,43 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // import GameBar from "../components/Game/GameBar";
 import NavBar from "../components/Common/Navbar";
 import Header from "../components/Common/LinkHeader";
 import RecordSection from "../components/Game/RecordSection";
 import PetPediaSection from "../components/Game/PetPediaSection";
 import useViewportStore from "../store/useViewportStore";  // store import
+import { getPets, getPetPedia, getPetHistroy } from "../api/PetPediaApi";
+
+
+interface ObtainPetsInterFace {
+  petCollectionId: number;  // 기본키
+  petCode: string;  // 펫 코드
+  petName: string;  // 펫 이름
+  createdDate: string;  //YYYYMMDD
+}
+
 
 // PetPediaPage 메인 컴포넌트
-const PetPediaPage: React.FC = () => {
+const PetPediaPage: React.FC<ObtainPetsInterFace> = () => {
   const [activeTab, setActiveTab] = useState<string>("record");
+  const [obtainPets, setObtainPets] = useState<ObtainPetsInterFace[]>([]);  // 획득한 펫 정보를 관리
   // zustand에서 dvw 값을 가져옴
   const dvw = useViewportStore((state) => state.dvw); 
+
+  // 테스트 데이터를 가져오는 함수
+  const fetchData = async (userId: string) => {
+    try {
+      const responsePets = await getPetPedia(userId); // 획득한 펫 정보를 가져오기
+      setObtainPets(responsePets.data.result)
+      // const response = await getPetHistroy(userId, '202409'); // 보유 펫 기록 가져오기
+      console.log(response)
+    } catch (error) {
+      console.error('Error fetching pet datas:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData('1');
+  }, []);
 
   return (
     <div className="flex justify-center items-center">
@@ -21,7 +48,7 @@ const PetPediaPage: React.FC = () => {
         </header>
 
         {/* 기록과 도감 영역을 선택하는 요소 */}
-        <nav className="flex justify-around py-2 sticky top-0 z-1 bg-[#FFFFFF]">
+        <nav className="flex justify-around py-2 sticky top-0 z-10 bg-[#FFFFFF]">
           {/* 기록 탭 */}
           <button
             className={`rounded-full px-6 py-3 ${
@@ -51,7 +78,7 @@ const PetPediaPage: React.FC = () => {
 
         {/* 기록 영역 또는 도감 영역을 조건부 렌더링 */}
         <main>
-          {activeTab === "record" ? <RecordSection /> : <PetPediaSection />}
+          {activeTab === "record" ? <RecordSection /> : <PetPediaSection obtainPets={obtainPets}/>}
         </main>
 
         {/* 페이지 전환을 위한 footer */}
