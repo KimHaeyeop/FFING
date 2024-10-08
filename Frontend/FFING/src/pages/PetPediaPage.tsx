@@ -46,7 +46,7 @@ const PetPediaPage: React.FC<ObtainPetsInterFace> = () => {
         </header>
 
         {/* 기록과 도감 영역을 선택하는 요소 */}
-        <nav className="flex justify-around py-2 sticky top-0 z-1 bg-[#FFFFFF]">
+        <nav className="flex justify-around py-2 sticky top-0 z-10 bg-[#FFFFFF]">
           {/* 기록 탭 */}
           <button
             className={`rounded-full px-6 py-3 ${
