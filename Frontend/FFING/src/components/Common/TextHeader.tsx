@@ -13,7 +13,7 @@ const TextHeader: React.FC<TextHeaderProps> = ({title}) => {
   return (
     <div className='flex justify-between p-3 items-center'>
       {/* 게임 이름 */}
-      <p className='text-2xl'>{title}</p> 
+      <p className='text-2xl font-galmuri-11-bold'>{title}</p> 
       <div style={{ position: 'relative' }}> {/* 아이콘 위치 설정 */}
         {/* 종 아이콘 */}
         <Icon path={mdiBell} size={1.5} /> 

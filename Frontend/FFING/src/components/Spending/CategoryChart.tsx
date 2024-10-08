@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, layouts, ChartEvent, ActiveElement, Chart } from 'chart.js';
 import { getThisMonthCategorySpending } from '../../api/SpendingApi';
@@ -20,8 +20,6 @@ interface SpendingCategoryChartProps {
 const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({ onClick }) => {
   const [highlightedCategory, setHighlightedCategory] = useState<string | null>(null);  // 누른 카테고리를 강조하기 위한 상태 관리
   const [spendingData, setSpendingData] = useState<MonthlyCategorySpending[]>([]);
-  const highlightedCategoryRef = useRef<string | null>(null); // useRef로 상태 관리
-  const chartRef = useRef<Chart>(null);
 
   // 카테고리 별 지출액을 가져오는 함수
   useEffect(() => {
@@ -39,7 +37,7 @@ const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({ onClick }
 
   // API 연동 필요
   const targetSpending = 100000;
-  
+
   // FINANCE, FOOD_BAKERY, LIFE_CULTURE, SHOPPING, TRANSPORTATION, OVERSEAS
   // key를 문자열로 사용 가능하게 변경
   const mapKrUs: { [key: string]: string } = {
@@ -49,31 +47,25 @@ const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({ onClick }
     'SHOPPING': '쇼핑',
     'TRANSPORTATION': '교통',
   };
-  
+
   // 해외 카테고리 삭제 전까지 이 걸로 진행해야 함
   const filteredData = spendingData
-  .filter(item => item.category !== 'OVERSEAS')
-  .sort((a, b) => b.totalAmount - a.totalAmount); // 차트 정렬하기
-  
-  console.log([...filteredData.map((item) => mapKrUs[item.category])])
+    .filter(item => item.category !== 'OVERSEAS')
+    .sort((a, b) => b.totalAmount - a.totalAmount); // 차트 정렬하기
 
   // 범례 클릭 시 카테고리 필터링 및 전달하는 함수
   const handleLegendClick = (event: React.MouseEvent<HTMLLIElement>, legendItem: any) => {
+    console.log(legendItem.text.split(' ')[0], highlightedCategory)
+    if (legendItem.text.split(' ')[0] === highlightedCategory) {
+      console.log(1111)
+      setHighlightedCategory(null)
+      onClick('');
+    }
     const categoryLabel = legendItem.text.split(' ')[0];
     const category = Object.keys(mapKrUs).find(key => mapKrUs[key] === categoryLabel);  // 카테고리 매핑
-    highlightedCategoryRef.current = categoryLabel;  // 클릭된 카테고리 강조
     setHighlightedCategory(categoryLabel);  // 클릭된 카테고리 강조
     onClick(category!); // 카테고리 전달
   };
-
-    // 차트 강조 효과
-    if (chartRef.current) {
-      const chart = chartRef.current;
-      chart.data.datasets[0].backgroundColor = chart.data.datasets[0].backgroundColor.map((color, index) => {
-        return chart.data.labels[index] === categoryLabel ? 'rgba(255, 99, 132, 0.6)' : color;
-      });
-      chart.update();
-    }
 
   const config = {
     data: {
@@ -107,19 +99,15 @@ const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({ onClick }
               return data.labels?.map((label, i) => {
                 const value = data.datasets[0].data[i];
                 const formattedValue = value?.toLocaleString(undefined, { maximumFractionDigits: 0 });
-                
                 return {
                   text: `${label} ${formattedValue}원`,
-                  fillStyle: data.datasets[0].backgroundColor[i], 
-                  borderColor: '#FFFFFF', // 테두리 색상 지정(적용 안 됨)
+                  fillStyle: data.datasets[0].backgroundColor[i],
                   hidden: false,
-                  fontColor: label === highlightedCategoryRef.current ? '#FF0000' : '#000000', // 강조된 카테고리 폰트 색상 변경
-                  // className: label === highlightedCategory ? 'font-galmuri-11-bold' : '', // 이거 아직 안 되서 수정해야 함
+                  fontColor: label === highlightedCategory ? '#000000' : '#D9D9D9', // 이거 아직 안 되서 수정해야 함
                   index: i,
                 };
               });
             },
-            
           },
         },
         tooltip: {
@@ -132,11 +120,6 @@ const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({ onClick }
   return (
     <div className="h-full w-full flex justify-center items-center">
       <Doughnut {...config} />
-      {highlightedCategoryRef.current && (
-        <div className="absolute text-center">
-          <p className="text-lg font-bold">{highlightedCategoryRef.current}</p>
-        </div>
-      )}
     </div>
   );
 };
