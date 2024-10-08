@@ -13,7 +13,6 @@ import { getMonthlyExpense } from "../api/SpendingApi";
 import { getTotalAsset } from "../api/AssetApi";
 import { requestPermissionAndGetToken } from "../service/firebase";
 
-
 const MainPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
