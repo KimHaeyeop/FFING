@@ -33,7 +33,7 @@ const LoginPage: React.FC = () => {
       // console.log(localStorage);
 
       // Zustand에 사용자 정보 저장
-      setAuth(user.username, user.nickname);
+      setAuth(user.nickname, user.userId, user.username);
       // console.log("Username:", user.username);
       // console.log("Nickname:", user.nickname);
 

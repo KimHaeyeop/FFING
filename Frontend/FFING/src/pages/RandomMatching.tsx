@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import randomMatchService from "../websocket/randomMatchService"; // WebSocket 로직을 포함한 서비스 파일
+import WebSocketClient from "../websocket/websocketClient";
 
 interface RandomMatchingProps {
   isOpen: boolean;
@@ -10,14 +11,25 @@ interface RandomMatchingProps {
 const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUserId }) => {
   useEffect(() => {
     if (isOpen) {
-      // 랜덤 매칭 요청
-      randomMatchService.requestRandomMatch(myUserId, 1000); // 예시로 1000의 스탯을 보냄
+      console.log("랜덤 매칭 오픈됐어요~~");
+      const client = WebSocketClient.getInstance();
 
-      // 매칭 성공 시 콜백 함수
-      randomMatchService.subscribeToMatchReady(myUserId, (matchData) => {
-        console.log("매칭 성공:", matchData);
-        // 매칭 성사 후 처리 로직
-      });
+      // wsClient.subscribe(`/sub/battle/ready/${userId}`, (message) => {
+      //   const data = JSON.parse(message.body);
+      //   setOpponentInfo(data);
+      //   console.log('상대방 정보:', data);
+      // });
+
+      // 랜덤 매칭 요청
+      if (client.isConnectedStatus) {
+        randomMatchService.requestRandomMatch(myUserId, 100); // 예시로 1000의 스탯을 보냄
+
+        // 매칭 성공 시 콜백 함수
+        randomMatchService.subscribeToMatchReady(myUserId, (matchData) => {
+          console.log("매칭 성공:", matchData);
+          // 매칭 성사 후 처리 로직
+        });
+      }
 
       return () => {
         // 매칭 취소
