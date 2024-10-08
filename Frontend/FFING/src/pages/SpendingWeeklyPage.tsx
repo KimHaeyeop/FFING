@@ -126,7 +126,7 @@ const SpendingWeeklyPage: React.FC = () => {
           </div>
           {/* 선택된 일자의 지출 금액을 표시하는 부분 */}
           {dailyTotal > 0 ? (
-            <p className="text-right">- {dailyTotal.toLocaleString()}원</p>
+            <p className="text-right">- {dailyTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}원</p>
           ) : (
             <p className="text-center">지출이 없습니다.</p>
           )}
