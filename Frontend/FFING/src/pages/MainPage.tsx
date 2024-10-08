@@ -13,13 +13,14 @@ import { getMonthlyExpense } from "../api/SpendingApi";
 import { getTotalAsset } from "../api/AssetApi";
 import { requestPermissionAndGetToken } from "../service/firebase";
 
+
 const MainPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
   const [thisMonthExpense, setThisMonthExpese] = useState(0); // 이번 달 지출액 관리
 
   // 이번 달 지출액을 가져오는 함수
-  const fetchData = async () => {
+  const fetchData = async (userId: string) => {
     try {
       const yyyyMm = new Date()
         .toISOString()
@@ -36,7 +37,7 @@ const MainPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData('1');
 
     const initializeFCM = async () => {
       try {
@@ -121,7 +122,7 @@ const MainPage: React.FC = () => {
           {/* 지출 내역 관련 */}
           <div
             className="border-black border-4 rounded-lg"
-            style={{ height: "40%" }}
+            style={{ height: "38%" }}
           >
             <div className="flex justify-between items-center mt-2 mx-2">
               <p className="text-xl">이번달 지출내역</p>
