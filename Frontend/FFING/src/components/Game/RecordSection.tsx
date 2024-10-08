@@ -1,48 +1,67 @@
 import React, { useState } from "react";
-import PetDetailModal from "./PetDetailModal";
-import PetRecord from "./PetRecord";
-import useViewportStore from "../../store/useViewportStore";
+import useViewportStore from "../../store/useViewportStore";  
+import usePetInfoStore from "../../store/usePetInfoStore";  // 전체 펫의 정보를 저장하고 있는 store
+import PetDetailModal from "./PetDetailModal";  // 펫의 상세 정보를 보여주는 모달
+import PetRecord from "./PetRecord";  // 펫의 기록을 보여주는 컴포넌트
+import { usePetHistoy } from "../../hook/usePetHistory";  // 펫 기록을 관리
 
-interface petRecords {
-  week: string;
-  petName: string;
-  petIndex: number;
-  wins: number;
-  losses: number;
-  petImageUrl: string;
-  petTrait: string;
+interface petRecordInterface {
+  petInfoId: number,
+  totalStat: number,
+  financeStat: number,
+  foodBakeryStat: number,
+  lifeCultureStat: number,
+  shoppingStat: number,
+  transportationStat: number,
+  winCount: number,
+  loseCount: number,
+  petCode: string,
+  petName: string,
+  typeCode: string,
+  typeName: string,
+  yearMonth: string,
+  week: number,
 }
 
-const RecordSection: React.FC = () => {
+interface petRecordProps {
+  petDatas: petRecordInterface[];  // petDatas 속성을 정의
+}
+
+const RecordSection: React.FC<petRecordProps> = ({ petDatas }) => {
   const dvw = useViewportStore((state) => state.dvw);
-  const dvh = useViewportStore((state) => state.dvh); 
-  const [isModalOpen, setModalOpen] = useState(false)
+  const dvh = useViewportStore((state) => state.dvh);
+  const petSpriteMetaData = usePetInfoStore((state) => state.petSpriteMetaData)
+  usePetHistoy('1', '202409'); // (유저ID, yyyymm)
+  const [isModalOpen, setModalOpen] = useState(false); // 모달의 열림 여부를 관리하는 함수
+
   // 모달에 띄울 데이터를 관리
-  const [selectedPet, setSelectedPet] = useState({
+  const [selectedPet, setSelectedPet] = useState<petRecordInterface>({
+    petInfoId: 0,
+    totalStat: 0,
+    financeStat: 0,
+    foodBakeryStat: 0,
+    lifeCultureStat: 0,
+    shoppingStat: 0,
+    transportationStat: 0,
+    winCount: 0,
+    loseCount: 0,
+    petCode: '',
     petName: '',
-    petIndex: 0,
-    petImageUrl: '',
-    petTrait: ''
+    typeCode: '',
+    typeName: '',
+    yearMonth: '',
+    week: 0,
   });
 
-  // 주차별 데이터 (API 완성되면 가져오기)
-  const petRecords = [
-    { week: '9월 1주차', petName: 'bear-brown', wins: 10, losses: 3, petImageUrl: '/pets/bear-brown.png', petIndex: 1, petTrait: '외식' },
-    { week: '9월 2주차', petName: 'bear-lime', wins: 8, losses: 5, petImageUrl: '/pets/bear-lime.png', petIndex: 2, petTrait: '생활/문화' },
-    { week: '9월 3주차', petName: 'candy-fluff-white', wins: 6, losses: 7, petImageUrl: '/pets/candy-fluff-white.png', petIndex: 3, petTrait: '여행' },
-    { week: '9월 4주차', petName: 'candy-fluff-yellow', wins: 6, losses: 7, petImageUrl: '/pets/candy-fluff-yellow.png', petIndex: 4, petTrait: '교통' },
-    { week: '9월 5주차', petName: 'cat-black', wins: 6, losses: 7, petImageUrl: '/pets/cat-black.png', petIndex: 5, petTrait: '금융' },
-  ];
-
   // 모달을 여는 함수
-  const handleCardClick = (pet: petRecords) => {
-    setSelectedPet(pet)
-    setModalOpen(true)
+  const handleCardClick = (pet: petRecordInterface) => {
+    setSelectedPet(pet) // 특정 펫 지정
+    setModalOpen(true)  // 모달 열기
   }
 
   // 모달을 닫는 함수
   const handleModalClose = (() => {
-    setModalOpen(false)
+    setModalOpen(false) // 모달 닫기
   })
   
   return (
@@ -51,14 +70,14 @@ const RecordSection: React.FC = () => {
       <h2 className="text-center text-xl font-semibold text-zinc-400">&lt; 2024년 9월 &gt;</h2> 
 
         {/* 주차별 획득한 펫 카드들 */}
-          {petRecords.map((pet, index) => (
+          {petDatas.map(pet => (
             <PetRecord
-              key={index}
+              key={pet.petInfoId}
               week={pet.week}
               petName={pet.petName}
-              wins={pet.wins}
-              losses={pet.losses}
-              petImageUrl={pet.petImageUrl}
+              wins={pet.winCount}
+              losses={pet.loseCount}
+              petImageUrl={petSpriteMetaData.find((sprite) => sprite.petCode === pet.petCode)?.imageUrl || ''}
               onClick={() => handleCardClick(pet)}  // 클릭시 모달 오픈
               // 화면 크기에 따른 카드의 너비와 높이 조정
               style={{
@@ -72,9 +91,9 @@ const RecordSection: React.FC = () => {
         isOpen={isModalOpen}
         onClose={handleModalClose}
         petName={selectedPet.petName}
-        petIndex={selectedPet.petIndex}  // 예시로 No.1
-        petImageUrl={selectedPet.petImageUrl}
-        petTrait={selectedPet.petTrait}  // 예시로 food 특성
+        petCode={selectedPet.petCode}  // 예시로 No.1
+        petImageUrl={petSpriteMetaData.find((sprite) => sprite.petCode === selectedPet.petCode)?.imageUrl || ''}
+        petTrait={selectedPet.typeName}  // 예시로 food 특성
     />
     </section>
   );

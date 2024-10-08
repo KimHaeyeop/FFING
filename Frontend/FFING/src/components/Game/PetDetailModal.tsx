@@ -8,7 +8,7 @@ interface PetDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   petName: string;
-  petIndex: number;
+  petCode: string;
   petImageUrl: string;
   petTrait: string;
 }
@@ -17,7 +17,7 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
   isOpen,
   onClose,
   petName,
-  petIndex,
+  petCode,
   petImageUrl,
   petTrait,
 }) => {
@@ -101,7 +101,7 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
         {/* 펫 이름과 도감 인덱스 */}
         <div className="mt-[5%] flex justify-between px-1 items-center">
           <h2 className="text-xl font-bold mr-4">{petName}</h2>
-          <span className="text-sm text-gray-500">No.{petIndex}</span>
+          <span className="text-sm text-gray-500">{petCode}</span>
         </div>
 
         {/* 펫 특성 (Chip 형태) */}
