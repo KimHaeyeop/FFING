@@ -10,8 +10,7 @@ import lombok.*;
 public class BattleRoundInfoReq {
     private String matchId;
 
-    private int currentRound;   // 현재 공격 횟수
-    private int fromUserAttackNum;  // 고른 공격 숫자
-    private int toUserAttackNum;    // 고른 공격 숫자
+    private Long userId;
+    private int userAttackNum;      // 고른 공격 숫자
 
 }

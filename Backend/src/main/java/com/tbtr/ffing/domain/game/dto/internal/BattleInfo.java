@@ -1,17 +1,23 @@
 package com.tbtr.ffing.domain.game.dto.internal;
 
+import com.tbtr.ffing.domain.game.entity.PetInfo;
 import lombok.*;
 
-@AllArgsConstructor
-@Getter
 @Builder
-@ToString
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class BattleInfo {
+
     private String matchId;
 
-    // TODO: fromUser의 펫 정보 (체력, 스탯, 공격옵션)
-    private String fromUserPetInfo;
+    private BattlePetInfo battlePet1;
+    private BattlePetInfo battlePet2;
 
-    // TODO: toUser의 펫 정보
-    private String toUserPetInfo;
+    public static BattleInfo from (String matchId, BattlePetInfo petInfo1, BattlePetInfo petInfo2) {
+        return new BattleInfo(
+            matchId, petInfo1, petInfo2
+        );
+    }
 }
