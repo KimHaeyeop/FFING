@@ -21,6 +21,8 @@ import com.tbtr.ffing.domain.user.repository.UserRepository;
 import com.tbtr.ffing.global.batch.expense.ExpenseItemProcessor;
 import com.tbtr.ffing.global.openfeign.SsafyDeveloperClient;
 import com.tbtr.ffing.global.util.InstitutionTransactionNoGenerator;
+import com.tbtr.ffing.domain.alarm.entity.Alarm;
+import com.tbtr.ffing.domain.alarm.repository.AlarmRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +46,7 @@ public class CardServiceImpl implements CardService {
     private final UserRepository userRepository;
     private final ExpenseService expenseService;
     private final FcmRepository fcmRepository;
+    private final AlarmRepository alarmRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(ExpenseItemProcessor.class);
 
@@ -83,14 +90,16 @@ public class CardServiceImpl implements CardService {
             // expense 추가
             expenseService.addCardTransactionToExpense(newCardTransaction, user);
 
+            // Alarm 엔티티에 알림 추가
+            addAlarmForCardTransaction(newCardTransaction, user);
+
             // FCM 토큰 찾기
             Fcm fcm = fcmRepository.findByUser(user);
 
             if (fcm != null && fcm.getFcmToken() != null) {
-
                 // FCM 이벤트 발생
                 FcmEvent fcmEvent = new FcmEvent(this,
-                        "💥새로운 지출이 등록되었습니다.",
+                        "💥💥새로운 지출 등록💥💥",
                         "지출 항목: " + newCardTransaction.getMerchant() + ", 금액: " + newCardTransaction.getPaymentBalance(),
                         fcm.getFcmToken());
 
@@ -103,4 +112,22 @@ public class CardServiceImpl implements CardService {
         }
     }
 
+    private void addAlarmForCardTransaction(CardTransaction cardTransaction, User user) {
+        LocalDate currentDate = LocalDate.now();
+        LocalTime currentTime = LocalTime.now();
+
+        Alarm alarm = Alarm.builder()
+                .alarmDate(currentDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+                .alarmTime(currentTime.format(DateTimeFormatter.ofPattern("HHmmss")))
+                .alarmType(Alarm.AlarmType.EVENT)
+                .alarmTitle("💥💥새로운 지출이 등록💥💥")
+                .alarmContent("지출 항목: " + cardTransaction.getMerchant() + ", 금액: " + cardTransaction.getPaymentBalance())
+                .alarmLabel(Alarm.AlarmLabel.CAUTION)
+                .alarmStatus(false)
+                .userId(user.getUserId())
+                .build();
+
+        alarmRepository.save(alarm);
+        logger.info("Alarm created for card transaction: {}", cardTransaction.getCardTransactionId());
+    }
 }
