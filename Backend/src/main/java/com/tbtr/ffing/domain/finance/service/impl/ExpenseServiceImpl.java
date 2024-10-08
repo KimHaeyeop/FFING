@@ -13,12 +13,13 @@ import com.tbtr.ffing.domain.finance.entity.Expense;
 import com.tbtr.ffing.domain.finance.entity.ExpenseCategory;
 import com.tbtr.ffing.domain.finance.entity.Goal;
 import com.tbtr.ffing.domain.finance.repository.AccountTransactionRepository;
-import com.tbtr.ffing.domain.finance.repository.AssetRepository;
 import com.tbtr.ffing.domain.finance.repository.ExpenseRepository;
 import com.tbtr.ffing.domain.finance.repository.GoalRepository;
+import com.tbtr.ffing.domain.finance.service.AssetService;
 import com.tbtr.ffing.domain.finance.service.ExpenseService;
 import com.tbtr.ffing.domain.user.entity.User;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -38,7 +39,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final AccountTransactionRepository accountTransactionRepository;
     private final GoalRepository goalRepository;
-    private final AssetRepository assetRepository;
+    private final AssetService assetService;
 
     /**
      * 카드 지출 -> 전체 지출에 반영
@@ -248,7 +249,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         if (firstSpendingGoal == null) {
             return BigDecimal.ZERO;
         }
-        int remainingMonths = 12 - firstSpendingGoal.getCreatedAt().getMonthValue() + 1;
+        int remainingMonths = remainingMonths(firstSpendingGoal.getCreatedAt().getMonthValue());
         return firstSpendingGoal.getBalance().multiply(new BigDecimal(remainingMonths));
     }
 
@@ -257,7 +258,8 @@ public class ExpenseServiceImpl implements ExpenseService {
         for (int i = 0; i < 5; i++) {
             total = total.add(sixMonthTotalExpense.get(i));
         }
-        return total.divide(new BigDecimal(5), BigDecimal.ROUND_HALF_UP);
+        return total.divide(new BigDecimal(5), RoundingMode.CEILING)
+                    .setScale(0, RoundingMode.CEILING);
     }
 
     private BigDecimal calculateFutureMonthlyExpenses(Long userId, Long ssafyUserId, Goal yearGoal) {
@@ -270,74 +272,16 @@ public class ExpenseServiceImpl implements ExpenseService {
 
         BigDecimal fixedIncome = accountTransactionRepository.getTotalFixedIncomeForYearMonthBySsafyUserId(lastMonth,
                 ssafyUserId);
-        BigDecimal currentAsset = assetRepository.findCurrentAssetByUserId(userId).getTotalAsset();
+        BigDecimal currentAsset = assetService.getCurrentAsset(userId).getTotalAsset();
 
-        int remainingMonths = 12 - currentDate.getMonthValue() + 1;
-        return fixedIncome.multiply(new BigDecimal(remainingMonths))
-                          .subtract(yearGoal.getBalance().subtract(currentAsset));
+        int remainingMonths = remainingMonths(currentDate.getMonthValue());
+        return fixedIncome.subtract(
+                yearGoal.getBalance().subtract(currentAsset)
+                        .divide(new BigDecimal(remainingMonths), RoundingMode.CEILING)
+        ).setScale(0, RoundingMode.CEILING);
     }
-//    @Override
-//    public MonthlyExpenseAnalysisRes getAnalysisSummary(Long userId, Long ssafyUserId) {
-//        // 이번달 포함 6개월간의 소비액 (리스트 형태로 6개의 값 저장)
-//        List<BigDecimal> sixMonthTotalExpense = new ArrayList<>();
-//
-//        LocalDate currentDate = LocalDate.now();
-//        for (int i = 5; i >= 0; i--) {
-//            LocalDate targetDate = currentDate.minusMonths(i);
-//            String yearMonth = targetDate.format(DATE_FORMATTER_YEARMONTH);
-//            BigDecimal monthExpense = expenseRepository.getTotalExpenseForMonth(yearMonth);
-//            BigDecimal input = monthExpense == null ? BigDecimal.ZERO : monthExpense;
-//            sixMonthTotalExpense.add(input);
-//        }
-//
-//        // 저번달 대비 이번달 소비액 증감률 또는 차이값
-//        BigDecimal monthOverMonthChange = sixMonthTotalExpense.isEmpty() ? BigDecimal.ZERO : sixMonthTotalExpense.get(5)
-//                                                                                                                 .subtract(
-//                                                                                                                         sixMonthTotalExpense.get(
-//                                                                                                                                 4));
-//
-//        // 올해 총소비액
-//        String startDate = currentDate.withDayOfYear(1).format(DATE_FORMATTER);
-//        String endDate = currentDate.format(DATE_FORMATTER);
-//        BigDecimal yearlyTotalExpense = expenseRepository.calculateTotalExpenseBetweenDates(startDate, endDate);
-//
-//        // 총 목표 소비액 : 올해 처음 목표 소비액 * 당시 남은 개월 수
-//        Goal targetSpending = goalRepository.findFirstSpendingByUserId(userId, String.valueOf(currentDate.getYear()));
-//        BigDecimal totalTargetExpense = targetSpending == null ? BigDecimal.ZERO : targetSpending.getBalance().multiply(
-//                new BigDecimal(12 - targetSpending.getCreatedAt().getMonthValue() + 1));
-//
-//        // 5개월(이번 달 제외한 5개월) 평균 소비액
-//        BigDecimal monthAverageExpense = BigDecimal.ZERO;
-//        for (int i = 5; i > 0; i--) {
-//            monthAverageExpense = monthAverageExpense.add(sixMonthTotalExpense.get(i));
-//        }
-//        monthAverageExpense = monthAverageExpense.divide(new BigDecimal(5));
-//
-//        // 이번달 목표 소비액
-//        Goal monthSpending = goalRepository.findFirstSpendingByUserId(userId, String.valueOf(currentDate.getYear()));
-//        BigDecimal monthlyTargetExpense = monthSpending == null ? BigDecimal.ZERO : monthSpending.getBalance();
-//
-//        // 앞으로의 매달 소비액 : 고정 수입*남은 개월 - (목표 자산 - 현재 자산) / 남은 개월
-//
-//        System.out.println("###############" + currentDate.format(DATE_FORMATTER_YEARMONTH));
-//        Goal yearGoal = goalRepository.findByUserIdAndGoalTypeAndYear(userId, String.valueOf(currentDate.getYear()));
-//        BigDecimal futureMonthlyExpenses = yearGoal == null ? BigDecimal.ZERO :
-//                                           accountTransactionRepository.getTotalFixedIncomeForYearMonthBySsafyUserId(
-//                                                                               currentDate.minusMonths(1L).format(DATE_FORMATTER_YEARMONTH),
-//                                                                               ssafyUserId).multiply(
-//                                                                               new BigDecimal(12 - currentDate.getMonthValue() + 1))
-//                                                                       .subtract(yearGoal.getBalance().subtract(
-//                                                                               assetRepository.findCurrentAssetByUserId(
-//                                                                                       userId).getTotalAsset()));
-//
-//        return MonthlyExpenseAnalysisRes.builder()
-//                                        .sixMonthTotalExpense(sixMonthTotalExpense)
-//                                        .monthOverMonthChange(monthOverMonthChange)
-//                                        .yearlyTotalExpense(yearlyTotalExpense)
-//                                        .totalTargetExpense(totalTargetExpense)
-//                                        .monthAverageExpense(monthAverageExpense)
-//                                        .monthlyTargetExpense(monthlyTargetExpense)
-//                                        .futureMonthlyExpenses(futureMonthlyExpenses).build();
-//    }
-//
+
+    private int remainingMonths(int month) {
+        return 12 - month + 1;
+    }
 }
