@@ -24,4 +24,6 @@ public interface ExpenseService {
     MonthlySummaryRes getMonthlySummary(String yearMonth);
 
     DailyExpenseRes getDailyExpense(String date);
+
+    MonthlyExpenseAnalysisRes getAnalysisSummary(Long userId, Long ssafyUserId);
 }
