@@ -18,7 +18,7 @@ public class MonthlyExpenseAnalysisRes {
     private BigDecimal monthOverMonthChange;  // 저번달 대비 이번달 소비액 증감률 또는 차이값
     private BigDecimal yearlyTotalExpense;    // 올해 총소비액
     private BigDecimal totalTargetExpense;    // 토탈 목표 소비액
-    private BigDecimal sixMonthAverageExpense; // 6개월간 평균 소비액
+    private BigDecimal monthAverageExpense; // 6개월간 평균 소비액
     private BigDecimal monthlyTargetExpense;  // 이번달 목표 소비액
     private BigDecimal futureMonthlyExpenses; // 앞으로의 매달 소비액
 }
