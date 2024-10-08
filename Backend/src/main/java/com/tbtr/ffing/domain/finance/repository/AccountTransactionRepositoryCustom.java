@@ -8,7 +8,7 @@ public interface AccountTransactionRepositoryCustom {
 
     BigDecimal getTotalIncomeForMonth(String yearMonth);
 
-    BigDecimal getTotalFixedIncomeForMonthBySsafyUserId(String yearMonth, Long ssafyUserId);
+    BigDecimal getTotalFixedIncomeForYearMonthBySsafyUserId(String yearMonth, Long ssafyUserId);
 
     List<DailySummaryRes> getDailyIncomesForMonth(String yearMonth);
 

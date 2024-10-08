@@ -4,7 +4,10 @@ import com.tbtr.ffing.domain.finance.entity.Goal;
 
 public interface GoalRepositoryCustom {
 
-    Goal findByUserIdAndGoalTypeAndYear(Long userId, String goalType, String year);
+    Goal findGoalByUserIdAndYear(Long userId, String year);
 
-    Goal findByUserIdAndGoalTypeAndYearMonth(Long userId, String goalType, String yearMonth);
+    Goal findSpendingByUserIdAndYearMonth(Long userId, String yearMonth);
+
+    // 해당 연도의 첫 번째 목표 소비액
+    Goal findFirstSpendingByUserId(Long userId, String year);
 }
