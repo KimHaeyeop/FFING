@@ -83,7 +83,7 @@ const MonthlyDoughnutChart: React.FC = () => {
               return data.labels!.map((label, i) => {
                 const value = data.datasets![0].data[i] as number;
                 const total = data.datasets![0].data.reduce((a, b) => (a as number) + (b as number), 0);
-                const percentage = ((value / total) * 100).toFixed(2); // 소수점 둘째자리까지 출력
+                const percentage = ((value / total) * 100).toFixed(0); // 소수점 없이 출력
                 return {
                   text: `${label} ${percentage}%`,
                   fillStyle: data.datasets![0].backgroundColor[i] as string,
