@@ -26,8 +26,10 @@ const PetPediaPage: React.FC<ObtainPetsInterFace> = () => {
   // 테스트 데이터를 가져오는 함수
   const fetchData = async (userId: string) => {
     try {
-      const responsePets = await getPetPedia(userId); // 획득한 펫 정보를 가져오는 함수
+      const responsePets = await getPetPedia(userId); // 획득한 펫 정보를 가져오기
       setObtainPets(responsePets.data.result)
+      // const response = await getPetHistroy(userId, '202409'); // 보유 펫 기록 가져오기
+      console.log(response)
     } catch (error) {
       console.error('Error fetching pet datas:', error);
     }
