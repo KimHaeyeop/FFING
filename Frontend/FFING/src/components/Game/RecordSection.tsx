@@ -84,7 +84,7 @@ const RecordSection: React.FC = () => {
       }
     }
 
-    const newYearMonth = `${newYear}${newMonth.toString().padStart(2, '0')}`;
+    const newYearMonth = `${newYear}${newMonth.toString().padStart(2, '0')}`; // 새롭게 변경된 yyyymm
     setYearMonth(newYearMonth);
   };
 
@@ -126,6 +126,12 @@ const RecordSection: React.FC = () => {
         petCode={selectedPet.petCode}
         petImageUrl={petSpriteMetaData.find((sprite) => sprite.petCode === selectedPet.petCode)?.imageUrl || ''}
         petTrait={selectedPet.typeName}
+        totalStat={selectedPet.totalStat}
+        financeStat={selectedPet.financeStat}
+        foodBakeryStat={selectedPet.foodBakeryStat}
+        lifeCultureStat={selectedPet.lifeCultureStat}
+        shoppingStat={selectedPet.shoppingStat}
+        transportationStat={selectedPet.transportationStat}
       />
     </section>
   );

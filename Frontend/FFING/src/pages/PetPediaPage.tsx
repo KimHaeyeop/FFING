@@ -77,7 +77,7 @@ const PetPediaPage: React.FC<ObtainPetsInterFace> = () => {
 
         {/* 기록 영역 또는 도감 영역을 조건부 렌더링 */}
         <main>
-          {activeTab === "record" ? <RecordSection petDatas={petDatas}/> : <PetPediaSection obtainPets={obtainPets}/>}
+          {activeTab === "record" ? <RecordSection /> : <PetPediaSection obtainPets={obtainPets}/>}
         </main>
 
         {/* 페이지 전환을 위한 footer */}
