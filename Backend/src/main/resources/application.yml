@@ -18,11 +18,11 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
-    #  batch:
-    #    jdbc:
-    #      initialize-schema: always
+  batch:
     job:
       enabled: false
+#        jdbc:
+#          initialize-schema: always
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
@@ -51,7 +51,9 @@ spring:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
-#  batch:
+  batch:
+    job:
+      enabled: false
 #    jdbc:
 #      initialize-schema: always
 logging:
@@ -86,7 +88,9 @@ spring:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
-#  batch:
+  batch:
+    job:
+      enabled: false
 #    jdbc:
 #      initialize-schema: always
 logging:
