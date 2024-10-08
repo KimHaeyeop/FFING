@@ -101,7 +101,7 @@ const MonthlyDoughnutChart: React.FC = () => {
   };
   
   return (
-    <div className="h-full w-full flex justify-center items-center">
+    <div className="flex justify-center items-center">
       <Doughnut {...config} />
     </div>
   );
