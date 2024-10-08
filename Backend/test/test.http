@@ -1,0 +1,18 @@
+### test
+GET http://localhost:8900/api/v1/test
+
+### 회원가입
+POST http://localhost:8900/api/v1/signup
+Content-Type: application/json
+
+{
+  "email" : "test@test.com",
+  "password" : "Qw123456",
+  "username" : "테스트1",
+  "gender" : "M",
+  "birth" : "2000-01-01",
+  "nickname" : "테스트닉네임1",
+  "pin" : "123456"
+}
+
+###

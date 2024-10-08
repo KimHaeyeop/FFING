@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
-import axios from "../api/axiosConfig";
+import axios from "../api/AxiosConfig";
 
 interface FirebaseMessage {
   notification?: {
@@ -26,12 +26,83 @@ export const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 export const messaging = getMessaging(firebaseApp);
 
+class NotificationPermissionHandler {
+  private permissionState: NotificationPermission;
+  private lastChecked: number;
+
+  constructor() {
+    this.permissionState = Notification.permission;
+    this.lastChecked = Date.now();
+  }
+
+  async checkAndRequestPermission(): Promise<boolean> {
+    if (!("Notification" in window)) {
+      console.log("이 브라우저는 알림을 지원하지 않습니다.");
+      return false;
+    }
+
+    if (this.permissionState === "granted") {
+      return true;
+    }
+
+    if (this.permissionState === "denied") {
+      this.showManualSettingsGuide();
+      return false;
+    }
+
+    try {
+      const permission = await Notification.requestPermission();
+      this.permissionState = permission;
+      if (permission === "granted") {
+        console.log("알림 권한이 허용되었습니다.");
+        return true;
+      } else {
+        console.log("알림 권한이 거부되었습니다.");
+        this.showManualSettingsGuide();
+        return false;
+      }
+    } catch (error) {
+      console.error("알림 권한 요청 중 오류 발생:", error);
+      return false;
+    }
+  }
+
+  showManualSettingsGuide() {
+    alert(
+      "브라우저 설정에서 알림을 수동으로 활성화해주세요. 설정 > 개인정보 및 보안 > 사이트 설정 > 알림"
+    );
+  }
+
+  explainNotificationImportance() {
+    alert(
+      "알림을 활성화하면 중요한 업데이트와 메시지를 실시간으로 받아볼 수 있습니다."
+    );
+  }
+
+  offerAlternativeCommunication() {
+    console.log("대체 통신 방법을 제공하는 UI를 표시합니다.");
+    // 여기에 이메일 알림 등록 로직을 추가할 수 있습니다.
+  }
+
+  async periodicPermissionCheck() {
+    const now = Date.now();
+    if (now - this.lastChecked > 24 * 60 * 60 * 1000) {
+      // 하루에 한 번 확인
+      this.lastChecked = now;
+      await this.checkAndRequestPermission();
+    }
+  }
+}
+
+const notificationHandler = new NotificationPermissionHandler();
+
 export const requestPermissionAndGetToken = async (
   userId: number
 ): Promise<string | undefined> => {
   try {
-    const permission = await Notification.requestPermission();
-    if (permission === "granted") {
+    const isPermissionGranted =
+      await notificationHandler.checkAndRequestPermission();
+    if (isPermissionGranted) {
       const token = await getToken(messaging, {
         vapidKey: import.meta.env.VITE_FCM_KEY,
       });
@@ -40,17 +111,14 @@ export const requestPermissionAndGetToken = async (
         await sendTokenToServer(userId, token);
         return token;
       } else {
-        alert(
-          "Unable to register token. Please allow permissions to generate."
-        );
+        alert("토큰을 생성할 수 없습니다. 권한을 허용해주세요.");
       }
-    } else if (permission === "denied") {
-      alert(
-        "Web push permission has been blocked. Please allow permissions to receive notifications."
-      );
+    } else {
+      notificationHandler.explainNotificationImportance();
+      notificationHandler.offerAlternativeCommunication();
     }
   } catch (err) {
-    console.error("Error obtaining token", err);
+    console.error("토큰 얻기 오류", err);
     throw err;
   }
 };
@@ -71,17 +139,14 @@ export const setupMessageListener = () => {
   onMessage(messaging, (payload: FirebaseMessage) => {
     console.log("Message received. ", payload);
 
-    // payload.notification이 존재하는지 확인
     if (payload.notification) {
       const notificationTitle =
         payload.notification.title || "New Notification";
       const notificationOptions: NotificationOptions = {
         body: payload.notification.body,
         icon: payload.notification.icon,
-        // 필요한 경우 추가 옵션을 여기에 포함시킬 수 있습니다.
       };
 
-      // 브라우저 알림 표시
       if ("Notification" in window && Notification.permission === "granted") {
         new Notification(notificationTitle, notificationOptions);
       } else {
@@ -93,16 +158,13 @@ export const setupMessageListener = () => {
       }
     }
 
-    // UI 업데이트
     updateUI(payload);
   });
 };
 
-// updateUI 함수의 타입을 명확히 지정
 const updateUI = (payload: FirebaseMessage) => {
   console.log("Updating UI with new message", payload);
 
-  // 예시: 알림 메시지를 UI에 표시
   if (payload.notification) {
     const messageElement = document.getElementById("latest-message");
     if (messageElement) {
@@ -111,7 +173,6 @@ const updateUI = (payload: FirebaseMessage) => {
     }
   }
 
-  // 예시: 데이터 필드를 사용하여 UI 업데이트
   if (payload.data) {
     Object.entries(payload.data).forEach(([key, value]) => {
       const element = document.getElementById(`data-${key}`);
@@ -120,11 +181,9 @@ const updateUI = (payload: FirebaseMessage) => {
       }
     });
   }
-
-  // 여기에 추가적인 UI 업데이트 로직을 구현할 수 있습니다.
 };
 
-// 서비스 워커 등록 (public 폴더에 firebase-messaging-sw.js 파일 필요)
+// 서비스 워커 등록
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker
     .register("/firebase-messaging-sw.js")
@@ -138,3 +197,65 @@ if ("serviceWorker" in navigator) {
 
 // 앱 초기화 시 메시지 리스너 설정
 setupMessageListener();
+
+// 주기적으로 알림 권한 확인
+setInterval(() => {
+  notificationHandler.periodicPermissionCheck();
+}, 24 * 60 * 60 * 1000); // 매일 확인
+
+// 앱 시작 시 초기화 함수 (필요한 경우 호출)
+export const initializeNotifications = async (userId: number) => {
+  try {
+    const token = await requestPermissionAndGetToken(userId);
+    if (token) {
+      console.log("Notification system initialized successfully");
+    } else {
+      console.log("Failed to initialize notification system");
+    }
+  } catch (error) {
+    console.error("Error initializing notification system:", error);
+  }
+};
+
+// 테스트
+export async function handleAllowNotification() {
+  registerServiceWorker(); // 나중에 설명
+  try {
+    const permission = await Notification.requestPermission();
+
+    if (permission === "granted") {
+      const token = await getToken(messaging, {
+        vapidKey: import.meta.env.VITE_FCM_KEY,
+      });
+      if (token) {
+        sendTokenToServer(1, token); // (토큰을 서버로 전송하는 로직)
+      } else {
+        alert("토큰 등록이 불가능 합니다. 생성하려면 권한을 허용해주세요");
+      }
+    } else if (permission === "denied") {
+      alert(
+        "web push 권한이 차단되었습니다. 알림을 사용하시려면 권한을 허용해주세요"
+      );
+    }
+  } catch (error) {
+    console.error("푸시 토큰 가져오는 중에 에러 발생", error);
+  }
+}
+
+export function registerServiceWorker() {
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker
+        .register("/firebase-messaging-sw.js")
+        .then(function (registration) {
+          console.log(
+            "Service Worker가 scope에 등록되었습니다.:",
+            registration.scope
+          );
+        })
+        .catch(function (err) {
+          console.log("Service Worker 등록 실패:", err);
+        });
+    });
+  }
+}

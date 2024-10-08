@@ -32,11 +32,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                         asset.accountBalance,
                         asset.depositSavingsBalance,
                         asset.stockBalance,
-                        asset.othersBalance,
-                        asset.updatedDate))
+                        asset.othersBalance))
                 .from(asset)
                 .where(asset.user.userId.eq(userId))
-                .orderBy(asset.updatedDate.desc())
                 .limit(1)
                 .fetchOne();
     }
@@ -52,11 +50,9 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                         asset.accountBalance,
                         asset.depositSavingsBalance,
                         asset.stockBalance,
-                        asset.othersBalance,
-                        asset.updatedDate))
+                        asset.othersBalance))
                 .from(asset)
                 .where(asset.user.userId.eq(userId))
-                .orderBy(asset.updatedDate.desc())
                 .limit(6)
                 .fetch();
     }
@@ -162,9 +158,6 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                         accountTransaction.transactionMemo,
                         accountTransaction.transactionBalance,
                         accountTransaction.transactionAfterBalance))
-//                        Expressions.numberTemplate(BigDecimal.class,
-//                                "SUM({0}) OVER (ORDER BY {1})",
-//                                accountTransaction.transactionBalance, accountTransaction.accountTransactionId)))
                 .from(accountTransaction)
                 .where(accountTransaction.account.accountId.eq(accountId))
                 .orderBy(accountTransaction.transactionDate.desc(), accountTransaction.transactionTime.desc())

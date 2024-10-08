@@ -34,6 +34,7 @@ const PetStatusChart: React.FC = () => {
   };
 
   const options = {
+    responsive: false,
     plugins: {
       legend: {
         display: false,  // 차트 위에 라벨을 숨김
