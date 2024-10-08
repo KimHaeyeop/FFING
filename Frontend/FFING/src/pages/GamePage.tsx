@@ -5,28 +5,12 @@ import NavBar from "../components/Common/Navbar";
 import PetIdle from "../components/Game/PetIdle";
 import PetStatusChart from "../components/Game/PetStatusChart";
 import MatchingPageModal from "./MatchingPage";
-import { getPets } from "../api/PetPediaApi";
 import useViewportStore from "../store/useViewportStore";
 
 const GamePage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-
-  // 펫 능력치를 가져오는 함수
-  const fetchData = async (userId: string) => {
-    try {
-      const responsePetStats = getPets(userId)
-      console.log(responsePetStats);
-    } catch (error) {
-      console.error("Error fetching certain spending data:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchData('1');
-  }, []);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
