@@ -1,15 +1,21 @@
 import Phaser from 'phaser';
 import { useEffect, useRef, useState } from 'react';
 import useViewportStore from '../../store/useViewportStore'; // Zustand 저장소 사용
-import petSpriteSheet from '/pets/penguin.png';
 import petIdleBackground from '/backgrounds/pet-idle-background.png';
 import SpeechBubble from '../Common/SpeechBubble';
+import usePetInfoStore from "../../store/usePetInfoStore";
+import { usePetStats } from "../../hook/usePetStats";
 
 const PetIdle: React.FC = () => {
   const gameContainerRef = useRef<HTMLDivElement>(null);
   const { dvw, dvh } = useViewportStore(); // Zustand에서 동적 뷰포트 크기 가져오기
   const [petPosition, setPetPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
   const [containerWidth, setContainerWidth] = useState(dvw * 100); // 화면 너비 맞추기
+  const { data: petData } = usePetStats('1'); // 유저 ID 추가할 것
+  const winCount = petData.currentWeek.winCount; // 현재 펫의 승리 횟수 추출
+  const myPetCode = petData?.currentWeek.petCode || ''; // 현재 내 펫의 코드
+  const petSpriteMetaData = usePetInfoStore((state) => state.petSpriteMetaData) // 펫의 정보가 담긴 메타데이터
+  const petSprite = petSpriteMetaData.find(pet => pet.petCode === myPetCode)?.imageUrl; // 현재 펫의 이미지 경로 추출
 
   useEffect(() => {
     const config: Phaser.Types.Core.GameConfig = {
@@ -37,7 +43,7 @@ const PetIdle: React.FC = () => {
 
     function preload(this: Phaser.Scene) {
       this.load.image('background', petIdleBackground);
-      this.load.spritesheet('pet', petSpriteSheet, {
+      this.load.spritesheet('pet', petSprite, {
         frameWidth: 128,
         frameHeight: 128,
       });
@@ -52,7 +58,7 @@ const PetIdle: React.FC = () => {
       background.setDisplaySize(this.scale.width, this.scale.height);  // 화면 크기에 맞추기
 
       // chip 요소 추가 및 좌상단 위치 설정
-      const chip = this.add.text(10, 10, '138승', {
+      const chip = this.add.text(10, 10, `${winCount}승`, {
         fontSize: '20px',
         backgroundColor: '#C8E697',
         color: '#000',
@@ -83,17 +89,19 @@ const PetIdle: React.FC = () => {
     return () => {
       game.destroy(true);
     };
-  }, [dvw, dvh]); // 뷰포트 크기 변경 시 재렌더링
+  }, [dvw, dvh, petSprite]); // 뷰포트 크기 변경 시 재렌더링
 
   return (
-    <div ref={gameContainerRef} style={{ position: 'relative', width: '100%', height: '40vh'}}>
-      {/* 펫 말풍선 */}
-      <SpeechBubble
-        text="안녕! 난 펫이야!"
-        x={petPosition.x}
-        y={petPosition.y}
-        containerWidth={containerWidth}
-      />
+    <div ref={gameContainerRef} className='relative'>
+      <div className='absolute'>
+        {/* 펫 말풍선 */}
+        <SpeechBubble
+          text="안녕! 난 펫이야!"
+          x={petPosition.x}
+          y={petPosition.y}
+          containerWidth={containerWidth}
+        />
+      </div>
     </div>
   );
 };

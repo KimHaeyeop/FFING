@@ -19,4 +19,6 @@ public interface PetService {
     List<PetHistoryRes> getPetHistory(long userId, String yearMonth);
 
     List<PetCollectionRes> getPetCollection(long userId);
+
+    boolean createPetInfo(long userId);
 }
