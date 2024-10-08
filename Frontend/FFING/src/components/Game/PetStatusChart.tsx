@@ -6,10 +6,10 @@ import { getPets } from "../../api/PetPediaApi";
 import 'chart.js/auto';
 
 const PetStatusChart: React.FC = () => {
-  const { data: petData } = usePetStats('1');
+  const { data: petData } = usePetStats('1'); // 유저 ID 추가할 것
   
   
-    // 이번 달 지출액을 가져오는 함수
+    // 펫 능력치를 가져오는 함수
     const fetchData = async (userId: string) => {
       try {
         const response = await getPets(userId);
