@@ -26,14 +26,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class UserInfoReq {
 
     @NotBlank(message = "이메일을 입력해주세요.")
-//    @Email(message = "올바른 이메일 형식이어야 합니다.")
+    @Email(message = "올바른 이메일 형식이어야 합니다.")
     private String email;
 
     @NotBlank(message = "비밀번호를 입력해주세요.")
-//    @Pattern(
-//            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,15}$",
-//            message = "비밀번호는 8자에서 15자 사이여야 합니다."
-//    )
+    @Pattern(
+            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,15}$",
+            message = "비밀번호는 8자에서 15자 사이여야 합니다."
+    )
     private String password;
 
     @NotBlank(message = "사용자 이름을 입력해주세요.")
