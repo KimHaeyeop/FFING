@@ -14,12 +14,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SpendingReq {
 
+    Long userId;
     String spendingBalance;
 
-    public static Goal spendingTo(SpendingReq SpendingReq) {
+    public static Goal spendingTo(SpendingReq spendingReq) {
         return Goal.builder()
+                   .userId(spendingReq.getUserId())
                    .goalType("2")
-                   .balance(new BigDecimal(SpendingReq.getSpendingBalance()))
+                   .balance(new BigDecimal(spendingReq.getSpendingBalance()))
                    .build();
     }
 }
