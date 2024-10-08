@@ -2,7 +2,7 @@ import React from 'react';
 import PetSprite from "./PetSprite";
 
 interface PetRecordProps {
-  week: string;         // 예: '9월 1주차'
+  week: number;         // 예: '9월 1주차'
   petName: string;      // 펫 이름
   wins: number;         // 승리 횟수
   losses: number;       // 패배 횟수
@@ -20,7 +20,7 @@ const PetRecord: React.FC<PetRecordProps> = ({ week, petName, wins, losses, petI
     >
       <div className="text-left my-4 flex-1">
         {/* 주차 */}
-        <h3 className="text-lg">{week}</h3>
+        <h3 className="text-lg">{week}주차</h3>
         {/* 펫 이름 */}
         <p>{petName}</p>
         <div className="flex space-x-2 mt-1">

@@ -6,7 +6,7 @@ import RecordSection from "../components/Game/RecordSection";
 import PetPediaSection from "../components/Game/PetPediaSection";
 import useViewportStore from "../store/useViewportStore";  // store import
 import { getPets, getPetPedia, getPetHistroy } from "../api/PetPediaApi";
-
+import { usePetHistoy } from "../hook/usePetHistory";
 
 interface ObtainPetsInterFace {
   petCollectionId: number;  // 기본키
@@ -15,21 +15,20 @@ interface ObtainPetsInterFace {
   createdDate: string;  //YYYYMMDD
 }
 
-
 // PetPediaPage 메인 컴포넌트
 const PetPediaPage: React.FC<ObtainPetsInterFace> = () => {
-  const [activeTab, setActiveTab] = useState<string>("record");
+  const [activeTab, setActiveTab] = useState<string>("record"); // 상단 탭을 관리
   const [obtainPets, setObtainPets] = useState<ObtainPetsInterFace[]>([]);  // 획득한 펫 정보를 관리
-  // zustand에서 dvw 값을 가져옴
-  const dvw = useViewportStore((state) => state.dvw); 
+  const dvw = useViewportStore((state) => state.dvw);   // zustand에서 dvw 값을 가져옴
+  const { data: petData } = usePetHistoy('1', '202409'); // (유저ID, yyyymm)
+
+  const petDatas = petData || [];
 
   // 테스트 데이터를 가져오는 함수
   const fetchData = async (userId: string) => {
     try {
       const responsePets = await getPetPedia(userId); // 획득한 펫 정보를 가져오기
       setObtainPets(responsePets.data.result)
-      // const response = await getPetHistroy(userId, '202409'); // 보유 펫 기록 가져오기
-      console.log(response)
     } catch (error) {
       console.error('Error fetching pet datas:', error);
     }
