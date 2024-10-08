@@ -65,14 +65,12 @@ public class PetController {
 
     @PostMapping("")
     public ResponseEntity<Object> insertPetInfo(@RequestParam long userId) {
-        Response<Object> response = null;
+        petService.createPetInfo(userId);
 
-        if (petService.createPetInfo(userId)) {
-            response = Response.builder()
-                    .code(200L)
-                    .message("성공")
-                    .build();
-        }
+        Response<Object> response = Response.builder()
+                .code(200L)
+                .message("성공")
+                .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
