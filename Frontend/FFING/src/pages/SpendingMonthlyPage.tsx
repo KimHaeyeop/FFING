@@ -122,7 +122,7 @@ const SpendingCategoryPage: React.FC = () => {
           </div>
         </main>
         {/* 페이지 이동을 위한 footer */}
-        <footer style={{height: `${dvh * 10}px`}}>
+        <footer>
           <NavBar />
         </footer>
       </div>

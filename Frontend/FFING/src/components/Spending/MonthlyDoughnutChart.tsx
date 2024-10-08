@@ -44,9 +44,11 @@ const MonthlyDoughnutChart: React.FC = () => {
   }
 
   // 해외 카테고리 삭제 전까지 이 걸로 진행해야 함
-  const filteredData = spendingData
-  .filter(item => item.category !== 'OVERSEAS')
-  .sort((a, b) => b.totalAmount - a.totalAmount); // 차트 정렬하기
+  const filteredData = Array.isArray(spendingData)
+  ? spendingData
+      .filter(item => item.category !== 'OVERSEAS')
+      .sort((a, b) => b.totalAmount - a.totalAmount) // 차트 정렬하기
+  : []; // 값이 없으면 빈배열 반환
 
   const config = {
     data: {
@@ -61,7 +63,7 @@ const MonthlyDoughnutChart: React.FC = () => {
             '#FFCC80',
             '#FF808F',
             '#80FF8D',
-            '#FFFFFF',
+            '#D9D9D9',
           ],
         },
       ],
@@ -81,7 +83,7 @@ const MonthlyDoughnutChart: React.FC = () => {
               return data.labels!.map((label, i) => {
                 const value = data.datasets![0].data[i] as number;
                 const total = data.datasets![0].data.reduce((a, b) => (a as number) + (b as number), 0);
-                const percentage = ((value / total) * 100).toFixed(2); // 소수점 둘째자리까지 출력
+                const percentage = ((value / total) * 100).toFixed(0); // 소수점 없이 출력
                 return {
                   text: `${label} ${percentage}%`,
                   fillStyle: data.datasets![0].backgroundColor[i] as string,
@@ -99,7 +101,7 @@ const MonthlyDoughnutChart: React.FC = () => {
   };
   
   return (
-    <div className="h-full w-full flex justify-center items-center">
+    <div className="flex justify-center items-center">
       <Doughnut {...config} />
     </div>
   );

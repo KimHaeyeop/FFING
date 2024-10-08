@@ -1,17 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
-import axios from "../api/axiosConfig";
-
-interface FirebaseMessage {
-  notification?: {
-    title?: string;
-    body?: string;
-    icon?: string;
-  };
-  data?: {
-    [key: string]: string;
-  };
-}
+import axios from "../api/AxiosConfig";
 
 export const firebaseConfig = {
   apiKey: import.meta.env.VITE_APP_FCM_API_KEY,
@@ -26,105 +15,46 @@ export const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 export const messaging = getMessaging(firebaseApp);
 
-export const requestPermissionAndGetToken = async (
-  userId: number
-): Promise<string | undefined> => {
+export const initializeFirebaseMessaging = async (userId: number) => {
   try {
-    const permission = await Notification.requestPermission();
-    if (permission === "granted") {
-      const token = await getToken(messaging, {
-        vapidKey: import.meta.env.VITE_FCM_KEY,
-      });
-      if (token) {
-        console.log("FCM Token:", token);
-        await sendTokenToServer(userId, token);
-        return token;
-      } else {
-        alert(
-          "Unable to register token. Please allow permissions to generate."
-        );
-      }
-    } else if (permission === "denied") {
-      alert(
-        "Web push permission has been blocked. Please allow permissions to receive notifications."
+    const currentToken = await getToken(messaging, {
+      vapidKey: import.meta.env.VITE_FCM_KEY,
+    });
+
+    if (currentToken) {
+      console.log("FCM Token:", currentToken);
+      await sendTokenToServer(userId, currentToken);
+    } else {
+      console.log(
+        "No registration token available. Request permission to generate one."
       );
+      // 여기에 사용자에게 권한을 요청하는 로직을 추가할 수 있습니다.
     }
   } catch (err) {
-    console.error("Error obtaining token", err);
-    throw err;
+    console.error("An error occurred while retrieving token: ", err);
   }
 };
+
+// 포그라운드 메시지 수신
+onMessage(messaging, (payload) => {
+  console.log("Message received. ", payload);
+  // 여기에 메시지 처리 로직을 추가할 수 있습니다.
+});
 
 export const sendTokenToServer = async (
   userId: number,
   token: string
 ): Promise<void> => {
   try {
-    await axios.post(`/fcm/register/${userId}`, token);
+    await axios.post(`/fcm/register/${userId}`, { token });
     console.log("Token sent to server successfully");
   } catch (err) {
     console.error("Failed to send token to server:", err);
+    throw err; // 에러를 상위로 전파하여 호출자가 처리할 수 있게 합니다.
   }
 };
 
-export const setupMessageListener = () => {
-  onMessage(messaging, (payload: FirebaseMessage) => {
-    console.log("Message received. ", payload);
-
-    // payload.notification이 존재하는지 확인
-    if (payload.notification) {
-      const notificationTitle =
-        payload.notification.title || "New Notification";
-      const notificationOptions: NotificationOptions = {
-        body: payload.notification.body,
-        icon: payload.notification.icon,
-        // 필요한 경우 추가 옵션을 여기에 포함시킬 수 있습니다.
-      };
-
-      // 브라우저 알림 표시
-      if ("Notification" in window && Notification.permission === "granted") {
-        new Notification(notificationTitle, notificationOptions);
-      } else {
-        console.log(
-          "Notification not shown:",
-          notificationTitle,
-          notificationOptions
-        );
-      }
-    }
-
-    // UI 업데이트
-    updateUI(payload);
-  });
-};
-
-// updateUI 함수의 타입을 명확히 지정
-const updateUI = (payload: FirebaseMessage) => {
-  console.log("Updating UI with new message", payload);
-
-  // 예시: 알림 메시지를 UI에 표시
-  if (payload.notification) {
-    const messageElement = document.getElementById("latest-message");
-    if (messageElement) {
-      messageElement.textContent =
-        payload.notification.body || "New message received";
-    }
-  }
-
-  // 예시: 데이터 필드를 사용하여 UI 업데이트
-  if (payload.data) {
-    Object.entries(payload.data).forEach(([key, value]) => {
-      const element = document.getElementById(`data-${key}`);
-      if (element) {
-        element.textContent = value;
-      }
-    });
-  }
-
-  // 여기에 추가적인 UI 업데이트 로직을 구현할 수 있습니다.
-};
-
-// 서비스 워커 등록 (public 폴더에 firebase-messaging-sw.js 파일 필요)
+// 서비스 워커 등록
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker
     .register("/firebase-messaging-sw.js")
@@ -135,6 +65,3 @@ if ("serviceWorker" in navigator) {
       console.error("Service Worker registration failed:", error);
     });
 }
-
-// 앱 초기화 시 메시지 리스너 설정
-setupMessageListener();
