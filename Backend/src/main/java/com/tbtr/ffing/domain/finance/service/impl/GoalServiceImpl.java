@@ -125,8 +125,8 @@ public class GoalServiceImpl implements GoalService {
         Goal goal = goalRepository.findByUserIdAndGoalTypeAndYear(userId, "1", year);
         Goal spending = goalRepository.findByUserIdAndGoalTypeAndYearMonth(userId, "2", yearMonth);
 
-        String goalBalance = (goal != null) ? goal.getBalance().toString() : "설정되지 않았습니다";
-        String spendingBalance = (spending != null) ? spending.getBalance().toString() : "설정되지 않았습니다";
+        String goalBalance = (goal != null) ? goal.getBalance().toString() : null;
+        String spendingBalance = (spending != null) ? spending.getBalance().toString() : null;
 
         return CheckRes.of(goalBalance, spendingBalance);
     }
