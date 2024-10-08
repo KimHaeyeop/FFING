@@ -29,10 +29,6 @@ dist-ssr
 
 # dev-dist 무시
 dev-dist
-<<<<<<< HEAD
-.vite
-=======
 *.env
 .env.*
 .vite
->>>>>>> ca12bbd2ebb5dae32aec57fd9279b91d47843d8b
