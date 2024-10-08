@@ -9,8 +9,9 @@ import MonthlyDoughnutChart from "../components/Spending/MonthlyDoughnutChart";
 import PetSprite from "../components/Game/PetSprite";
 import PetSpeechBubble from "../components/Common/PetSpeechBubble";
 import HorizontalBarChart from "../components/Asset/HorizontalBarChart";
-import { getMonthlyExpense } from '../api/SpendingApi';
+import { getMonthlyExpense } from "../api/SpendingApi";
 import { getTotalAsset } from "../api/AssetApi";
+import { requestPermissionAndGetToken } from "../service/firebase";
 
 const MainPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
@@ -36,6 +37,23 @@ const MainPage: React.FC = () => {
 
   useEffect(() => {
     fetchData();
+
+    const initializeFCM = async () => {
+      try {
+        // 여기서 사용자 ID를 가져오는 로직이 필요
+        const userId = 1;
+        if (userId) {
+          await requestPermissionAndGetToken(1);
+        } else {
+          console.log(
+            "사용자가 로그인하지 않았습니다. FCM 토큰을 요청하지 않습니다."
+          );
+        }
+      } catch (error) {
+        console.error("FCM 초기화 중 오류 발생:", error);
+      }
+    };
+    initializeFCM();
   }, []);
 
   return (
