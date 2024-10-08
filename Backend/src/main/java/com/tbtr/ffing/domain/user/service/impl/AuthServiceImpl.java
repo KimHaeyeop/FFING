@@ -188,7 +188,7 @@ public class AuthServiceImpl implements AuthService {
                                                           .httpOnly(true)
                                                           .path("/")
                                                           .maxAge(Long.parseLong(REFRESH_TOKEN_EXPIRATION_PERIOD))
-                                                          .secure(true)
+                                                          .secure(false) // true : https 에서만 쿠키가 전송됨.
                                                           .build();
         headers.add(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
 
