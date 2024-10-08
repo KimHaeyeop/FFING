@@ -1,5 +1,8 @@
 package com.tbtr.ffing.domain.game.controller;
 
+import com.tbtr.ffing.domain.finance.dto.response.expense.WeeklyCategoryExpenseRes;
+import com.tbtr.ffing.domain.finance.service.ExpenseService;
+import com.tbtr.ffing.domain.finance.service.GoalService;
 import com.tbtr.ffing.domain.game.dto.response.PetCollectionRes;
 import com.tbtr.ffing.domain.game.dto.response.PetHistoryRes;
 import com.tbtr.ffing.domain.game.dto.response.PetInfoRes;
@@ -59,4 +62,17 @@ public class PetController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @PostMapping("")
+    public ResponseEntity<Object> insertPetInfo(@RequestParam long userId) {
+        petService.createPetInfo(userId);
+
+        Response<Object> response = Response.builder()
+                .code(200L)
+                .message("성공")
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 }

@@ -7,7 +7,6 @@ interface PetSpriteProps {
 
 const PetSprite: React.FC<PetSpriteProps> = ({ imageUrl, isUnlocked }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");

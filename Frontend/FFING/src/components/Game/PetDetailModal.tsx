@@ -8,26 +8,38 @@ interface PetDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   petName: string;
-  petIndex: number;
+  petCode: string;
   petImageUrl: string;
   petTrait: string;
+  totalStat: number
+  financeStat: number
+  foodBakeryStat: number
+  lifeCultureStat: number
+  shoppingStat: number
+  transportationStat: number
 }
 
 const PetDetailModal: React.FC<PetDetailModalProps> = ({
   isOpen,
   onClose,
   petName,
-  petIndex,
+  petCode,
   petImageUrl,
   petTrait,
+  totalStat,
+  financeStat,
+  foodBakeryStat,
+  lifeCultureStat,
+  shoppingStat,
+  transportationStat
 }) => {
 
   const dvw = useViewportStore((state) => state.dvw); 
   const dvh = useViewportStore((state) => state.dvh);
 
-  const currentWeek = { 식비: 6, 쇼핑: 8, 교통: 6, 생활: 6, 문화: 6 };
+  const currentWeek = { 식비: financeStat, 쇼핑: foodBakeryStat, 교통: lifeCultureStat, 생활: shoppingStat, 문화: transportationStat };
 
-  const labels = ['식비', '쇼핑', '교통', '생활', '문화'];
+  const labels = ['식비', '쇼핑', '교통', '생활/문화', '금융'];
 
   const data = {
     labels,
@@ -43,6 +55,7 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
   };
 
   const options = {
+    responsive: false,
     plugins: {
       legend: {
         display: false,
@@ -79,7 +92,7 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
       {/* 모달 창 */}
       <div className="bg-white rounded-lg border-4 border-gray-400 relative"
         style={{
-          width: `${70 * dvw}px`,   // dvw를 활용해 모달 너비 설정
+          width: `${60 * dvw}px`,   // dvw를 활용해 모달 너비 설정
           height: `${70 * dvh}px`,  // dvh를 활용해 모달 높이 설정
         }}
       >
@@ -99,9 +112,9 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
         </div>
 
         {/* 펫 이름과 도감 인덱스 */}
-        <div className="mt-[5%] flex justify-between px-1 items-center">
+        <div className="mt-[5%] flex justify-around px-1 items-center">
           <h2 className="text-xl font-bold mr-4">{petName}</h2>
-          <span className="text-sm text-gray-500">No.{petIndex}</span>
+          <span className="text-sm text-gray-500">{petCode}</span>
         </div>
 
         {/* 펫 특성 (Chip 형태) */}

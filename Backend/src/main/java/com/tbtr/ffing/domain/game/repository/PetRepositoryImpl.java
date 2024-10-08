@@ -5,8 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tbtr.ffing.domain.game.dto.response.PetCollectionRes;
 import com.tbtr.ffing.domain.game.dto.response.PetHistoryRes;
 import com.tbtr.ffing.domain.game.dto.response.PetInfoRes;
-import com.tbtr.ffing.domain.game.entity.QPetCollection;
-import com.tbtr.ffing.domain.game.entity.QPetInfo;
+import com.tbtr.ffing.domain.game.entity.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Repository;
@@ -89,6 +88,26 @@ public class PetRepositoryImpl implements PetRepositoryCustom {
                 .where(petCollection.user.userId.eq(userId))
                 .orderBy(petCollection.petList.petCode.asc())
                 .fetch();
+    }
+
+    @Override
+    public PetList findPetByPetId(long petId) {
+        QPetList petList = QPetList.petList;
+
+        return queryFactory
+                .selectFrom(petList)
+                .where(petList.petId.eq(petId))
+                .fetchOne();
+    }
+
+    @Override
+    public PetType findPetTypeByTypeId(long typeId) {
+        QPetType petType = QPetType.petType;
+
+        return queryFactory
+                .selectFrom(petType)
+                .where(petType.typeId.eq(typeId))
+                .fetchOne();
     }
 
 }
