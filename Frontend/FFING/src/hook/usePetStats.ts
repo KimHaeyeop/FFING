@@ -13,6 +13,8 @@ export const usePetStats = (userId: string) => {
           '교통': responsePetStats.data.result.currentPetInfo.transportationStat,
           '생활/문화': responsePetStats.data.result.currentPetInfo.lifeCultureStat,
           '금융': responsePetStats.data.result.currentPetInfo.financeStat,
+          'petCode': responsePetStats.data.result.currentPetInfo.petCode,
+          'winCount': responsePetStats.data.result.currentPetInfo.winCount,
         },
         previousWeek: {
           '식비': responsePetStats.data.result.beforePetInfo.foodBakeryStat,
@@ -24,8 +26,8 @@ export const usePetStats = (userId: string) => {
       }
     },
     initialData: {
-      currentWeek: { '식비': 0, '쇼핑': 0, '교통': 0, '생활/문화': 0, '금융': 0 },
-      previousWeek: { '식비': 0, '쇼핑': 0, '교통': 0, '생활/문화': 0, '금융': 0 },
+      currentWeek: { '식비': 0, '쇼핑': 0, '교통': 0, '생활/문화': 0, '금융': 0, 'petCode': '000', 'winCount': 0},
+      previousWeek: { '식비': 0, '쇼핑': 0, '교통': 0, '생활/문화': 0, '금융': 0, }, 
     }
   });
 };
