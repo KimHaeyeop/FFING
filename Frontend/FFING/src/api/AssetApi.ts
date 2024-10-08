@@ -1,12 +1,12 @@
 import axios from "./AxiosConfig";
 
 // // 현재 보유 중인 증권사별 자산 개요 인터페이스
-export interface get1Interface {
+export interface getStocksInterface {
   ssafyUserId: string;
 }
 
 // 증권사의 각 주식 종목 자산 개요 인터페이스
-export interface get2Interface {
+export interface getStockDetailInterface {
   ssafyUserId: string;
   stockAccountId: string
 }
@@ -23,30 +23,28 @@ export interface getTransactionInterface {
 }
 
 // 예적금 계좌별 입출금 조회 인터페이스
-export interface get7Interface {
+export interface getAcTransactionInterface {
   accountId: string;
 }
 
 // 현재 보유 중인 증권사별 자산 개요 불러오기
-export async function get1(ssafyUserId: string) {
+export async function getStocks(ssafyUserId: string) {
   try {
-    const response = await axios.get<get1Interface>(`/stock/${ssafyUserId}`);
-    console.log(response);
+    const response = await axios.get<getStocksInterface>(`/stock/${ssafyUserId}`);
     return response;
   } catch (error) {
-    console.error('Error fetching get1:', error);
+    console.error('Error fetching getStocks:', error);
     throw error;
   }
 }
 
 // 증권사의 각 주식 종목 자산 개요 불러오기
-export async function get2(ssafyUserId: string, stockAccountId: string) {
+export async function getStockDetail(ssafyUserId: string, stockAccountId: string) {
   try {
-    const response = await axios.get<get2Interface>(`/stock/${ssafyUserId}/${stockAccountId}`);
-    console.log(response);
+    const response = await axios.get<getStockDetailInterface>(`/stock/${ssafyUserId}/${stockAccountId}`);
     return response;
   } catch (error) {
-    console.error('Error fetching get1:', error);
+    console.error('Error fetching getStocks:', error);
     throw error;
   }
 }
@@ -55,7 +53,6 @@ export async function get2(ssafyUserId: string, stockAccountId: string) {
 export async function getTotalAsset(userId: string) {
   try {
     const response = await axios.get<getTotalAssetInterface>(`/asset?userId=${userId}`);
-    console.log(response);
     return response;
   } catch (error) {
     console.error('Error fetching get3:', error);
@@ -67,7 +64,6 @@ export async function getTotalAsset(userId: string) {
 export async function getDepositSaving(userId: string) {
   try {
     const response = await axios.get<getTotalAssetInterface>(`/asset/deposit?userId=${userId}`);
-    console.log(response);
     return response
   } catch (error) {
     console.error('Error fetching getDepositSaving:', error);
@@ -76,10 +72,9 @@ export async function getDepositSaving(userId: string) {
 }
 
 // 예적금 계좌별 입출금 조회
-export async function getTransaction(type: string, accountId: string) {
+export async function getDsTransaction(type: string, accountId: string) {
   try {
     const response = await axios.get<getTransactionInterface>(`/asset/deposit/${type}/${accountId}`);
-    console.log(response);
     return response;
   } catch (error) {
     console.log('Error fetching getTransaction:', error)
@@ -91,7 +86,6 @@ export async function getTransaction(type: string, accountId: string) {
 export async function getAccount(userId: string) {
   try {
     const response = await axios.get<getTotalAssetInterface>(`/asset/account?userId=${userId}`);
-    console.log(response);
     return response;
   } catch (error) {
     console.error('Error fetching getAccount:', error);
@@ -100,13 +94,12 @@ export async function getAccount(userId: string) {
 }
 
 // 수시입출금 계좌별 입출금 조회
-export async function get7(accountId: string) {
+export async function getAcTransaction(accountId: string) {
   try {
-    const response = await axios.get<get7Interface>(`/asset/account/${accountId}`);
-    console.log(response);
+    const response = await axios.get<getAcTransactionInterface>(`/asset/account/${accountId}`);
     return response;
   } catch (error) {
-    console.error('Error fetching get7:', error);
+    console.error('Error fetching getAcTransaction:', error);
     throw error;
   }
 }
@@ -115,7 +108,6 @@ export async function get7(accountId: string) {
 export async function get8() {
   try {
     const response = await axios.get(`/`);
-    console.log(response);
     return response;
   } catch (error) {
     console.error('Error fetching get8:', error);
@@ -124,12 +116,12 @@ export async function get8() {
 }
 
 export default {
-  get1,
-  get2,
+  getStocks,
+  getStockDetail,
   getTotalAsset,
   getDepositSaving,
-  getTransaction,
+  getDsTransaction,
   getAccount,
-  get7,
+  getAcTransaction,
   get8,
 };
