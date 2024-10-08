@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.MonthDay;
@@ -111,15 +112,16 @@ public class PetServiceImpl implements PetService {
         String yearMonth = String.valueOf(startDate.getYear()) + String.format("%02d", startDate.getMonthValue());
         Goal spending = goalRepository.findByUserIdAndGoalTypeAndYearMonth(userId, "2", yearMonth);
         BigDecimal weekBD = new BigDecimal(weeks);
-        BigDecimal weekSpending = spending.getBalance().divide(weekBD);
+        BigDecimal weekSpending = spending.getBalance().divide(weekBD, 2, RoundingMode.HALF_UP);
+        BigDecimal weekCategorySpending = weekSpending.divide(new BigDecimal(5), 2, RoundingMode.HALF_UP);
 
-        int totalStat = 50 + (weekSpending.subtract(weeklyTotalAmount).divide(weekSpending).intValue() * 100);
-        int totalStatDiv = totalStat / 5;
-        int financeStat = totalStatDiv + (totalStatDiv - categoryExpenses.get(0).getTotalAmount().divide(weeklyTotalAmount.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ONE : weeklyTotalAmount).intValue() * 100) / 5;
-        int foodBakeryStat = totalStatDiv + (totalStatDiv - categoryExpenses.get(1).getTotalAmount().divide(weeklyTotalAmount).intValue() * 100) / 5;
-        int lifeCultureStat = totalStatDiv + (totalStatDiv - categoryExpenses.get(2).getTotalAmount().divide(weeklyTotalAmount).intValue() * 100) / 5;
-        int shoppingStat = totalStatDiv + (totalStatDiv - categoryExpenses.get(3).getTotalAmount().divide(weeklyTotalAmount).intValue() * 100) / 5;
-        int transportationStat = totalStatDiv + (totalStatDiv - categoryExpenses.get(4).getTotalAmount().divide(weeklyTotalAmount).intValue() * 100) / 5;
+        int totalStat = 50 + (weekSpending.subtract(weeklyTotalAmount).divide(weekSpending, 2, RoundingMode.HALF_UP).multiply(new BigDecimal(50)).intValue());
+        double totalStatDiv = totalStat / 5;
+        int financeStat = (int) (totalStatDiv + (totalStat + weekCategorySpending.subtract(categoryExpenses.get(0).getTotalAmount()).divide(weeklyTotalAmount, 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).intValue()) / 5);
+        int foodBakeryStat = (int) (totalStatDiv + (totalStat + weekCategorySpending.subtract(categoryExpenses.get(1).getTotalAmount()).divide(weeklyTotalAmount, 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).intValue()) / 5);
+        int lifeCultureStat = (int) (totalStatDiv + (totalStat + weekCategorySpending.subtract(categoryExpenses.get(2).getTotalAmount()).divide(weeklyTotalAmount, 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).intValue()) / 5);
+        int shoppingStat = (int) (totalStatDiv + (totalStat + weekCategorySpending.subtract(categoryExpenses.get(3).getTotalAmount()).divide(weeklyTotalAmount, 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).intValue()) / 5);
+        int transportationStat = (int) (totalStatDiv + (totalStat + weekCategorySpending.subtract(categoryExpenses.get(4).getTotalAmount()).divide(weeklyTotalAmount, 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).intValue()) / 5);
         totalStat = financeStat + foodBakeryStat + lifeCultureStat + shoppingStat + transportationStat;
 
         long petId = (long) (Math.random() * 35) + 1;
