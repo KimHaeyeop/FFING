@@ -1,31 +1,35 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Stomp, Client } from '@stomp/stompjs';
+import { useAuthStore } from '../store/authStore'; // Zustand 스토어 경로
 
 // 로딩 three-dots CSS
 import 'three-dots/dist/three-dots.css';
 
 const { VITE_WEBSOCKET_ENDPOINT } = import.meta.env
 
-interface PlayerInfo {
+interface PlayerInfo { // 사용자 정보
   nickname: string;
   petType: string;
+  petTotalStat: number;
   recentMatches: string[];
 }
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  myUserId: string;
   opponentUserId: string;
 }
 
-const MatchingPageModal: React.FC<ModalProps> = ({ isOpen, onClose, myUserId, opponentUserId }) => {
+const MatchingPageModal: React.FC<ModalProps> = ({ isOpen, onClose, opponentUserId }) => {
   const navigate = useNavigate();
+
+  const { userId, nickname } = useAuthStore();
   const [opponentInfo, setOpponentInfo] = useState<PlayerInfo | null>(null);
   const [myInfo, setMyInfo] = useState<PlayerInfo>({
-    nickname: 'myNickName',
+    nickname: nickname || 'myNickName',
     petType: 'petType',
+    petTotalStat: 50,
     recentMatches: ['승', '패', '승', '패', '승']
   });
 
@@ -53,42 +57,43 @@ const MatchingPageModal: React.FC<ModalProps> = ({ isOpen, onClose, myUserId, op
         heartbeatOutgoing: 100000, // 클라이언트에서 서버로 보내는 심장박동 간격
         onConnect: () => {
           console.log('STOMP Client connected');
-  
+
           // 상대방 정보 받아올 구독 소켓
-          stompClient.subscribe(`/sub/match/battle-request/${myUserId}`, (message) => {
+          stompClient.subscribe(`/sub/battle/ready/${userId}`, (message) => { // 대기열 열어놓고
             const data = JSON.parse(message.body);
             setOpponentInfo(data);
             console.log('상대방 정보:', data);
           });
 
           const matchRequest = {
-            fromUserId: myUserId,
-            toUserId: opponentUserId,
+            fromUserId: userId,
+            petTotalStat: myInfo.petTotalStat,
           };
 
+          // 매칭 신청 소켓
           stompClient.publish({
-            destination: '/pub/match/direct/request',
+            destination: '/pub/match/random/request',
             body: JSON.stringify(matchRequest),
           });
 
           console.log('매칭 요청 전송:', matchRequest);
-  
+
           // stompClient.subscribe(`/sub/match/battle-request/${myUserId}`, (message) => {
           //   console.log(message.body)
           //   const response = JSON.parse(message.body);
           //   console.log(response);
           // });
-  
+
           // test용 발행
           // stompClient.publish({
           //   destination: '/pub/',
           // });
-          
+
           // stompClient.publish({
           //   destination: '/pub/match/direct/request',
           //   body: JSON.stringify(directMatchReq),
           // });
-  
+
         },
         onStompError: (frame) => {
           console.error('Broker error: ' + frame.headers['message']);
@@ -113,7 +118,7 @@ const MatchingPageModal: React.FC<ModalProps> = ({ isOpen, onClose, myUserId, op
         console.log('STOMP Client disconnected');
       }
     };
-  }, [isOpen, myUserId, opponentUserId]);
+  }, [isOpen, opponentUserId]);
 
   const handleFindOpponent = () => {
     if (stompClientRef.current) {
@@ -156,9 +161,9 @@ const MatchingPageModal: React.FC<ModalProps> = ({ isOpen, onClose, myUserId, op
             </div>
           ) : (
             <div className="flex justify-center items-center">
-            <div>대전 상대를 찾는 중...</div>
-            {/* 로딩 three-dots */}
-            <div className='dot-spin ml-4'/>
+              <div>대전 상대를 찾는 중...</div>
+              {/* 로딩 three-dots */}
+              <div className='dot-spin ml-4' />
             </div>
           )}
         </div>

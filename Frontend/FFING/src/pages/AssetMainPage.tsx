@@ -8,6 +8,7 @@ import AssetCurrentTargetHorizonBarChart from "../components/Asset/AssetCurrentT
 import AssetPortfolioHorizontalBarChart from "../components/Asset/AssetPortfolioHorizontalBarChart";
 import AssetTimeSeriesChart from "../components/Asset/AssetTimeSeriesChart";
 import { getTotalAsset } from "../api/AssetApi";
+import { getTargetPropertySpending } from '../api/goalApi'
 
 interface currentAssets {
   accountBalance: number;
@@ -20,8 +21,8 @@ interface currentAssets {
 }
 
 const AssetMainPage: React.FC = () => {
-  const [property, setProperty] = React.useState(100000);
-  const [target, setTarget] = React.useState(200000);
+  const [property, setProperty] = React.useState(0);
+  const [target, setTarget] = React.useState(0);
   const [currentAsset, setCurrentAsset] = React.useState<currentAssets>()
 
   const dvw = useViewportStore((state) => state.dvw);
@@ -32,9 +33,11 @@ const AssetMainPage: React.FC = () => {
     try {
       // 적절한 유저 이름 설정 필요
       const response = await getTotalAsset('1');
-      setProperty(response.data.result.currentAsset.totalAsset);
-      console.log(response.data.result.currentAsset)
-      setCurrentAsset(response.data.result.currentAsset)
+      const responseGoal = await getTargetPropertySpending('1')
+
+      setProperty(response.data.result.currentAsset.totalAsset);  // 현재 자산 설정
+      setTarget(responseGoal.data.result.goalBalance) // 목표 자산 설정
+      setCurrentAsset(response.data.result.currentAsset)  // 현재 자산 관련 정보 저장
       // 목표 가져오는 API 연동 필요
       // setTarget(response.data.result.totalExpense)
     } catch (error) {
@@ -60,9 +63,10 @@ const AssetMainPage: React.FC = () => {
             <div className="text-2xl text-left">
               {/* 현재 연도 정보 가져오기 */}
               <p>2024년 자산 목표</p>
-              <p className="font-galmuri-11-bold">3000만 원 모으기</p>
+              {/* 목표액 API 연동 */}
+              <p className="font-galmuri-11-bold">{(target / 10000).toLocaleString()}만 원 모으기</p>
               {/* 목표액 정도를 나타낸 바 차트 */}
-              <div className="flex justify-center">
+              <div className="flex justify-center my-10">
                 <AssetCurrentTargetHorizonBarChart property={property} target={target}/>
               </div>
             </div>
@@ -73,13 +77,15 @@ const AssetMainPage: React.FC = () => {
             <div className="flex justify-around my-4">
               <p>현재 순자산</p>
               <div>
-                <p style={{color: '#67BA82'}}>1080만 원</p>
+                <p style={{color: '#67BA82'}}>{(property / 10000).toLocaleString()}만 원</p>
+                {/* API 연동 필요 */}
                 <p className="text-sm">시작 금액 880만 원</p>
               </div>
             </div>
             {/* 월 평균 저축 */}
             <div className="flex justify-around my-4">
               <p >월 평균 저축</p>
+              {/* API 연동 필요 */}
               <div>
                 <p style={{color: '#67BA82'}}>540,982원</p>
                 <p className="text-sm">목표 적금액 60만 원</p>
@@ -115,6 +121,7 @@ const AssetMainPage: React.FC = () => {
                 )
                 }
               </div>
+            {/* 월 별 자산 증감 내역 확인하는 차트 API 연동 필요 */}
             <div>
               <AssetTimeSeriesChart />
             </div>
