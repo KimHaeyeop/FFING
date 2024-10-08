@@ -3,6 +3,7 @@ import { Bar } from 'react-chartjs-2';
 import { useNavigate } from 'react-router-dom'
 import Icon from '@mdi/react';
 import { mdiChevronRight } from '@mdi/js'
+import useAssetType from '../../store/userAssetType';
 
 interface currentAssets {
   accountBalance: number;
@@ -20,19 +21,22 @@ interface AssetPortfolioHorizontalBarChartProps {
 
 const AssetPortfolioHorizontalBarChart: React.FC<AssetPortfolioHorizontalBarChartProps> = ({ currentAsset }) => {
   const navigate = useNavigate()
+  const { assetType, setAssetTypeState } = useAssetType();  // 선택한 자산의 타입을 관리
 
+  // 현재 자산 정보가 없으면
   if (!currentAsset) {
     return <p>자산 정보가 없습니다.</p>;
   }
 
   // 예/적금, 입출금 -> product 페이지로, 주식 -> stock 페이지로
   const handleBalance = (title: string) => {
+    setAssetTypeState(title);
     if (title === '주식') {
-      navigate('stock')
+      navigate('stock');
     } else if (title === '예금/적금' || title === '입출금 통장') {
-      navigate('product', { state: { title }});
+      navigate('product');
     }
-  }
+  };
 
   const legends = [
     {
