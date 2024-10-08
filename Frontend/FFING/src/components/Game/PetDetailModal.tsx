@@ -43,6 +43,7 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
   };
 
   const options = {
+    responsive: false,
     plugins: {
       legend: {
         display: false,
@@ -79,7 +80,7 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
       {/* 모달 창 */}
       <div className="bg-white rounded-lg border-4 border-gray-400 relative"
         style={{
-          width: `${70 * dvw}px`,   // dvw를 활용해 모달 너비 설정
+          width: `${60 * dvw}px`,   // dvw를 활용해 모달 너비 설정
           height: `${70 * dvh}px`,  // dvh를 활용해 모달 높이 설정
         }}
       >
