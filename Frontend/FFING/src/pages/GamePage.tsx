@@ -5,7 +5,6 @@ import PetIdle from "../components/Game/PetIdle";
 import PetStatusChart from "../components/Game/PetStatusChart";
 import RandomMatching from "./RandomMatching";
 import DirectMatching from "./DirectMatching";
-import { getPets } from "../api/PetPediaApi";
 import useViewportStore from "../store/useViewportStore";
 
 const GamePage: React.FC = () => {
@@ -13,20 +12,6 @@ const GamePage: React.FC = () => {
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
-
-  // 펫 능력치를 가져오는 함수
-  const fetchData = async (userId: string) => {
-    try {
-      const responsePetStats = await getPets(userId);
-      console.log(responsePetStats);
-    } catch (error) {
-      console.error("Error fetching pet data:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchData("1");
-  }, []);
 
   // 랜덤 매칭 모달 열기
   const handleOpenRandomModal = () => {

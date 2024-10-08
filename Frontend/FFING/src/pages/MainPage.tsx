@@ -106,7 +106,7 @@ const MainPage: React.FC = () => {
               <div className="absolute bottom-4 left-4 p-2 w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32">
                 <PetSprite imageUrl="/pets/penguin.png" isUnlocked={true} />
                 <PetSpeechBubble
-                  text="is_not_unfair = [[False] * (V + 1) for _ in range(V + 1)]]! for i in range(N): for j in range(N): print('hi')"
+                  text="is_not_unfair = [[False] * (V + 1) for _ in range(V + 1)]] for i in range(N): for j in range(N): is_not_unfair[i][j] = True if (i + j) % 2 == 0 else False"
                   x={dvw * 15}
                   y={0}
                 />

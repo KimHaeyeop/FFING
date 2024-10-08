@@ -30,7 +30,7 @@ export async function getPetPedia(userId: string) {
 // 히스토리 조회
 export async function getPetHistroy(userId: string, yearMonth: string) {
   try {
-    const response = await axios.get<petInterface>(`/goal/history/${yearMonth}?userId=${userId}`);
+    const response = await axios.get<petInterface>(`/pet/history/${yearMonth}?userId=${userId}`);
     return response;
   } catch (error) {
     console.error('Error fetching get pet histories:', error);

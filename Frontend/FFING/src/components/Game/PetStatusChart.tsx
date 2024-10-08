@@ -1,17 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Radar } from "react-chartjs-2";
 import { usePetStats } from "../../hook/usePetStats";
 
 import 'chart.js/auto';
 
 const PetStatusChart: React.FC = () => {
+  const { data: petData } = usePetStats('1'); // 유저 ID 추가할 것
+  const currentWeek = petData?.currentWeek.stats || { 식비: 0, 쇼핑: 0, 교통: 0, 생활: 0, 문화: 0 };
+  const previousWeek = petData?.previousWeek.stats || { 식비: 0, 쇼핑: 0, 교통: 0, 생활: 0, 문화: 0 };
 
-  const { data: petData } = usePetStats();
-
-  const currentWeek = petData?.currentWeek || { 식비: 0, 쇼핑: 0, 교통: 0, 생활: 0, 문화: 0 };
-  const previousWeek = petData?.previousWeek || { 식비: 0, 쇼핑: 0, 교통: 0, 생활: 0, 문화: 0 };
-
-  const labels = ['식비', '쇼핑', '교통', '생활', '문화'];
+  const labels = ['식비', '쇼핑', '교통', '생활/문화', '금융'];
 
   const data = {
     labels,
@@ -22,6 +20,7 @@ const PetStatusChart: React.FC = () => {
         backgroundColor: 'rgba(54, 162, 235, 0.2)', // 파란색
         borderColor: 'rgba(54, 162, 235, 1)',
         borderWidth: 1,
+        fill: true,  // 레이더 차트 내부 색상 채우기
       },
       {
         label: '저번 주',
@@ -29,6 +28,7 @@ const PetStatusChart: React.FC = () => {
         backgroundColor: 'rgba(255, 99, 132, 0.2)', // 빨간색
         borderColor: 'rgba(255, 99, 132, 1)',
         borderWidth: 1,
+        fill: true,  // 레이더 차트 내부 색상 채우기
       },
     ],
   };
@@ -39,26 +39,20 @@ const PetStatusChart: React.FC = () => {
       legend: {
         display: false,  // 차트 위에 라벨을 숨김
       },
+      tooltip: {
+        enabled: false,  // 툴팁 비활성화
+      },
     },
     scales: {
       r: {
-        angleLines: {
-          display: false,
+        grid: {
+          display: true,  // 그리드 라인 보이기
         },
-        suggestedMin: 0,
-        suggestedMax: 10,
         ticks: {
-          stepSize: 2,          // 각 능력치 간격 조정
-          backdropPadding: 0,    // 레이블과 배경 패딩 없앰
-          max: 10,               // 최대값 설정
-          min: 0,                // 최소값 설정
+          display: false,  // 차트 안의 숫자 라벨(10, 20, 30) 삭제
         },
-        pointLabels: {
-          padding: 0,           // 능력치 레이블과 중앙 사이 간격 줄임
-          font: {
-            size: 10,
-            weight: 'bold'
-          }
+        angleLines: {
+          display: true,  // 각도선 보이기
         },
       },
     },
