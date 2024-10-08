@@ -25,8 +25,13 @@ const AssetPortfolioHorizontalBarChart: React.FC<AssetPortfolioHorizontalBarChar
     return <p>자산 정보가 없습니다.</p>;
   }
 
+  // 예/적금, 입출금 -> product 페이지로, 주식 -> stock 페이지로
   const handleBalance = (title: string) => {
-    navigate('product', { state: { title }});
+    if (title === '주식') {
+      navigate('stock')
+    } else if (title === '예금/적금' || title === '입출금 통장') {
+      navigate('product', { state: { title }});
+    }
   }
 
   const legends = [
@@ -57,7 +62,7 @@ const AssetPortfolioHorizontalBarChart: React.FC<AssetPortfolioHorizontalBarChar
   ]
 
   const data = {
-    labels: ['자산 구성'],
+    labels: ['비율(%)'],
     datasets: legends.map((legend) => ({
       label: legend.title,
       data: [legend.percentage],
