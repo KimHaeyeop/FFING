@@ -20,6 +20,8 @@ import DepositSavingsPage from "./pages/DepositSavingsPage";
 import DepositSavingDetailPage from "./pages/DepositSavingDetailPage";
 import AdminPage from "./pages/AdminPage";
 import LoginPage from "./pages/LoginPage";
+import LandingPage from './pages/LandingPage'
+
 
 const App: React.FC = () => {
   return (
@@ -28,7 +30,7 @@ const App: React.FC = () => {
         {/* 로그인 페이지 */}
         <Route path="/login" element={<LoginPage />} />
         {/* 메인 페이지 */}
-        <Route path="/" element={<MainPage />} />
+        <Route path="/main" element={<MainPage />} />
         {/* 자산 페이지 */}
         {/* <Route path="/assets" element={<ApiTest />} /> */}
         {/* 지출 페이지 */}
@@ -61,7 +63,7 @@ const App: React.FC = () => {
         {/* 매칭 잡는 페이지 */}
         {/* <Route path="/game/matching" element={<MatchingPageModal />} /> */}
         {/* 배틀 페이지 */}
-        <Route path="/game/battle" element={<BattlePage />} />
+        <Route path="/game/battle/:matchId" element={<BattlePage />} />
         {/* 랭킹 페이지 */}
         <Route path="/game/ranking" element={<RankingPage />} />
         {/* 도감 페이지 */}
@@ -70,6 +72,8 @@ const App: React.FC = () => {
         <Route path="/alarm" element={<AlarmPage />} />
         {/* Admin 페이지 */}
         <Route path="/admin" element={<AdminPage />} />
+        {/* 랜딩 페이지 */}
+        <Route path="/" element={<LandingPage />} />
         {/* 404 페이지 */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
