@@ -22,19 +22,14 @@ public class AssetController {
 
     private final AssetService assetService;
 
-
     @GetMapping("")
-    public ResponseEntity<Object> selectTotalAsset(@RequestParam long userId) {
-        Map<String, Object> resultMap = new HashMap<>();
-        AssetRes currentAsset = assetService.getCurrentAsset(userId);
-        resultMap.put("currentAsset", currentAsset);
-        List<AssetRes> assets = assetService.getAssetHistory(userId);
-        resultMap.put("assets", assets);
+    public ResponseEntity<Object> selectAssetHomeInfo(@RequestParam long userId) {
+        Map<String, Object> assetInfoMap = assetService.getAssetHomeInfo(userId);
 
         Response<Object> response = Response.builder()
                 .code(200L)
                 .message("성공")
-                .result(resultMap)
+                .result(assetInfoMap)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);

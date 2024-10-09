@@ -5,7 +5,9 @@ import com.tbtr.ffing.domain.finance.dto.response.asset.AccountTransactionAssetR
 import com.tbtr.ffing.domain.finance.dto.response.asset.AssetRes;
 import com.tbtr.ffing.domain.finance.entity.AccountTransaction;
 import com.tbtr.ffing.domain.finance.entity.Asset;
+import com.tbtr.ffing.domain.finance.entity.Goal;
 import com.tbtr.ffing.domain.finance.repository.AssetRepository;
+import com.tbtr.ffing.domain.finance.repository.GoalRepository;
 import com.tbtr.ffing.domain.finance.service.AssetService;
 import com.tbtr.ffing.domain.user.entity.User;
 import com.tbtr.ffing.domain.user.repository.UserRepository;
@@ -27,17 +29,22 @@ public class AssetServiceImpl implements AssetService {
 
     private final AssetRepository assetRepository;
     private final UserRepository userRepository;
+    private final GoalRepository goalRepository;
 
     @Override
     @Transactional
-    public AssetRes getCurrentAsset(long userId) {
-        return assetRepository.findCurrentAssetByUserId(userId);
-    }
+    public Map<String, Object> getAssetHomeInfo(long userId) {
+        Map<String, Object> assetHomeInfoMap = new HashMap<>();
 
-    @Override
-    @Transactional
-    public List<AssetRes> getAssetHistory(long userId) {
-        return assetRepository.findAssetHistoryByUserId(userId);
+        String year = String.valueOf(LocalDate.now().getYear());
+        Goal assetGoal = goalRepository.findGoalByUserIdAndYear(userId, year);
+        assetHomeInfoMap.put("assetGoal", assetGoal);
+        AssetRes currentAsset = assetRepository.findCurrentAssetByUserId(userId);
+        assetHomeInfoMap.put("currentAsset", currentAsset);
+        List<AssetRes> assetHistory = assetRepository.findAssetHistoryByUserId(userId);
+        assetHomeInfoMap.put("assetHistory", assetHistory);
+
+        return assetHomeInfoMap;
     }
 
     @Override
