@@ -6,9 +6,11 @@ import com.tbtr.ffing.domain.finance.dto.request.account.tHeader;
 import com.tbtr.ffing.domain.finance.dto.response.account.SsafyTransferDmdDepAccRes;
 import com.tbtr.ffing.domain.finance.entity.Account;
 import com.tbtr.ffing.domain.finance.entity.AccountTransaction;
+import com.tbtr.ffing.domain.finance.entity.Asset;
 import com.tbtr.ffing.domain.finance.repository.AccountRepository;
 import com.tbtr.ffing.domain.finance.repository.AccountTransactionRepository;
 import com.tbtr.ffing.domain.finance.service.AccountService;
+import com.tbtr.ffing.domain.finance.service.AssetService;
 import com.tbtr.ffing.domain.finance.service.ExpenseService;
 import com.tbtr.ffing.domain.user.entity.User;
 import com.tbtr.ffing.domain.user.repository.UserRepository;
@@ -41,6 +43,7 @@ public class AccountServiceImpl implements AccountService {
     private final UserRepository userRepository;
     private final AccountRepository accountRepository;
     private final ExpenseService expenseService;
+    private final AssetService assetService;
     private final FcmRepository fcmRepository;
     private final AlarmRepository alarmRepository;
     private final ApplicationEventPublisher eventPublisher;
@@ -97,6 +100,7 @@ public class AccountServiceImpl implements AccountService {
             addAlarmForAccountTransfer(newAccountTransaction, user);
 
             // asset 업데이트 추가 필요
+            Asset newAsset = assetService.addAccountTransferToAsset(newAccountTransaction, user);
         }
     }
 

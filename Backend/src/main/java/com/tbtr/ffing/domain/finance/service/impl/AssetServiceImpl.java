@@ -3,6 +3,8 @@ package com.tbtr.ffing.domain.finance.service.impl;
 import com.tbtr.ffing.domain.finance.dto.response.asset.AccountAssetRes;
 import com.tbtr.ffing.domain.finance.dto.response.asset.AccountTransactionAssetRes;
 import com.tbtr.ffing.domain.finance.dto.response.asset.AssetRes;
+import com.tbtr.ffing.domain.finance.entity.AccountTransaction;
+import com.tbtr.ffing.domain.finance.entity.Asset;
 import com.tbtr.ffing.domain.finance.repository.AssetRepository;
 import com.tbtr.ffing.domain.finance.service.AssetService;
 import com.tbtr.ffing.domain.user.entity.User;
@@ -11,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,5 +81,34 @@ public class AssetServiceImpl implements AssetService {
     @Transactional
     public List<AccountTransactionAssetRes> getAccountTransactionList(long accountId) {
         return assetRepository.findAccountTransactionByAccountId(accountId);
+    }
+
+    @Override
+    public Asset addAccountTransferToAsset(AccountTransaction newAccountTransaction, User user) {
+        AssetRes nowAssetRes = assetRepository.findCurrentAssetByUserId(user.getUserId());
+        LocalDate now = LocalDate.now();
+        String nowStr = now.format(DateTimeFormatter.BASIC_ISO_DATE);
+
+        Asset newAsset = null;
+
+        if (nowAssetRes.getUpdatedDate().substring(0, 6).equals(nowStr.substring(0, 6))) {
+            newAsset = nowAssetRes.toOldEntity(user);
+        } else {
+            newAsset = nowAssetRes.toNewEntity(user);
+        }
+
+        BigDecimal totalAsset = nowAssetRes.getTotalAsset();
+        BigDecimal accountBallance = nowAssetRes.getAccountBalance();
+        BigDecimal transactionBalance = newAccountTransaction.getTransactionBalance();
+
+        if (newAccountTransaction.getTransactionType().equals("1")) {
+            newAsset.setTotalAsset(totalAsset.add(transactionBalance));
+            newAsset.setAccountBalance(accountBallance.add(transactionBalance));
+        } else {
+            newAsset.setTotalAsset(totalAsset.subtract(transactionBalance));
+            newAsset.setAccountBalance(accountBallance.subtract(transactionBalance));
+        }
+
+        return newAsset;
     }
 }
