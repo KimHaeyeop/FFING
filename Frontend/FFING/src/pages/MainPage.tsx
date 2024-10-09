@@ -7,7 +7,7 @@ import NavBar from "../components/Common/Navbar";
 import useViewportStore from "../store/useViewportStore";
 import MonthlyDoughnutChart from "../components/Spending/MonthlyDoughnutChart";
 import PetSprite from "../components/Game/PetSprite";
-import PetSpeechBubble from "../components/Common/PetSpeechBubble";
+import RandomPetSpeech from "../components/Common/RandomPetSpeech";
 import HorizontalBarChart from "../components/Asset/HorizontalBarChart";
 import { getMonthlyExpense } from "../api/SpendingApi";
 import { getTotalAsset } from "../api/AssetApi";
@@ -75,8 +75,8 @@ const MainPage: React.FC = () => {
             style={{ height: "25%" }}
           >
             {/* 자산 부분 링크와 소제목 */}
-            <div className="flex justify-between py-2 px-4">
-              <p className="text-lg">목표 달성까지</p>
+            <div className="flex justify-between p-2">
+              <p className="text-lg mb-3">목표 달성까지</p>
               <Link to="/asset">
                 <Icon
                   path={mdiChevronRight}
@@ -103,30 +103,26 @@ const MainPage: React.FC = () => {
               }}
             >
               {/* 펫 sprite sheet 넣기 */}
-              <div className="absolute bottom-4 left-4 p-2 w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32">
+              <div className="absolute bottom-4 left-7 p-2 w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32">
                 <PetSprite imageUrl="/pets/penguin.png" isUnlocked={true} />
-                <PetSpeechBubble
-                  text="is_not_unfair = [[False] * (V + 1) for _ in range(V + 1)]] for i in range(N): for j in range(N): is_not_unfair[i][j] = True if (i + j) % 2 == 0 else False"
-                  x={dvw * 15}
-                  y={0}
-                />
+                <RandomPetSpeech x={dvw * 15} y={0} />
               </div>
               {/* 게임 화면으로 이동하는 버튼 */}
-              <Link
+              {/* <Link
                 to="/game"
                 className="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-white bg-black rounded-lg p-1 m-2"
               >
                 Let's Game
-              </Link>
+              </Link> */}
             </div>
           </div>
           {/* 지출 내역 관련 */}
           <div
-            className="border-black border-4 rounded-lg"
+            className="border-black border-4 rounded-lg py-2 px-2"
             style={{ height: "38%" }}
           >
-            <div className="flex justify-between items-center mt-2 mx-2">
-              <p className="text-xl">이번달 지출내역</p>
+            <div className="flex justify-between items-center">
+              <p className="text-lg">이번달 지출내역</p>
               <Link to="/spending" className="flex items-center">
                 {/* 사용 금액 API 가져오기 */}
                 <p style={{ color: "#F55322" }}>
