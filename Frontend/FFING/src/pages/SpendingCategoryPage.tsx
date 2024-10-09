@@ -47,7 +47,6 @@ const SpendingCategoryPage: React.FC = () => {
   // 카테고리 클릭 이벤트 함수에서 API 호출 및 로직 처리
   const handleCategoryClick = async (category: string) => {
     setLoading(true); // 로딩 시작
-    console.log(category);
     // 빈 값이거나 undefined일 때
     if (!category) {
       setSelectedCategory("all");

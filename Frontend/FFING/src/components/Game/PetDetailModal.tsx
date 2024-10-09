@@ -85,19 +85,23 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
       legend: {
         display: false,
       },
+      tooltip: {
+        enabled: false,  // 툴팁 비활성화
+      },
     },
     scales: {
       r: {
+        grid: {
+          display: true,  // 그리드 라인 보이기
+        },
+        ticks: {
+          display: false,  // 차트 안의 숫자 라벨(10, 20, 30) 삭제
+        },
         angleLines: {
-          display: false,
+          display: true,  // 각도선 보이기
         },
         suggestedMin: 0,
         suggestedMax: 10,
-        ticks: {
-          stepSize: 2,
-          max: 10,
-          min: 0,
-        },
         pointLabels: {
           padding: 0,
           font: {
@@ -132,13 +136,9 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
         
         {/* 상단의 둥근 원형 영역 */}
         <div 
-          className={`${typeColorMap[petTrait].background} w-48 h-48 rounded-full mt-12 flex justify-center items-center mx-auto relative`}
+          className={`${typeColorMap[petTrait].background} w-48 h-48 rounded-full mt-12 flex justify-center items-center mx-auto`}
         >
-          {/* 중앙 정렬된 아이콘 */}
-          <div className="absolute inset-0 flex justify-center items-center z-10">
-            <Icon path={typeColorMap[petTrait].icon} size={5} color={'#FFFFFF'}/>
-          </div>
-          <div className='z-20'>
+          <div>
             <PetSprite imageUrl={petImageUrl} isUnlocked={true} />
           </div>
         </div>
@@ -150,8 +150,9 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
         </div>
 
         {/* 펫 특성 (Chip 형태) */}
-        <div className={`mt-3 ${typeColorMap[petTrait].background} px-3 py-1 rounded-full inline-flex`}>
-          {petTrait}
+        <div className={`mt-3 ${typeColorMap[petTrait].background} px-3 py-1 rounded-full inline-flex mx-auto`}>
+          <p>{petTrait}</p>
+          <Icon path={typeColorMap[petTrait].icon} size={1} color={'#000000'}/>
         </div>
 
         {/* 레이더 차트 (펫 능력치) */}

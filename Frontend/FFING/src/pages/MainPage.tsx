@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Icon from "@mdi/react";
 import { mdiChevronRight } from "@mdi/js";
@@ -9,45 +9,22 @@ import MonthlyDoughnutChart from "../components/Spending/MonthlyDoughnutChart";
 import PetSprite from "../components/Game/PetSprite";
 import RandomPetSpeech from "../components/Common/RandomPetSpeech";
 import HorizontalBarChart from "../components/Asset/HorizontalBarChart";
-import { getMonthlyExpense } from "../api/SpendingApi";
-import { getDashBoardMain } from "../api/AssetApi";
 import { initializeFirebaseMessaging } from "../service/firebase";
 import { useAuthStore } from "../store/authStore";
 import { useDashBoardInfo } from "../hook/useDashBoardInfo";
-import usePetInfoStore from "../store/usePetInfoStore";
-import { getCurrentYearMonth } from "../utils/dataUtils";
+import { getPetImageUrl } from "../utils/petUtils";
 
 const MainPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
   const { username, userId } = useAuthStore();
-  const { data: metaData } = useDashBoardInfo(String(userId)) // 필요한 API를 호출하는 훅
+  const { data: dashBoardInfo } = useDashBoardInfo(String(userId)); // 필요한 API를 호출하는 훅
 
-  const petCode = metaData?.petCode || '000';  // 메타데이터에서 petCode 가져오기 (없을 경우 '000' 기본값 사용)
-  const petInfo = usePetInfoStore((state) =>
-    state.petSpriteMetaData.find(pet => pet.petCode === petCode)
-  );
+  const petCode = dashBoardInfo?.petCode || "001"; // 메타데이터에서 petCode 가져오기 (없을 경우 '001' 기본값 사용)
+  const petImageUrl = getPetImageUrl(petCode); // 유틸리티 함수 사용
 
   useEffect(() => {
-
     initializeFirebaseMessaging(1);
-
-    // const initializeFCM = async () => {
-    //   try {
-    //     // 여기서 사용자 ID를 가져오는 로직이 필요
-    //     const userId = 1;
-    //     if (userId) {
-    //       await requestPermissionAndGetToken(1);
-    //     } else {
-    //       console.log(
-    //         "사용자가 로그인하지 않았습니다. FCM 토큰을 요청하지 않습니다."
-    //       );
-    //     }
-    //   } catch (error) {
-    //     console.error("FCM 초기화 중 오류 발생:", error);
-    //   }
-    // };
-    // initializeFCM();
   }, []);
 
   return (
@@ -79,7 +56,7 @@ const MainPage: React.FC = () => {
             </div>
             {/* 현재 보유액과 목표액을 보여주는 바 그래프 */}
             <div className="flex justify-center">
-              <HorizontalBarChart assetDiff={metaData.goalBalance - metaData.totalAsset}/>
+              <HorizontalBarChart assetDiff={dashBoardInfo.goalBalance - dashBoardInfo.totalAsset}/>
             </div>
           </div>
           {/* 게임 화면 관련 */}
@@ -96,7 +73,7 @@ const MainPage: React.FC = () => {
             >
               {/* 펫 sprite sheet 넣기 */}
               <div className="absolute bottom-4 left-7 p-2 w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32">
-                <PetSprite imageUrl={petInfo!.imageUrl} isUnlocked={true} />
+                <PetSprite imageUrl={petImageUrl} isUnlocked={true} />
                 <RandomPetSpeech x={dvw * 15} y={0} />
               </div>
               {/* 게임 화면으로 이동하는 버튼 */}
@@ -118,7 +95,7 @@ const MainPage: React.FC = () => {
               <Link to="/spending" className="flex items-center">
                 {/* 사용 금액 API 가져오기 */}
                 <p style={{ color: "#F55322" }}>
-                  {metaData.monthTotalSpending.toLocaleString(undefined, {
+                  {dashBoardInfo.monthTotalSpending.toLocaleString(undefined, {
                     maximumFractionDigits: 0,
                   })}
                   원

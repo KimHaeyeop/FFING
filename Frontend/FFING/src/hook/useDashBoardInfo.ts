@@ -13,6 +13,7 @@ export const useDashBoardInfo = (userId: string) => {
       goalBalance: 0,
       totalAsset: 0,
       petCode: '000',
+      monthGoalSpending: 0,
       monthTotalSpending: 0,
       monthCategoryExpenses: [
         {
