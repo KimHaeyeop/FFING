@@ -76,21 +76,21 @@ const AssetMainPage: React.FC = () => {
           {/* 현재 자산 & 월평균 저축 */}
           <div className="bg-[#BBEAED] bg-opacity-20 content-around" style={{height: '25%'}}>
             {/* 현재 순자산 */}
-            <div className="flex justify-around my-4">
-              <p>현재 순자산</p>
-              <div>
-                <p style={{color: '#67BA82'}}>{(property / 10000).toLocaleString()}만 원</p>
+            <div className="flex justify-between m-4">
+              <p className="flex items-center text-left">현재 순자산</p>
+              <div className="text-right">
+                <p style={{color: '#67BA82'}} className="font-galmuri-11-bold">{formatCurrency(property)}</p>
                 {/* API 연동 필요 */}
-                <p className="text-sm">시작 금액 880만 원</p>
+                <p className="text-sm">시작 금액 <span className="font-galmuri-11-bold">{formatCurrency(10000)}</span></p>
               </div>
             </div>
             {/* 월 평균 저축 */}
-            <div className="flex justify-around my-4">
-              <p >월 평균 저축</p>
-              {/* API 연동 필요 */}
-              <div>
-                <p style={{color: '#67BA82'}}>※API 연동 필요※만 원</p>
-                <p className="text-sm">목표 적금액 ※API 연동 필요※만 원</p>
+            <div className="flex justify-between m-4">
+              <p className="flex items-center text-left">월 평균 저축</p>
+              <div className="text-right">
+                {/* API 연동 필요 */}
+                <p style={{color: '#67BA82'}} className="font-galmuri-11-bold">※API※만 원</p>
+                <p className="text-sm">목표 적금액<span className="font-galmuri-11-bold">※API※만 원</span></p>
               </div>
             </div>
           </div>
