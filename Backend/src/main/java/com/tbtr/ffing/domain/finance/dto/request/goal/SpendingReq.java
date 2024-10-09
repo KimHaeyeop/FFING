@@ -1,6 +1,7 @@
 package com.tbtr.ffing.domain.finance.dto.request.goal;
 
 import com.tbtr.ffing.domain.finance.entity.Goal;
+import com.tbtr.ffing.domain.user.entity.User;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -14,14 +15,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SpendingReq {
 
-    Long userId;
     String spendingBalance;
 
-    public static Goal spendingTo(SpendingReq spendingReq) {
+    public static Goal spendingTo(SpendingReq spendingReq, User user) {
         return Goal.builder()
-                   .userId(spendingReq.getUserId())
                    .goalType("2")
                    .balance(new BigDecimal(spendingReq.getSpendingBalance()))
+                   .user(user)
                    .build();
     }
 }
