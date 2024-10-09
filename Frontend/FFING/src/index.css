@@ -146,8 +146,8 @@ html body {
 
 /* 지출 내역이 있는 날짜에 점 표시 */
 .dot {
-  height: 8px;
-  width: 8px;
+  height: 7px;
+  width: 7px;
   background-color: #d9d9d9;
   border-radius: 50%;
   margin-left: 1px;
@@ -170,6 +170,14 @@ html body {
 
 .react-calendar__tile {
   margin-bottom: 1rem; /* 6px */
+}
+
+.react-calendar__tile.react-calendar__month-view__days__day {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 3.6rem; /* 또는 특정 높이 값 */
 }
 
 @layer utilities {
