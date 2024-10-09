@@ -24,12 +24,14 @@ const AssetPortfolioHorizontalBarChart: React.FC<
   AssetPortfolioHorizontalBarChartProps
 > = ({ currentAsset }) => {
   const navigate = useNavigate();
-  const { assetType, setAssetTypeState } = useAssetType();
+  const { assetType, setAssetTypeState } = useAssetType(); // 선택한 자산의 타입을 관리
 
+  // 현재 자산 정보가 없으면
   if (!currentAsset) {
     return <p>자산 정보가 없습니다.</p>;
   }
 
+  // 예/적금, 입출금 -> product 페이지로, 주식 -> stock 페이지로
   const handleBalance = (title: string) => {
     setAssetTypeState(title);
     if (title === "주식") {
@@ -73,30 +75,42 @@ const AssetPortfolioHorizontalBarChart: React.FC<
       label: legend.title,
       data: [legend.percentage],
       backgroundColor: legend.color,
-      // borderRadius: index === 0 ? [10, 0, 0, 10] : 10, // 첫 번째 막대만 왼쪽을 둥글게
+      // 수평 막대 그래프의 시작과 끝 모서리를 둥글게
+      borderRadius: {
+        topLeft: index === 0 ? 10 : 0, // 첫 번째 막대의 왼쪽 상단 둥글게
+        bottomLeft: index === 0 ? 10 : 0, // 첫 번째 막대의 왼쪽 하단 둥글게
+        topRight: index === legends.length - 1 ? 10 : 0, // 마지막 막대의 오른쪽 상단 둥글게
+        bottomRight: index === legends.length - 1 ? 10 : 0, // 마지막 막대의 오른쪽 하단 둥글게
+      },
+      borderSkipped: false, // 막대의 모든 모서리에 대해 둥글게 적용
     })),
   };
 
   const options = {
-    indexAxis: "y" as const,
+    indexAxis: "y" as const, // 수평 바 차트
     responsive: true,
-    maintainAspectRatio: false, // 이를 통해 높이를 직접 조절할 수 있습니다
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         display: false,
       },
     },
     title: {
-      display: false,
+      display: false, // 차트 제목 숨기기
+    },
+    layout: {
+      padding: {
+        left: -10, // 왼쪽 패딩 보정
+      },
     },
     scales: {
       x: {
         stacked: true,
         grid: {
-          display: false,
+          display: false, // x축 배경 grid 삭제
         },
         ticks: {
-          display: false,
+          display: false, // x축 인덱스 삭제
         },
         border: {
           display: false,
@@ -105,10 +119,10 @@ const AssetPortfolioHorizontalBarChart: React.FC<
       y: {
         stacked: true,
         grid: {
-          display: false,
+          display: false, // y축 배경 grid 삭제
         },
         ticks: {
-          display: false,
+          display: false, // y축 인덱스 삭제
         },
         border: {
           display: false,
@@ -119,23 +133,25 @@ const AssetPortfolioHorizontalBarChart: React.FC<
 
   return (
     <div className="h-full w-full flex flex-col">
-      <div className="flex justify-center" style={{ height: "50px" }}>
-        {/* 높이를 직접 지정합니다 */}
+      <div className="flex justify-center w-full" style={{ height: "50px" }}>
         <Bar data={data} options={options} />
       </div>
       {legends.map((legend, i) => {
         return (
           <div key={i} className="flex justify-between text-lg text-left my-2">
             <div className="flex items-center">
+              {/* 색상 */}
               <div
-                className="h-8 w-8 rounded-full mx-4 text-left"
+                className="h-8 w-8 rounded-full ml-2 mr-4 text-left"
                 style={{ backgroundColor: legend.color }}
               />
+              {/* 금융 상품과 비율 */}
               <div>
                 <p>{legend.title}</p>
-                <p className="text-sm">{legend.percentage.toFixed(1)}%</p>
+                <p className="text-sm">{legend.percentage.toFixed(2)}%</p>
               </div>
             </div>
+            {/* 금액 */}
             <div>
               <p className="flex" onClick={() => handleBalance(legend.title)}>
                 <span className="font-galmuri-11-bold">

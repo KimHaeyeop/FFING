@@ -26,20 +26,14 @@ const AssetCurrentTargetHorizonBarChart: React.FC<
             backgroundColor: "#BBEAED",
           }}
         />
+        {/* 진행률 표시 */}
+        <div className="absolute inset-0 flex items-center justify-center text-white font-galmuri-11-bold text-sm font-bold">
+          {`${progressPercentage.toFixed(1)}%`}
+        </div>
       </div>
       {/* 시작점 표시 */}
       <div className="absolute bottom-[-20px] left-[5%] transform -translate-x-1/2 text-xs">
         0원
-      </div>
-      {/* 달성율 표시 */}
-      <div
-        className="absolute bottom-[-30px] transform -translate-x-1/2 text-xs p-1 mt-2 rounded-2xl"
-        style={{
-          left: `calc(3% + ${progressPercentage * 0.8}%)`,
-          backgroundColor: "#59DEE7",
-        }}
-      >
-        {`${progressPercentage.toFixed(1)}%`}
       </div>
       {/* 목표액 표시 */}
       <div className="absolute bottom-[-20px] right-[5%] transform translate-x-1/2 text-xs">
