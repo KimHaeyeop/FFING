@@ -20,6 +20,8 @@ import DepositSavingsPage from "./pages/DepositSavingsPage";
 import DepositSavingDetailPage from "./pages/DepositSavingDetailPage";
 import AdminPage from "./pages/AdminPage";
 import LoginPage from "./pages/LoginPage";
+import LandingPage from './pages/LandingPage'
+
 
 const App: React.FC = () => {
   return (
@@ -70,6 +72,8 @@ const App: React.FC = () => {
         <Route path="/alarm" element={<AlarmPage />} />
         {/* Admin 페이지 */}
         <Route path="/admin" element={<AdminPage />} />
+        {/* 랜딩 페이지 */}
+        <Route path="/landing" element={<LandingPage />} />
         {/* 404 페이지 */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import useViewportStore from '../../store/useViewportStore'; // Zustand 저장소 사용
 import petIdleBackground from '/backgrounds/pet-idle-background.png';
 import SpeechBubble from '../Common/SpeechBubble';
