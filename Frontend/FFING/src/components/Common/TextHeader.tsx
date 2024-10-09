@@ -4,7 +4,7 @@ import Icon from '@mdi/react';
 import { Link } from 'react-router-dom';
 
 interface TextHeaderProps {
-  title: string // 콘텐츠 이름
+  title: string | null // 콘텐츠 이름
 }
 
 const TextHeader: React.FC<TextHeaderProps> = ({title}) => {
