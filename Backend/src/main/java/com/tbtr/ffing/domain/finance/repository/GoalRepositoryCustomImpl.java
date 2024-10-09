@@ -67,6 +67,23 @@ public class GoalRepositoryCustomImpl implements GoalRepositoryCustom {
     }
 
     @Override
+    public BigDecimal findRecentSpendingBalanceByUserIdAndYear(Long userId) {
+        QGoal transaction = QGoal.goal;
+
+        BigDecimal result = queryFactory
+                .select(transaction.balance)
+                .from(transaction)
+                .where(
+                        transaction.userId.eq(userId) // 사용자 ID 조건
+                                          .and(transaction.goalType.eq("2")) // 소비 목표 유형 조건
+                                          .and(transaction.createdAt.year().eq(LocalDate.now().getYear())) // 올해 조건
+                )
+                .orderBy(transaction.createdAt.desc()) // 생성일 기준으로 역정렬
+                .fetchFirst();
+        return result == null ? BigDecimal.ZERO : result;
+    }
+
+    @Override
     public BigDecimal findGoalBalanceByUserIdAndThisYear(Long userId) {
         QGoal transaction = QGoal.goal;
 
