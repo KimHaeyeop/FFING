@@ -18,10 +18,11 @@ public class GoalReq {
     String goalBalance;
     String spendingBalance;
 
-    public static Goal goalTo(GoalReq goalReq) {
+    public static Goal goalTo(GoalReq goalReq, BigDecimal startBalance) {
         return Goal.builder()
                    .userId(goalReq.getUserId())
                    .goalType("1")
+                   .startBalance(startBalance)
                    .balance(new BigDecimal(goalReq.getGoalBalance()))
                    .build();
     }
