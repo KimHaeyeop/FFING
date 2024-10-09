@@ -32,7 +32,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                         asset.accountBalance,
                         asset.depositSavingsBalance,
                         asset.stockBalance,
-                        asset.othersBalance))
+                        asset.othersBalance,
+                        asset.updatedDate))
                 .from(asset)
                 .where(asset.user.userId.eq(userId))
                 .limit(1)
@@ -50,7 +51,8 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                         asset.accountBalance,
                         asset.depositSavingsBalance,
                         asset.stockBalance,
-                        asset.othersBalance))
+                        asset.othersBalance,
+                        asset.updatedDate))
                 .from(asset)
                 .where(asset.user.userId.eq(userId))
                 .limit(6)

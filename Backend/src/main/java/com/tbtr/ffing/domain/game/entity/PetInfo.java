@@ -12,6 +12,7 @@ import java.util.Date;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@ToString
 @Entity
 @Table(name = "pet_info")
 public class PetInfo {
