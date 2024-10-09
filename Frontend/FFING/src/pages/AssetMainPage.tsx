@@ -9,6 +9,7 @@ import AssetPortfolioHorizontalBarChart from "../components/Asset/AssetPortfolio
 import AssetTimeSeriesChart from "../components/Asset/AssetTimeSeriesChart";
 import { getTotalAsset } from "../api/AssetApi";
 import { getTargetPropertySpending } from '../api/goalApi'
+import { formatCurrency } from "../utils/formatCurrency";
 
 interface currentAssets {
   accountBalance: number;
@@ -65,7 +66,7 @@ const AssetMainPage: React.FC = () => {
               {/* 현재 연도 정보 가져오기 */}
               <p>{todayYear}년 자산 목표</p>
               {/* 목표액 API 연동 */}
-              <p className="font-galmuri-11-bold">{(target / 10000).toLocaleString()}만 원 모으기</p>
+              <p className="font-galmuri-11-bold">{formatCurrency(target)} 모으기</p>
               {/* 목표액 정도를 나타낸 바 차트 */}
               <div className="flex justify-center my-10">
                 <AssetCurrentTargetHorizonBarChart property={property} target={target}/>
