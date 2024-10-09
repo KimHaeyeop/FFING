@@ -10,7 +10,7 @@ import lombok.*;
 public class BattleRoundInfoReq {
     private String matchId;
 
-    private Long userId;
-    private int userAttackNum;      // 고른 공격 숫자
+    private Long petInfoId;
+    private int petAttackNum;      // 고른 공격 숫자
 
 }

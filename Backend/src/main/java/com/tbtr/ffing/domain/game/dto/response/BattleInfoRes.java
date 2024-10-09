@@ -9,9 +9,9 @@ import lombok.*;
 public class BattleInfoRes {
     private String matchId;
 
-    // fromUser의 펫 정보
-    private BattlePetInfoDetailsRes fromUserPetInfo;
+    // 사용자1의 펫 정보
+    private BattlePetInfoDetailsRes user1PetInfo;
 
-    // toUser의 펫 정보
-    private BattlePetInfoDetailsRes toUserPetInfo;
+    // 사용자2의 펫 정보
+    private BattlePetInfoDetailsRes user2PetInfo;
 }
