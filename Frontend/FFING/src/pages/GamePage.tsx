@@ -6,12 +6,14 @@ import PetStatusChart from "../components/Game/PetStatusChart";
 import RandomMatching from "./RandomMatching";
 import DirectMatching from "./DirectMatching";
 import useViewportStore from "../store/useViewportStore";
+import { useAuthStore } from "../store/authStore";
 
 const GamePage: React.FC = () => {
   const [isRandomModalOpen, setIsRandomModalOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
+  const { userId } = useAuthStore();
 
   // 랜덤 매칭 모달 열기
   const handleOpenRandomModal = () => {
@@ -49,7 +51,7 @@ const GamePage: React.FC = () => {
             <PetStatusChart />
           </div>
           {/* 매칭 시작과 초대 버튼 */}
-          <div className="flex rounded-lg overflow-hidden w-full max-w-screen-md mx-auto mt-6 h-16 text-2xl">
+          <div className="flex rounded-lg overflow-hidden w-full max-w-screen-md mx-auto mt-6 h-16 text-2xl font-galmuri-11-bold">
             <button
               onClick={handleOpenRandomModal}
               className="flex-grow bg-[#FFD874] text-black py-2 rounded-l-lg font-bold"
@@ -58,23 +60,23 @@ const GamePage: React.FC = () => {
             </button>
             <button
               onClick={handleOpenInviteModal}
-              className="flex-grow bg-[#FFD874] text-black py-2 rounded-r-lg font-bold"
+              className="flex-grow bg-[#FFA1A1] text-black py-2 rounded-r-lg font-bold"
             >
               초대 매칭
             </button>
           </div>
           {/* 랜덤 매칭 모달 */}
           {isRandomModalOpen && (
-            <RandomMatching isOpen={isRandomModalOpen} onClose={handleCloseRandomModal} myUserId={"1"} />
+            <RandomMatching isOpen={isRandomModalOpen} onClose={handleCloseRandomModal} myUserId={userId} />
           )}
           {/* 초대 매칭 모달 */}
           {isInviteModalOpen && (
             <DirectMatching isOpen={isInviteModalOpen} onClose={handleCloseInviteModal} myUserId={"1"} />
           )}
         </main>
-        <footer>
+        {/* <footer>
           <NavBar />
-        </footer>
+        </footer> */}
       </div>
     </div>
   );

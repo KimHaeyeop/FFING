@@ -85,7 +85,7 @@ const PetStatusChart: React.FC = () => {
             <div key={label} className="flex items-center justify-between my-2 whitespace-nowrap">
               <span className="text-md font-medium text-gray-700">{label}: {value}</span>
               {change !== 0 && (
-                <span className={`ml-2 text-md font-bold ${change > 0 ? 'text-blue-500' : 'text-red-500'}`}>
+                <span className={`ml-2 text-md font-bold ${change > 0 ? 'text-red-500' : 'text-blue-500'}`}>
                   {change > 0 ? `▲ ${Math.abs(change)}` : `▼ ${Math.abs(change)}`}
                 </span>
               )}

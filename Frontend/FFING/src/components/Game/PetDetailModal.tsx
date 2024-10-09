@@ -1,8 +1,10 @@
 import React from "react";
 import { Radar } from "react-chartjs-2";
-import "chart.js/auto";
-import PetSprite from "./PetSprite";
-import useViewportStore from "../../store/useViewportStore";
+import Icon from '@mdi/react';
+import { mdiFoodForkDrink, mdiTheater, mdiSubwayVariant, mdiFinance, mdiShopping } from '@mdi/js'
+import 'chart.js/auto';
+import PetSprite from './PetSprite';
+import useViewportStore from '../../store/useViewportStore';
 
 interface PetDetailModalProps {
   isOpen: boolean;
@@ -36,12 +38,29 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
 
-  const currentWeek = {
-    식비: financeStat,
-    쇼핑: foodBakeryStat,
-    교통: lifeCultureStat,
-    생활: shoppingStat,
-    문화: transportationStat,
+  const currentWeek = { '금융': financeStat, '식비': foodBakeryStat, '생활': lifeCultureStat, '쇼핑': shoppingStat, '교통': transportationStat };
+  
+  const typeColorMap: { [key: string]: { background: string, icon: string } } = {
+    '식비': {
+      'background': 'bg-red-100',
+      'icon': mdiFoodForkDrink,
+    },
+    '쇼핑': {
+      'background': 'bg-yellow-100',
+      'icon': mdiShopping,
+    },
+    '생활': {
+      'background': 'bg-teal-100',
+      'icon': mdiTheater,
+    },
+    '교통': {
+      'background': 'bg-green-100',
+      'icon': mdiSubwayVariant,
+    },
+    '금융': {
+      'background': 'bg-blue-100',
+      'icon': mdiFinance,
+    },
   };
 
   const labels = ["식비", "쇼핑", "교통", "생활/문화", "금융"];
@@ -110,10 +129,18 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
         >
           x
         </button>
-
+        
         {/* 상단의 둥근 원형 영역 */}
-        <div className="bg-[#BBBBBB] w-48 h-48 rounded-full mt-12 flex justify-center items-center mx-auto">
-          <PetSprite imageUrl={petImageUrl} isUnlocked={true} />
+        <div 
+          className={`${typeColorMap[petTrait].background} w-48 h-48 rounded-full mt-12 flex justify-center items-center mx-auto relative`}
+        >
+          {/* 중앙 정렬된 아이콘 */}
+          <div className="absolute inset-0 flex justify-center items-center z-10">
+            <Icon path={typeColorMap[petTrait].icon} size={5} color={'#FFFFFF'}/>
+          </div>
+          <div className='z-20'>
+            <PetSprite imageUrl={petImageUrl} isUnlocked={true} />
+          </div>
         </div>
 
         {/* 펫 이름과 도감 인덱스 */}
@@ -123,7 +150,7 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
         </div>
 
         {/* 펫 특성 (Chip 형태) */}
-        <div className="mt-2 bg-blue-200 text-blue-800 px-3 py-1 rounded-full inline-flex self-center">
+        <div className={`mt-3 ${typeColorMap[petTrait].background} px-3 py-1 rounded-full inline-flex`}>
           {petTrait}
         </div>
 
