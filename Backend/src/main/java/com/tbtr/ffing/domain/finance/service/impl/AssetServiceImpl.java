@@ -2,6 +2,7 @@ package com.tbtr.ffing.domain.finance.service.impl;
 
 import com.tbtr.ffing.domain.finance.dto.response.asset.AccountAssetRes;
 import com.tbtr.ffing.domain.finance.dto.response.asset.AccountTransactionAssetRes;
+import com.tbtr.ffing.domain.finance.dto.response.asset.AssetGoalRes;
 import com.tbtr.ffing.domain.finance.dto.response.asset.AssetRes;
 import com.tbtr.ffing.domain.finance.entity.AccountTransaction;
 import com.tbtr.ffing.domain.finance.entity.Asset;
@@ -36,13 +37,24 @@ public class AssetServiceImpl implements AssetService {
     public Map<String, Object> getAssetHomeInfo(long userId) {
         Map<String, Object> assetHomeInfoMap = new HashMap<>();
 
-        String year = String.valueOf(LocalDate.now().getYear());
-        Goal assetGoal = goalRepository.findGoalByUserIdAndYear(userId, year);
-        assetHomeInfoMap.put("assetGoal", assetGoal);
         AssetRes currentAsset = assetRepository.findCurrentAssetByUserId(userId);
         assetHomeInfoMap.put("currentAsset", currentAsset);
+
         List<AssetRes> assetHistory = assetRepository.findAssetHistoryByUserId(userId);
         assetHomeInfoMap.put("assetHistory", assetHistory);
+
+        String year = String.valueOf(LocalDate.now().getYear());
+        Goal goal = goalRepository.findGoalByUserIdAndYear(userId, year);
+        BigDecimal averagePeriod = new BigDecimal(LocalDate.now().getMonthValue() - goal.getCreatedAt().getMonthValue() + 1);
+        BigDecimal targetPeriod = new BigDecimal(12 - goal.getCreatedAt().getMonthValue() + 1);
+        AssetGoalRes assetGoal = AssetGoalRes.builder()
+                .goalBalance(goal.getBalance())
+                .startBalance(goal.getStartBalance())
+                .createdDate(goal.getCreatedAt().format(DateTimeFormatter.BASIC_ISO_DATE))
+                .averageIncrese(currentAsset.getTotalAsset().subtract(goal.getStartBalance()).divide(averagePeriod))
+                .targetIncrese(goal.getBalance().subtract(goal.getStartBalance()).divide(targetPeriod))
+                .build();
+        assetHomeInfoMap.put("assetGoal", assetGoal);
 
         return assetHomeInfoMap;
     }
@@ -91,7 +103,7 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public Asset addAccountTransferToAsset(AccountTransaction newAccountTransaction, User user) {
+    public void addAccountTransferToAsset(AccountTransaction newAccountTransaction, User user) {
         AssetRes nowAssetRes = assetRepository.findCurrentAssetByUserId(user.getUserId());
         LocalDate now = LocalDate.now();
         String nowStr = now.format(DateTimeFormatter.BASIC_ISO_DATE);
@@ -116,6 +128,6 @@ public class AssetServiceImpl implements AssetService {
             newAsset.setAccountBalance(accountBallance.subtract(transactionBalance));
         }
 
-        return newAsset;
+        newAsset = assetRepository.save(newAsset);
     }
 }
