@@ -1,6 +1,7 @@
 package com.tbtr.ffing.global.config;
 
 import com.tbtr.ffing.domain.game.dto.internal.BattleInfo;
+import com.tbtr.ffing.domain.game.dto.request.BattleRoundInfoReq;
 import com.tbtr.ffing.domain.game.dto.response.BattleInfoRes;
 import com.tbtr.ffing.domain.game.dto.internal.MatchInfo;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,7 +45,6 @@ public class RedisConfig {
         RedisTemplate<String, MatchInfo> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(connectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-//        redisTemplate.setValueSerializer(new GenericToStringSerializer<>(Integer.class));
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
 
         return redisTemplate;
@@ -57,6 +57,16 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(connectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericToStringSerializer<>(Integer.class));
+        return redisTemplate;
+
+    }
+
+    @Bean
+    public RedisTemplate<String, BattleRoundInfoReq> userSignalRedisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, BattleRoundInfoReq> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(connectionFactory);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         return redisTemplate;
 
     }
