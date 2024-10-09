@@ -7,7 +7,6 @@ export const useDashBoardInfo = (userId: string) => {
     queryKey: ['dashBoardInfo', userId], // 고유한 쿼리 키
     queryFn: async () => {
       const response = await getDashBoardMain(userId);
-      console.log(response)
       return response.data.result;  // API 응답 데이터 반환
     },
     initialData: {
