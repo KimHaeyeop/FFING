@@ -4,6 +4,7 @@ import com.tbtr.ffing.domain.game.dto.internal.BattleInfo;
 import com.tbtr.ffing.domain.game.dto.request.BattleRoundInfoReq;
 import com.tbtr.ffing.domain.game.dto.response.BattleInfoRes;
 import com.tbtr.ffing.domain.game.dto.internal.MatchInfo;
+import com.tbtr.ffing.global.redis.component.RedisRefreshToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,11 +32,13 @@ public class RedisConfig {
     }
 
     @Bean
-    public LettuceConnectionFactory lettuceConnectionFactory() {
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-        redisStandaloneConfiguration.setHostName(host);
-        redisStandaloneConfiguration.setPort(port);
-        return new LettuceConnectionFactory(redisStandaloneConfiguration);
+    public RedisTemplate<String, RedisRefreshToken> tokenRedisTemplate() {
+        RedisTemplate<String, RedisRefreshToken> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+
+        return redisTemplate;
     }
 
     @Bean
