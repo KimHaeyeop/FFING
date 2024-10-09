@@ -27,7 +27,7 @@ const PetPediaSection: React.FC<PetPediaSectionProps> = ({ obtainPets }) => {
       <section className="m-2 grid grid-cols-3 gap-2">
         {/* 펫 도감 리스트 - 각 요소는 3개씩 한 행에 배치 */}
         {petSpriteMetaData.map((pet, index) => (
-          <div key={index} className="bg-[#BBBBBB] rounded-lg p-4 flex items-center justify-center">
+          <div key={index} className="bg-stone-300 rounded-lg p-4 flex items-center justify-center">
             {/* 획득한 펫 이미지에 isUnlocked 값을 전달 */}
             <PetSprite imageUrl={pet.imageUrl} isUnlocked={isPetUnlocked(pet.petCode)} />
           </div>
