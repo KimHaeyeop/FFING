@@ -38,7 +38,7 @@ const LoginPage: React.FC = () => {
       // console.log("Nickname:", user.nickname);
 
       // login3();
-      navigate("/"); // 페이지 이동 로직
+      navigate("/main"); // 페이지 이동 로직
     } catch (error: any) {
       // 에러 메시지 설정
       setError(error.message);
