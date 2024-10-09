@@ -1,0 +1,111 @@
+spring:
+  application:
+    name: ffing
+  profiles:
+    active: develop
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  mvc:
+    servlet:
+      path: /api/v1
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  batch:
+    job:
+      enabled: false
+#        jdbc:
+#          initialize-schema: always
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+    deserialization:
+      ADJUST_DATES_TO_CONTEXT_TIME_ZONE: false
+
+# firebase
+fcm:
+  certification: certification.json
+
+server:
+  address: 0.0.0.0
+  port: 8900
+
+---
+spring:
+  config:
+    activate:
+      on-profile: develop
+    import: optional:file:env-develop.env[.properties]
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+  batch:
+    job:
+      enabled: false
+#    jdbc:
+#      initialize-schema: always
+logging:
+  level:
+    com.tbtr.ffing.domain.fcm.service: DEBUG
+    org.springframework.batch: DEBUG
+    #    org.springframework.jdbc: TRACE
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
+    org.springframework.jdbc.datasource: TRACE
+    #    com.zaxxer.hikari: DEBUG
+    org.springframework.boot.autoconfigure.jdbc: DEBUG
+jwt:
+  secret: ${JWT_SECRET}
+  access:
+    expiration: ${ACCESS_TOKEN_EXPIRATION_PERIOD}
+  refresh:
+    expiration: ${REFRESH_TOKEN_EXPIRATION_PERIOD}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+    import: optional:file:env-local.env[.properties]
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+  batch:
+    job:
+      enabled: false
+#    jdbc:
+#      initialize-schema: always
+logging:
+  level:
+    org.springframework.batch: DEBUG
+    org.springframework.jdbc: TRACE
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
+    org.springframework.jdbc.datasource: TRACE
+    com.zaxxer.hikari: DEBUG
+    org.springframework.boot.autoconfigure.jdbc: DEBUG
+jwt:
+  secret: ${JWT_SECRET}
+  access:
+    expiration: ${ACCESS_TOKEN_EXPIRATION_PERIOD}
+  refresh:
+    expiration: ${REFRESH_TOKEN_EXPIRATION_PERIOD}

@@ -1,0 +1,187 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  /* border-radius: 8px; */
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+/* button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+} */
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+/* 태일윈드 css 적용하기 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 폰트 추가 */
+@font-face {
+  font-family: "Galmuri7";
+  src: url("/fonts/Galmuri7.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Galmuri9";
+  src: url("/fonts/Galmuri9.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Galmuri11";
+  src: url("/fonts/Galmuri11.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Galmuri11-Bold";
+  src: url("/fonts/Galmuri11-Bold.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Galmuri11-Condensed";
+  src: url("/fonts/Galmuri11-Condensed.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Galmuri14";
+  src: url("/fonts/Galmuri14.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "GalmuriMono7";
+  src: url("/fonts/GalmuriMono7.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "GalmuriMono9";
+  src: url("/fonts/GalmuriMono9.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "GalmuriMono11";
+  src: url("/fonts/GalmuriMono11.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* 굵은 폰트 클래스 */
+.font-galmuri-11-bold {
+  font-family: "Galmuri11-bold", sans-serif;
+}
+
+/* 기본 폰트로 적용하기 */
+html body {
+  font-family: "Galmuri11", sans-serif;
+}
+
+/* 오늘 날짜는 원으로 표시 */
+.react-calendar__tile--now {
+  background-color: #fe830a;
+  border-radius: 100%;
+}
+
+/* 지출 내역이 있는 날짜에 점 표시 */
+.dot {
+  height: 7px;
+  width: 7px;
+  background-color: #d9d9d9;
+  border-radius: 50%;
+  margin-left: 1px;
+}
+
+/* 날짜 네비게이션 */
+.react-calendar__navigation {
+  margin-bottom: 1rem; /* 6px */
+  font-size: 1.25rem; /* 20px */
+  line-height: 1.75rem; /* 28px */
+}
+
+.react-calendar__navigation__label__labelText {
+  padding: 0 20px;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+  margin-bottom: 1rem; /* 6px */
+}
+
+.react-calendar__tile {
+  margin-bottom: 1rem; /* 6px */
+}
+
+.react-calendar__tile.react-calendar__month-view__days__day {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 3.6rem; /* 또는 특정 높이 값 */
+}
+
+@layer utilities {
+  .h-dvh {
+    height: 100dvh;
+  }
+}
