@@ -60,7 +60,7 @@ const AssetMainPage: React.FC = () => {
       <div className="w-screen h-screen">
         <header style={{ height: `${dvh * 10}px` }}>
           {/* 사용자의 정보와 알람 API 연동 필요*/}
-          <LinkHeader contentName="자산" contentRoute="/main"/> 
+          <LinkHeader contentName="자산" contentRoute="/main" />
         </header>
         <main
           className="mx-auto"
@@ -86,13 +86,13 @@ const AssetMainPage: React.FC = () => {
             </div>
           </div>
           {/* 현재 자산 & 월평균 저축 */}
-          <div className="bg-[#BBEAED] bg-opacity-20 content-around h-1/4 rounded-xl mt-10">
+          <div className="bg-[#BBEAED] bg-opacity-20 content-around h-1/4 rounded-xl mt-10 mb-4">
             {/* 현재 순자산 */}
             <div className="flex justify-between m-4">
               <p className="flex items-center text-left">현재 순자산</p>
               <div className="text-right">
                 <p
-                  style={{ color: "#67BA82" }}
+                  // style={{ color: "#5A5A5A" }}
                   className="font-galmuri-11-bold"
                 >
                   {formatCurrency(property)}
@@ -112,7 +112,7 @@ const AssetMainPage: React.FC = () => {
               <div className="text-right">
                 {/* API 연동 필요 */}
                 <p
-                  style={{ color: "#67BA82" }}
+                  // style={{ color: "#5A5A5A" }}
                   className="font-galmuri-11-bold"
                 >
                   ※API※만 원
@@ -171,7 +171,7 @@ const AssetMainPage: React.FC = () => {
               )}
             </div>
             {/* 월 별 자산 증감 내역 확인하는 차트 API 연동 필요 */}
-            <div>
+            <div className="pb-24">
               <AssetTimeSeriesChart />
             </div>
           </div>
