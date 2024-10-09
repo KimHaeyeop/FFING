@@ -12,11 +12,13 @@ import HorizontalBarChart from "../components/Asset/HorizontalBarChart";
 import { getMonthlyExpense } from "../api/SpendingApi";
 import { getDashBoardMain } from "../api/AssetApi";
 import { initializeFirebaseMessaging } from "../service/firebase";
+import { useAuthStore } from "../store/authStore";
 
 const MainPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
   const [thisMonthExpense, setThisMonthExpese] = useState(0); // 이번 달 지출액 관리
+  const { username } = useAuthStore();
 
   // 이번 달 지출액을 가져오는 함수
   const fetchData = async (userId: string) => {
@@ -63,7 +65,7 @@ const MainPage: React.FC = () => {
       <div className="w-screen h-screen">
         <header style={{ height: `${dvh * 10}px` }}>
           {/* 사용자의 정보와 알람 API 연동 필요*/}
-          <TextHeader title="이규석 님" />
+          <TextHeader title={`${username} 님`} />
         </header>
         <main
           className="mx-auto"
