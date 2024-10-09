@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PetSprite from "./PetSprite";
+import { getPetHistroy } from "../../api/PetPediaApi";
 import usePetInfoStore from "../../store/usePetInfoStore";  // 펫 상태 정보
+import { getCurrentYearMonth } from '../../utils/dataUtils'
+import { useAuthStore } from "../../store/authStore";
 
 // petPediaPage에서 받아온 props
 interface PetPediaSectionProps {
