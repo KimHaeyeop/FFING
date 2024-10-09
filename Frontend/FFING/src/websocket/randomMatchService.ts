@@ -1,7 +1,7 @@
 import WebSocketClient from './websocketClient';
 
 const randomMatchService = {
-  requestRandomMatch: (userId: string, petTotalStat: number) => {
+  requestRandomMatch: (userId: number | null, petTotalStat: number) => {
     const client = WebSocketClient.getInstance();
     const matchRequest = { fromUserId: userId, petTotalStat: petTotalStat };
 
@@ -13,7 +13,7 @@ const randomMatchService = {
     }
   },
 
-  cancelRandomMatch: (userId: string) => {
+  cancelRandomMatch: (userId: number | null) => {
     const client = WebSocketClient.getInstance();
     if (client.isConnectedStatus()) {
       client.publish('/pub/match/random/cancel', { userId });
@@ -23,7 +23,7 @@ const randomMatchService = {
     }
   },
 
-  subscribeToMatchReady: (userId: string, callback: (message: any) => void) => {
+  subscribeToMatchReady: (userId: number | null, callback: (message: any) => void) => {
     const client = WebSocketClient.getInstance();
 
     if (client.isConnectedStatus()) {
