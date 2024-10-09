@@ -6,8 +6,8 @@ export const useDashBoardInfo = (userId: string) => {
   return useQuery({
     queryKey: ['dashBoardInfo', userId], // 고유한 쿼리 키
     queryFn: async () => {
-      const responsePetStats = await getDashBoardMain(userId);
-      return responsePetStats.data.result;  // API 응답 데이터 반환
+      const response = await getDashBoardMain(userId);
+      return response.data.result;  // API 응답 데이터 반환
     },
     initialData: {
       goalBalance: 0,
