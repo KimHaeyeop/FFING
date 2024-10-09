@@ -3,6 +3,8 @@ package com.tbtr.ffing.domain.game.dto.internal;
 import com.tbtr.ffing.domain.game.entity.PetInfo;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Builder
 @Getter
 @Setter
@@ -15,9 +17,11 @@ public class BattleInfo {
     private BattlePetInfo battlePet1;
     private BattlePetInfo battlePet2;
 
-    public static BattleInfo from (String matchId, BattlePetInfo petInfo1, BattlePetInfo petInfo2) {
+    private LocalDateTime createdAt;
+
+    public static BattleInfo from (String matchId, BattlePetInfo petInfo1, BattlePetInfo petInfo2, LocalDateTime createdAt) {
         return new BattleInfo(
-            matchId, petInfo1, petInfo2
+            matchId, petInfo1, petInfo2, createdAt
         );
     }
 }

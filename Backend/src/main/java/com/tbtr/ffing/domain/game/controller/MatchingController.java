@@ -145,7 +145,7 @@ public class MatchingController {
 
             // 요청한 사용자에게 거절 알림
             messagingTemplate.convertAndSend(
-                    "/sub/battle/rejected/" + directMatchRes.getFromUserId(),
+                    "/sub/match/rejected/" + directMatchRes.getFromUserId(),
                     new BattleMatchRejectRes(directMatchReject.getRequestId(), directMatchRes.getToUserId())
             );
         }
@@ -162,17 +162,6 @@ public class MatchingController {
 //                "/sub/match/battle-request-cancelled/" + matchCancelReq.getFromUserId(),
 //                new BattleCancelledNotification(matchCancelReq.getRequestId())
 //        );
-    }
-
-    // 매칭 이후, 배틀 과정에서의 통신
-    @MessageMapping("/battle/{matchId}")
-    public void handleBattleEvent(@DestinationVariable String matchId, BattleRoundInfoReq battleRoundInfo) {
-
-        // 배틀 관련 Service 구현부
-        BattleRoundInfoRes battleRoundInfoRes = battleService.handleBattleSignal(battleRoundInfo);
-
-        messagingTemplate.convertAndSend("/sub/battle/playing/"+ battleRoundInfo.getMatchId(), battleRoundInfoRes);
-
     }
 
     // 배틀 종료 후, 매칭 연결 끊기

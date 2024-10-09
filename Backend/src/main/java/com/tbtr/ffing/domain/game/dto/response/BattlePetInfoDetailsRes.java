@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class BattlePetInfoDetailsRes {
 
     private Long petInfoId;
-    private String username;
+    private String nickname;                // 사용자의 닉네임
     private ArrayList<Integer> recentScore;
     private int winCount;
     private int loseCount;
