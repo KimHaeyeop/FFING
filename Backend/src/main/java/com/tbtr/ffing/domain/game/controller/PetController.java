@@ -7,10 +7,12 @@ import com.tbtr.ffing.domain.game.dto.response.PetCollectionRes;
 import com.tbtr.ffing.domain.game.dto.response.PetHistoryRes;
 import com.tbtr.ffing.domain.game.dto.response.PetInfoRes;
 import com.tbtr.ffing.domain.game.service.PetService;
+import com.tbtr.ffing.domain.user.dto.CustomUserDetails;
 import com.tbtr.ffing.global.common.dto.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -25,8 +27,8 @@ public class PetController {
     private final PetService petService;
 
     @GetMapping("")
-    public ResponseEntity<Object> selectHomePetInfo(@RequestParam long userId) {
-        Map<String, PetInfoRes> homePetInfo = petService.getHomePetInfo(userId);
+    public ResponseEntity<Object> selectHomePetInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Map<String, PetInfoRes> homePetInfo = petService.getHomePetInfo(userDetails.getUserId());
 
         Response<Object> response = Response.builder()
                 .code(200L)
@@ -38,8 +40,8 @@ public class PetController {
     }
 
     @GetMapping("/history/{yearMonth}")
-    public ResponseEntity<Object> selectPetHistory(@RequestParam long userId, @PathVariable String yearMonth) {
-        List<PetHistoryRes> petHistory = petService.getPetHistory(userId, yearMonth);
+    public ResponseEntity<Object> selectPetHistory(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable String yearMonth) {
+        List<PetHistoryRes> petHistory = petService.getPetHistory(userDetails.getUserId(), yearMonth);
 
         Response<Object> response = Response.builder()
                 .code(200L)
@@ -51,8 +53,8 @@ public class PetController {
     }
 
     @GetMapping("/collection")
-    public ResponseEntity<Object> selectPetCollection(@RequestParam long userId) {
-        List<PetCollectionRes> petCollection = petService.getPetCollection(userId);
+    public ResponseEntity<Object> selectPetCollection(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        List<PetCollectionRes> petCollection = petService.getPetCollection(userDetails.getUserId());
 
         Response<Object> response = Response.builder()
                 .code(200L)
@@ -64,8 +66,8 @@ public class PetController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Object> insertPetInfo(@RequestParam long userId) {
-        petService.createPetInfo(userId);
+    public ResponseEntity<Object> insertPetInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        petService.createPetInfo(userDetails.getUserId());
 
         Response<Object> response = Response.builder()
                 .code(200L)
