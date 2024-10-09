@@ -1,19 +1,65 @@
-import { Display } from "phaser";
 import React from "react";
 import { Bar } from "react-chartjs-2";
-// import { Chart as ChartJS, ArcElement, Tooltip, Legend, layouts } from 'chart.js';
 
-// ChartJS.register(ArcElement, Tooltip, Legend);
+interface assetHistoryProps {
+  assetHistory: assetHistoryInterface[];
+}
 
-const AssetTimeSeriesChart: React.FC = () => {
+interface assetHistoryInterface {
+  assetId: number;
+  totalAsset: number;
+  accountBalance: number;
+  depositSavingsBalance: number;
+  stockBalance: number;
+  othersBalance: number;
+  updatedDate: string;
+}
+
+const AssetTimeSeriesChart: React.FC<assetHistoryProps> = ({ assetHistory }) => {
+
+  // 현재 날짜부터 5개월 전까지의 월 이름을 labels로 가져오기
+  const getLastFiveMonths = (): string[] => {
+    const months = [];
+    const today = new Date();
+  
+    for (let i = 0; i < 5; i++) {
+      const month = new Date(today.getFullYear(), today.getMonth() - i, 1);
+      const monthLabel = `${String(month.getMonth() + 1)}월`; // 'MM월' 형식
+      months.push(monthLabel); 
+    }
+  
+    return months.reverse(); // 배열을 최신 월 순서로 변경
+  };
+
+  // assetHistory 데이터에서 updatedDate로 월에 맞는 totalAsset 데이터를 가져오기
+  const getAssetDataForMonths = (months: string[]): number[] => {
+    const monthToAssetMap: { [key: string]: number } = {};
+
+    // assetHistory를 순회하며, 각 자산의 월에 맞는 데이터를 맵에 저장
+    assetHistory.forEach((asset) => {
+      const updatedMonth = new Date(
+        asset.updatedDate.substring(0, 4), // 연도
+        asset.updatedDate.substring(4, 6) - 1 // 월 (0부터 시작하는 월이므로 -1)
+      ).getMonth() + 1;
+
+      // 해당 월의 자산 데이터 매핑 (월 -> totalAsset)
+      const monthLabel = `${updatedMonth}월`;
+      monthToAssetMap[monthLabel] = asset.totalAsset;
+    });
+
+    // 최신 5개월의 labels에 맞는 자산 데이터를 배열로 반환
+    return months.map((month) => monthToAssetMap[month] || 0); // 데이터가 없으면 0으로 처리
+  };
+
+  const labels = getLastFiveMonths(); // 최신 5개월의 월 labels 가져오기
+  const data = getAssetDataForMonths(labels); // labels에 맞는 자산 데이터 가져오기
+
   const config = {
     data: {
-      // API를 통해 이번 달 정보 가져오기
-      labels: ["5월", "6월", "7월", "8월", "9월", "10월"],
+      labels: labels, // 레이블은 최신 5개월
       datasets: [
         {
-          // API 연동 필요
-          data: [7000000, 9000000, 5000000, 7000000, -2000000, -10000000],
+          data: data, // assetHistory에서 가져온 자산 데이터
           backgroundColor: [
             "#B1B1B1",
             "#B1B1B1",
