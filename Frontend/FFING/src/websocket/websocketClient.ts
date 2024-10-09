@@ -6,29 +6,34 @@ class WebSocketClient {
   private static instance: WebSocketClient;
   private client: Client;
   private isConnected = false;
+  private connectPromise: Promise<void>;
 
   private constructor() {
-    this.client = new Client({
-      brokerURL: VITE_WEBSOCKET_ENDPOINT,
-      reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
-      onConnect: () => {
-        console.log("STOMP Client connected");
-        this.isConnected = true;
-      },
-      onStompError: (frame) => {
-        console.error('Broker error: ' + frame.headers['message']);
-      },
-      onWebSocketClose: (error) => {
-        console.error('WebSocket closed: ', error);
-      },
-      onWebSocketError: (error) => {
-        console.error('WebSocket error: ', error);
-      },
+    this.connectPromise = new Promise((resolve, reject) => {
+      this.client = new Client({
+        brokerURL: VITE_WEBSOCKET_ENDPOINT,
+        reconnectDelay: 5000,
+        heartbeatIncoming: 4000,
+        heartbeatOutgoing: 4000,
+        onConnect: () => {
+          console.log("STOMP Client connected");
+          this.isConnected = true;
+          resolve(); // 연결되면 resolve 호출
+        },
+        onStompError: (frame) => {
+          console.error('Broker error: ' + frame.headers['message']);
+          reject(new Error("STOMP Error"));
+        },
+        onWebSocketClose: (error) => {
+          console.error('WebSocket closed: ', error);
+        },
+        onWebSocketError: (error) => {
+          console.error('WebSocket error: ', error);
+        },
+      });
+      this.client.activate();
+      console.log("client Activate");
     });
-    this.client.activate();
-    console.log("client Activate");
   }
 
   public static getInstance(): WebSocketClient {
@@ -47,6 +52,10 @@ class WebSocketClient {
 
   public isConnectedStatus(): boolean {
     return this.isConnected;
+  }
+
+  public waitForConnect(): Promise<void> {
+    return this.connectPromise;
   }
 
   public subscribe(destination: string, callback: (message: any) => void) {

@@ -10,32 +10,37 @@ interface RandomMatchingProps {
 
 const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUserId }) => {
   useEffect(() => {
-    if (isOpen) {
-      console.log("랜덤 매칭 오픈됐어요~~");
-      const client = WebSocketClient.getInstance();
+    const startRandomMatch = async () => {
+      if (isOpen) {
+        console.log("랜덤 매칭 오픈됐어요~~");
+        const client = WebSocketClient.getInstance();
 
-      // wsClient.subscribe(`/sub/battle/ready/${userId}`, (message) => {
-      //   const data = JSON.parse(message.body);
-      //   setOpponentInfo(data);
-      //   console.log('상대방 정보:', data);
-      // });
+        try {
+          await client.waitForConnect();
+          console.log("웹소켓 연결 완료 후 매칭 요청");
 
-      // 랜덤 매칭 요청
-      if (client.isConnectedStatus) {
-        randomMatchService.requestRandomMatch(myUserId, 100); // 예시로 1000의 스탯을 보냄
+          // 매칭 성공 시 콜백 함수
+          randomMatchService.subscribeToMatchReady(myUserId, (matchData) => {
+            console.log("매칭 성공:", matchData.body);
+            // 매칭 성사 후 처리 로직
 
-        // 매칭 성공 시 콜백 함수
-        randomMatchService.subscribeToMatchReady(myUserId, (matchData) => {
-          console.log("매칭 성공:", matchData);
-          // 매칭 성사 후 처리 로직
-        });
+          });
+          // 매칭 요청
+          randomMatchService.requestRandomMatch(myUserId, 100);
+          randomMatchService.requestRandomMatch('3', 100);
+
+        } catch (error) {
+          console.error("웹소켓 연결 실패:", error);
+        }
       }
+    };
 
-      return () => {
-        // 매칭 취소
-        randomMatchService.cancelRandomMatch(myUserId);
-      };
-    }
+    startRandomMatch();
+
+    return () => {
+      // 매칭 취소
+      randomMatchService.cancelRandomMatch(myUserId);
+    };
   }, [isOpen, myUserId]);
 
   return isOpen ? (

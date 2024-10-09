@@ -17,9 +17,9 @@ if ("serviceWorker" in navigator) {
 }
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
+  // <StrictMode>
     <QueryClientProvider client={queryClient}>
       <App />
     </QueryClientProvider>
-  </StrictMode>
+  // </StrictMode>
 );
