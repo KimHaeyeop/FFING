@@ -48,7 +48,6 @@ const AlarmPage: React.FC = () => {
   const fetchData = async () => {
     try {
       const response = await getAlarms();
-      console.log(response, '이규석')
       setAlarms(response.data.result)
     } catch (error) {
       console.error('알림 데이터를 가져오는 중 오류 발생:', error);
