@@ -36,7 +36,7 @@ public class Asset {
     @Column(precision = 16, scale = 2, nullable = true, columnDefinition = "decimal(16, 2) default 0")
     private BigDecimal othersBalance;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 8)
     private String updatedDate;
 
 
