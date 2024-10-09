@@ -57,11 +57,11 @@ const SpendingCategoryPage: React.FC = () => {
             <div className="dot"></div>
             {/* 지출이 0보다 크면 렌더링, 소수점 절삭 */}
             {expense.totalExpense > 0 && (
-              <p className="text-xs">-{expense.totalExpense.toFixed(0)}</p>
+              <p className="text-[10px]">-{expense.totalExpense.toFixed(0)}</p>
             )}
             {/* 수입이 0보다 크면 렌더링 */}
             {expense.totalIncome > 0 && (
-              <p className="text-xs">+{expense.totalIncome.toFixed(0)}</p>
+              <p className="text-[10px]">+{expense.totalIncome.toFixed(0)}</p>
             )}
           </div>
         );
