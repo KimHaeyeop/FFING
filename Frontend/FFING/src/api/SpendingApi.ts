@@ -15,6 +15,12 @@ export interface WeeklyExpense {
   when: string;
 }
 
+// 지출 분석 정보를 불러오기 위한 API
+export interface SixMonthExpense {
+  userId: string;
+  ssafyUserId: string;
+}
+
 // 당월 지출 상세 내역 조회
 export async function getExpenseDetail(category: string) {
   try {
@@ -70,10 +76,11 @@ export async function getCertainDateExpense(yyyyMmDd: string) {
   }
 }
 
-// 월별(6개월 간) 지출액 확인 및 월간 지출 분석 API(백엔드 개발 미비)
-export async function getSixMonthExpense() {
+// 월별(6개월 간) 지출액 확인 및 월간 지출 분석 API
+export async function getSixMonthExpense(userId: string, ssafyUserId: string) {
   try {
-    const response = await axios.get('/expense/monthly');
+    // 쿼리 스트링을 연결하기 위해서는 &를 붙인다.
+    const response = await axios.get<SixMonthExpense>(`/expense/monthly-summary?userId=${userId}&ssafyUserId=${ssafyUserId}`);
     return response;
   } catch (error) {
     console.error('Error fetching six month expense:', error);
