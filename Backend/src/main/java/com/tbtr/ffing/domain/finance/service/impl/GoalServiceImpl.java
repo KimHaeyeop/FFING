@@ -14,6 +14,8 @@ import com.tbtr.ffing.domain.finance.repository.AccountTransactionRepository;
 import com.tbtr.ffing.domain.finance.repository.AssetRepository;
 import com.tbtr.ffing.domain.finance.repository.GoalRepository;
 import com.tbtr.ffing.domain.finance.service.GoalService;
+import com.tbtr.ffing.domain.user.entity.User;
+import com.tbtr.ffing.domain.user.repository.UserRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -28,6 +30,7 @@ public class GoalServiceImpl implements GoalService {
     private final GoalRepository goalRepository;
     private final AssetRepository assetRepository;
     private final AccountTransactionRepository accountTransactionRepository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
@@ -84,8 +87,9 @@ public class GoalServiceImpl implements GoalService {
         deleteExistingGoal(userId, GOAL_TYPE_SPENDING, yearMonth);
 
         // 목표 자산, 소비액 저장
-        Goal goal = GoalReq.goalTo(goalReq, assetRepository.findCurrentAssetByUserId(userId).getTotalAsset());
-        Goal spending = GoalReq.spendingTo(goalReq);
+        User user = userRepository.findByUserId(userId);
+        Goal goal = GoalReq.goalTo(goalReq, assetRepository.findCurrentAssetByUserId(userId).getTotalAsset(), user);
+        Goal spending = GoalReq.spendingTo(goalReq, user);
         goalRepository.save(goal);
         goalRepository.save(spending);
 
@@ -106,7 +110,8 @@ public class GoalServiceImpl implements GoalService {
                 toYearMonths(now.getYear(), now.getMonthValue()));
 
         // 목표 소비액 저장
-        Goal goal = SpendingReq.spendingTo(spendingReq);
+        User user = userRepository.findByUserId(userId);
+        Goal goal = SpendingReq.spendingTo(spendingReq, user);
         goalRepository.save(goal);
 
         // 응답 생성
