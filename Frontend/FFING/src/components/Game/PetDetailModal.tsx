@@ -38,6 +38,14 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
   const dvh = useViewportStore((state) => state.dvh);
 
   const currentWeek = { 식비: financeStat, 쇼핑: foodBakeryStat, 교통: lifeCultureStat, 생활: shoppingStat, 문화: transportationStat };
+  
+  const typeColorMap: { [key: string]: string } = {
+    '식비': 'bg-red-100',
+    '쇼핑': 'bg-yellow-100',
+    '교통': 'bg-green-100',
+    '생활': 'bg-blue-100',
+    '금융': 'bg-purple-100',
+  };
 
   const labels = ['식비', '쇼핑', '교통', '생활/문화', '금융'];
 
@@ -106,7 +114,7 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
 
         {/* 상단의 둥근 원형 영역 */}
         <div 
-          className="bg-[#BBBBBB] w-48 h-48 rounded-full mt-12 flex justify-center items-center mx-auto"
+          className={`${typeColorMap[petTrait]} w-48 h-48 rounded-full mt-12 flex justify-center items-center mx-auto`}
         >
           <PetSprite imageUrl={petImageUrl} isUnlocked={true} />
         </div>
@@ -118,7 +126,7 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
         </div>
 
         {/* 펫 특성 (Chip 형태) */}
-        <div className="mt-3 bg-blue-200 text-blue-800 px-3 py-1 rounded-full inline-flex">
+        <div className={`mt-3 ${typeColorMap[petTrait]} px-3 py-1 rounded-full inline-flex`}>
           {petTrait}
         </div>
 
