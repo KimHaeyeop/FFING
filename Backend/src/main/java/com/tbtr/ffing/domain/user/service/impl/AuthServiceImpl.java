@@ -64,18 +64,23 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public SigninRes signin(UserSigninReq userSigninReq) {
+        log.info("Signin attempt for email: {}", userSigninReq.getEmail());
         // 1. 유저 찾기 및 패스워드 확인
         User user = findUserByEmail(userSigninReq.getEmail());
+        log.info("User found: {}", user.getUserId());
         validatePassword(userSigninReq.getPassword(), user.getPassword());
+        log.info("Password validated successfully for user: {}", user.getUserId());
 
         // 2. JWT 토큰 발급 및 Redis 저장
         CustomUserDetails customUserDetails = CustomUserDetails.of(user);
         String accessToken = jwtUtil.createJwt("access", customUserDetails);
         String refreshToken = jwtUtil.createJwt("refresh", customUserDetails);
         redisRefreshTokenService.saveRedisData(user.getUserId(), refreshToken);
+        log.info("Tokens created and saved for user: {}", user.getUserId());
 
         // 3. JWT accessToken 헤더 추가, refreshToken 쿠키 설정
         HttpHeaders httpHeaders = createHeadersWithTokens(accessToken, refreshToken);
+        log.info("Signin successful for user: {}", user.getUserId());
 
         return SigninRes.of(httpHeaders, UserSigninRes.of(user));
     }
