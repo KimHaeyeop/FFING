@@ -9,6 +9,7 @@ import AssetPortfolioHorizontalBarChart from "../components/Asset/AssetPortfolio
 import AssetTimeSeriesChart from "../components/Asset/AssetTimeSeriesChart";
 import { getTotalAsset } from "../api/AssetApi";
 import { getTargetPropertySpending } from '../api/goalApi'
+import { formatCurrency } from "../utils/formatCurrency";
 
 interface currentAssets {
   accountBalance: number;
@@ -27,7 +28,8 @@ const AssetMainPage: React.FC = () => {
 
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
-
+  const todayYear = new Date().toISOString().split('T')[0].replace(/-/g, '').slice(0, 4)
+  
   // 이번 달 지출액을 가져오는 함수
   const fetchData = async () => {
     try {
@@ -62,9 +64,9 @@ const AssetMainPage: React.FC = () => {
             {/* 자산 목표 확인, API 적용 */}
             <div className="text-2xl text-left">
               {/* 현재 연도 정보 가져오기 */}
-              <p>2024년 자산 목표</p>
+              <p>{todayYear}년 자산 목표</p>
               {/* 목표액 API 연동 */}
-              <p className="font-galmuri-11-bold">{(target / 10000).toLocaleString()}만 원 모으기</p>
+              <p className="font-galmuri-11-bold">{formatCurrency(target)} 모으기</p>
               {/* 목표액 정도를 나타낸 바 차트 */}
               <div className="flex justify-center my-10">
                 <AssetCurrentTargetHorizonBarChart property={property} target={target}/>
@@ -74,21 +76,21 @@ const AssetMainPage: React.FC = () => {
           {/* 현재 자산 & 월평균 저축 */}
           <div className="bg-[#BBEAED] bg-opacity-20 content-around" style={{height: '25%'}}>
             {/* 현재 순자산 */}
-            <div className="flex justify-around my-4">
-              <p>현재 순자산</p>
-              <div>
-                <p style={{color: '#67BA82'}}>{(property / 10000).toLocaleString()}만 원</p>
+            <div className="flex justify-between m-4">
+              <p className="flex items-center text-left">현재 순자산</p>
+              <div className="text-right">
+                <p style={{color: '#67BA82'}} className="font-galmuri-11-bold">{formatCurrency(property)}</p>
                 {/* API 연동 필요 */}
-                <p className="text-sm">시작 금액 880만 원</p>
+                <p className="text-sm">시작 금액 <span className="font-galmuri-11-bold">{formatCurrency(10000)}</span></p>
               </div>
             </div>
             {/* 월 평균 저축 */}
-            <div className="flex justify-around my-4">
-              <p >월 평균 저축</p>
-              {/* API 연동 필요 */}
-              <div>
-                <p style={{color: '#67BA82'}}>※API 연동 필요※만 원</p>
-                <p className="text-sm">목표 적금액 ※API 연동 필요※만 원</p>
+            <div className="flex justify-between m-4">
+              <p className="flex items-center text-left">월 평균 저축</p>
+              <div className="text-right">
+                {/* API 연동 필요 */}
+                <p style={{color: '#67BA82'}} className="font-galmuri-11-bold">※API※만 원</p>
+                <p className="text-sm">목표 적금액<span className="font-galmuri-11-bold">※API※만 원</span></p>
               </div>
             </div>
           </div>

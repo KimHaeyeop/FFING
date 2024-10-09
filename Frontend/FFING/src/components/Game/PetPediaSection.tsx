@@ -23,7 +23,7 @@ const PetPediaSection: React.FC<PetPediaSectionProps> = ({ obtainPets }) => {
   };
 
   return (
-    <div className="bg-[#0A3711] rounded pb-20">
+    <div className="rounded pb-20">
       <section className="m-2 grid grid-cols-3 gap-2">
         {/* 펫 도감 리스트 - 각 요소는 3개씩 한 행에 배치 */}
         {petSpriteMetaData.map((pet, index) => (
