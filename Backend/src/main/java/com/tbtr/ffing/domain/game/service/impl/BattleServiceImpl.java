@@ -52,10 +52,10 @@ public class BattleServiceImpl implements BattleService {
         PetInfo pet2 = petService.getLatestPetInfo(matchInfo.getToUserId());
 //        System.out.println(pet1.toString());
 
-        // 2. 각 사용자들의 사용자 이름
-        String username1 = userRepository.findByUserId(matchInfo.getFromUserId()).getUsername();
-        String username2 = userRepository.findByUserId(matchInfo.getToUserId()).getUsername();
-//        System.out.println(username2);
+        // 2. 각 사용자들의 사용자 닉네임
+        String nickname1 = userRepository.findByUserId(matchInfo.getFromUserId()).getNickname();
+        String nickname2 = userRepository.findByUserId(matchInfo.getToUserId()).getNickname();
+//        System.out.println(nickname2);
 
         // 3. 각 사용자 펫들의 최근 전적 기록 (최근 5개 승패)
         ArrayList<Integer> pet1WLHistory = petService.getRecentBattleScore(pet1.getPetInfoId());
@@ -63,8 +63,8 @@ public class BattleServiceImpl implements BattleService {
 //        System.out.println(pet2WLHistory.toString());
 
         // 정보를 조합하여 사용자들에게 줄 정보 만들기
-        BattlePetInfoDetailsRes battlePet1InfoDetails = BattlePetInfoDetailsRes.from(pet1, username1, pet1WLHistory);
-        BattlePetInfoDetailsRes battlePet2InfoDetails = BattlePetInfoDetailsRes.from(pet2, username2, pet2WLHistory);
+        BattlePetInfoDetailsRes battlePet1InfoDetails = BattlePetInfoDetailsRes.from(pet1, nickname1, pet1WLHistory);
+        BattlePetInfoDetailsRes battlePet2InfoDetails = BattlePetInfoDetailsRes.from(pet2, nickname2, pet2WLHistory);
 //        System.out.println(battlePet2InfoDetails);
 
         // redis 에 배틀 세팅하기
@@ -77,8 +77,8 @@ public class BattleServiceImpl implements BattleService {
         // 사용자들에게 줄 정보 반환
         BattleInfoRes battleInfoRes = BattleInfoRes.builder()
                 .matchId(matchId)
-                .fromUserPetInfo(battlePet1InfoDetails)
-                .toUserPetInfo(battlePet2InfoDetails)
+                .user1PetInfo(battlePet1InfoDetails)
+                .user2PetInfo(battlePet2InfoDetails)
                 .build();
 
         return battleInfoRes;
@@ -113,6 +113,7 @@ public class BattleServiceImpl implements BattleService {
                 userSignalRedisTemplate.delete(USER2_KEY);
             }
         }
+
         return null;
     }
 
