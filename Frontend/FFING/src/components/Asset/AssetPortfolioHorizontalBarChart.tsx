@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import Icon from '@mdi/react';
 import { mdiChevronRight } from '@mdi/js'
 import useAssetType from '../../store/userAssetType';
+import { formatCurrency } from '../../utils/formatCurrency';
 
 interface currentAssets {
   accountBalance: number;
@@ -133,7 +134,7 @@ const AssetPortfolioHorizontalBarChart: React.FC<AssetPortfolioHorizontalBarChar
               {/* 금액 */}
               <div>
                 <p className='flex' onClick={() => handleBalance(legend.title)}>
-                  <span className='font-galmuri-11-bold'>{(legend.balance / 10000).toLocaleString()}만 원</span>
+                  <span className='font-galmuri-11-bold'>{formatCurrency(legend.balance)}</span>
                   <Icon path={mdiChevronRight} size={1} />
                 </p>
               </div>
