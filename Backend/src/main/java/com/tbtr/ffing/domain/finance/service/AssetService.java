@@ -9,11 +9,10 @@ import com.tbtr.ffing.domain.user.entity.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 public interface AssetService {
-    AssetRes getCurrentAsset(long userId);
-
-    List<AssetRes> getAssetHistory(long userId);
+    Map<String, Object> getAssetHomeInfo(long userId);
 
     List<Object> getDepositList(long userId);
 
