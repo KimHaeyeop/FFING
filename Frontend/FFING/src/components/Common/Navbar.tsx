@@ -48,7 +48,7 @@ const NavBar: React.FC = () => {
     <footer className="fixed bottom-0 left-0 right-0 bg-white p-4 rounded-t-xl flex justify-around items-center shadow-lg z-10 border">
       {/* 지갑 아이콘 */}
       <div className={`flex flex-col items-center ${isActive('/spending') ? 'text-black' : 'text-gray-500'}`}>
-        <Link to="/">
+        <Link to="/main">
           <Icon path={mdiWalletBifoldOutline} size={1.2} />
         </Link>
       </div>

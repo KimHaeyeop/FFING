@@ -115,14 +115,14 @@ const DepositSavingDetailPage: React.FC = () => {
               </div>
               {/* 드롭다운 */}
               {isDropdownOpen && (
-                <div className="absolute mt-8 bg-white border">
-                  <p className="cursor-pointer" onClick={() => handleFilterChange(null)}>
+                <div className="absolute mt-8 bg-white border w-1/3">
+                  <p className="cursor-pointer m-2" onClick={() => handleFilterChange(null)}>
                     전체
                   </p>
-                  <p className="cursor-pointer" onClick={() => handleFilterChange('입금')}>
+                  <p className="cursor-pointer m-2" onClick={() => handleFilterChange('입금')}>
                     입금
                   </p>
-                  <p className="cursor-pointer" onClick={() => handleFilterChange('출금')}>
+                  <p className="cursor-pointer m-2" onClick={() => handleFilterChange('출금')}>
                     출금
                   </p>
                 </div>
