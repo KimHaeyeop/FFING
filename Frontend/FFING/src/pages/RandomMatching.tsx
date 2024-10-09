@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import randomMatchService from "../websocket/randomMatchService"; // WebSocket 로직을 포함한 서비스 파일
 import WebSocketClient from "../websocket/websocketClient";
 import { useAuthStore } from "../store/authStore";
+import { useMatchStore } from "../store/matchStore";
 
 interface RandomMatchingProps {
   isOpen: boolean;
@@ -12,10 +13,8 @@ interface RandomMatchingProps {
 
 const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUserId }) => {
   const { nickname } = useAuthStore();
-  const [myInfo, setMyInfo] = useState<any>(null);
-  const [opponentInfo, setOpponentInfo] = useState<any>(null);
+  const { matchId, myInfo, opponentInfo, setMatchId, setMyInfo, setOpponentInfo, resetMatchInfo } = useMatchStore();
   const [isMatched, setIsMatched] = useState(false);
-  const [matchId, setMatchId] = useState<any>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,13 +31,19 @@ const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUser
           randomMatchService.subscribeToMatchReady(myUserId, (matchData) => {
             const data = JSON.parse(matchData.body);
             console.log("매칭 성공:", data);
-            console.log("매치아이디 ", data.matchId);
 
             // 매칭 성사 후
             setMatchId(data.matchId);
             const { user1PetInfo, user2PetInfo } = data;
             // 닉네임 비교
             console.log("내 닉네임: ", nickname);
+            // if (user1PetInfo.nickname === nickname) {
+            //   setMyInfo(user1PetInfo);
+            //   setOpponentInfo(user2PetInfo);
+            // } else {
+            //   setMyInfo(user2PetInfo);
+            //   setOpponentInfo(user1PetInfo);
+            // }
             if (user1PetInfo.nickname === nickname) {
               setMyInfo(user1PetInfo);
               setOpponentInfo(user2PetInfo);
@@ -46,17 +51,17 @@ const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUser
               setMyInfo(user2PetInfo);
               setOpponentInfo(user1PetInfo);
             }
-            // console.log("받은 닉네임: ", myInfo.nickname);
 
             setIsMatched(true);
 
             setTimeout(() => {
+              console.log("배틀페이지로 이동");
               navigate(`/game/battle/${data.matchId}`);
-            }, 3000);
+            }, 2000);
           });
           // 매칭 요청
           console.log(myUserId);
-          randomMatchService.requestRandomMatch(myUserId, 100);
+          randomMatchService.requestRandomMatch(myUserId, myInfo?.totalStat ?? 0);
           // console.log(matchId);
 
         } catch (error) {
@@ -70,12 +75,9 @@ const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUser
     return () => {
       // 매칭 취소
       randomMatchService.cancelRandomMatch(myUserId);
+      resetMatchInfo();
     };
   }, [isOpen, myUserId]);
-
-  const handleReadyClick = () => {
-    console.log("준비 완료!");
-  };
 
   return isOpen ? (
     <div className="modal">
@@ -102,8 +104,6 @@ const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUser
               <p>총 스탯: {opponentInfo?.totalStat}</p>
               <p>스탯: {opponentInfo?.stats.join(", ")}</p>
             </div>
-
-            <button onClick={handleReadyClick}>준비 완료</button>
           </div>
         ) : (
           <p>매칭 중...</p>
