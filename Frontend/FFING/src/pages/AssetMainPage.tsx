@@ -56,7 +56,7 @@ const AssetMainPage: React.FC = () => {
       <div className="w-screen h-screen">
         <header style={{height: `${dvh * 10}px`}}>
           {/* 사용자의 정보와 알람 API 연동 필요*/}
-          <LinkHeader contentName="자산" contentRoute="/"/> 
+          <LinkHeader contentName="자산" contentRoute="/main"/> 
         </header>
         <main className='mx-auto' style={{height: `${dvh * 80}px`, width: `${dvw * 90}px`}}>
           {/* 자산 목표 확인 */}

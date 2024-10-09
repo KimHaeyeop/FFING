@@ -49,7 +49,7 @@ const GamePage: React.FC = () => {
             <PetStatusChart />
           </div>
           {/* 매칭 시작과 초대 버튼 */}
-          <div className="flex rounded-lg overflow-hidden w-full max-w-screen-md mx-auto mt-6 h-16 text-2xl">
+          <div className="flex rounded-lg overflow-hidden w-full max-w-screen-md mx-auto mt-6 h-16 text-2xl font-galmuri-11-bold">
             <button
               onClick={handleOpenRandomModal}
               className="flex-grow bg-[#FFD874] text-black py-2 rounded-l-lg font-bold"
@@ -58,7 +58,7 @@ const GamePage: React.FC = () => {
             </button>
             <button
               onClick={handleOpenInviteModal}
-              className="flex-grow bg-[#FFD874] text-black py-2 rounded-r-lg font-bold"
+              className="flex-grow bg-[#FFA1A1] text-black py-2 rounded-r-lg font-bold"
             >
               초대 매칭
             </button>
