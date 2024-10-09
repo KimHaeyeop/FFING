@@ -12,6 +12,9 @@ public interface GoalRepositoryCustom {
     // 해당 연도의 첫 번째 목표 소비액
     Goal findFirstSpendingByUserId(Long userId, String year);
 
+    // 올해 최근 목표 소비액
+    BigDecimal findRecentSpendingBalanceByUserIdAndYear(Long userId);
+
     // 올해 목표 자산액
     BigDecimal findGoalBalanceByUserIdAndThisYear(Long userId);
 }

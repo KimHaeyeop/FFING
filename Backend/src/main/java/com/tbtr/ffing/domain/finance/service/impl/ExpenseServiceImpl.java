@@ -198,10 +198,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         BigDecimal monthAverageExpense = calculateMonthAverageExpense(sixMonthTotalExpense);
 
         // 이번달 목표 소비액
-        Goal recentSpendingGoal = goalRepository.findFirstSpendingByUserId(userId,
-                String.valueOf(LocalDate.now().getYear()));
-        BigDecimal monthlyTargetExpense =
-                recentSpendingGoal == null ? BigDecimal.ZERO : recentSpendingGoal.getBalance();
+        BigDecimal monthlyTargetExpense = goalRepository.findRecentSpendingBalanceByUserIdAndYear(userId);
 
         // 앞으로의 매달 소비액 계산
         Goal yearGoal = goalRepository.findGoalByUserIdAndYear(userId, String.valueOf(now.getYear()));
@@ -275,10 +272,13 @@ public class ExpenseServiceImpl implements ExpenseService {
         BigDecimal currentAsset = assetService.getCurrentAsset(userId).getTotalAsset();
 
         int remainingMonths = remainingMonths(currentDate.getMonthValue());
+
+        // 목표 소비액
+        // 필요한 월별 저축액 : (목표 자산 - 총 자산) / 남은 달
+        // 가능 소비액 : 고정 수입 - 필요한 월별 저축액
         return fixedIncome.subtract(
-                yearGoal.getBalance().subtract(currentAsset)
-                        .divide(new BigDecimal(remainingMonths), RoundingMode.CEILING)
-        ).setScale(0, RoundingMode.CEILING);
+                yearGoal.getBalance().subtract(currentAsset).divide(new BigDecimal(remainingMonths), RoundingMode.CEILING)
+                        .setScale(0, RoundingMode.CEILING));
     }
 
     private int remainingMonths(int month) {
