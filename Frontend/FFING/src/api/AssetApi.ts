@@ -31,7 +31,6 @@ export interface getAcTransactionInterface {
 export async function getStocks(ssafyUserId: string) {
   try {
     const response = await axios.get<getStocksInterface>(`/stock/${ssafyUserId}`);
-    console.log(response.data.result)
     return response;
   } catch (error) {
     console.error('Error fetching getStocks:', error);
@@ -43,7 +42,6 @@ export async function getStocks(ssafyUserId: string) {
 export async function getStockDetail(ssafyUserId: string, stockAccountId: string) {
   try {
     const response = await axios.get<getStockDetailInterface>(`/stock/${ssafyUserId}/${stockAccountId}`);
-    console.log(response.data.result)
     return response;
   } catch (error) {
     console.error('Error fetching get stock detail:', error);
@@ -55,7 +53,6 @@ export async function getStockDetail(ssafyUserId: string, stockAccountId: string
 export async function getTotalAsset(userId: string) {
   try {
     const response = await axios.get<getTotalAssetInterface>(`/asset?userId=${userId}`);
-    console.log(response.data.result)
     return response;
   } catch (error) {
     console.error('Error fetching total asset:', error);
@@ -67,7 +64,6 @@ export async function getTotalAsset(userId: string) {
 export async function getDepositSaving(userId: string) {
   try {
     const response = await axios.get<getTotalAssetInterface>(`/asset/deposit?userId=${userId}`);
-    console.log(response.data.result)
     return response
   } catch (error) {
     console.error('Error fetching getDepositSaving:', error);
@@ -79,7 +75,6 @@ export async function getDepositSaving(userId: string) {
 export async function getDsTransaction(type: string, accountId: string) {
   try {
     const response = await axios.get<getTransactionInterface>(`/asset/deposit/${type}/${accountId}`);
-    console.log(response.data.result)
     return response;
   } catch (error) {
     console.log('Error fetching getTransaction:', error)
@@ -91,7 +86,6 @@ export async function getDsTransaction(type: string, accountId: string) {
 export async function getAccount(userId: string) {
   try {
     const response = await axios.get<getTotalAssetInterface>(`/asset/account?userId=${userId}`);
-    console.log(response.data.result)
     return response;
   } catch (error) {
     console.error('Error fetching getAccount:', error);
@@ -103,7 +97,6 @@ export async function getAccount(userId: string) {
 export async function getAcTransaction(accountId: string) {
   try {
     const response = await axios.get<getAcTransactionInterface>(`/asset/account/${accountId}`);
-    console.log(response.data.result)
     return response;
   } catch (error) {
     console.error('Error fetching getAcTransaction:', error);
@@ -115,7 +108,7 @@ export async function getAcTransaction(accountId: string) {
 export async function getDashBoardMain(userId: string) {
   try {
     const response = await axios.get<getTotalAssetInterface>(`/dashboard/main?userId=${userId}`);
-    console.log(response.data.result)
+    console.log(response.data.result, '이거 뭐임')
     return response;
   } catch (error) {
     console.error('Error fetching get Main Dashboard data:', error);
