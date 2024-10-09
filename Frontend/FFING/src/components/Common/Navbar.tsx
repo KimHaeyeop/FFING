@@ -46,18 +46,19 @@ const NavBar: React.FC = () => {
 
   return (
     <footer className="fixed bottom-0 left-0 right-0 bg-white p-4 rounded-t-xl flex justify-around items-center shadow-lg z-10 border">
-      {/* 지갑 아이콘 */}
-      <div className={`flex flex-col items-center ${isActive('/spending') ? 'text-black' : 'text-gray-500'}`}>
-        <Link to="/main">
-          <Icon path={mdiWalletBifoldOutline} size={1.2} />
-        </Link>
-      </div>
 
       {/* 도감 아이콘 (원형 박스 안에 위치) */}
-      <div className="relative -mt-6">
-        <div className="bg-white p-3 rounded-full transform z-50 border shadow-xl">
+      <div className={`flex flex-col items-center ${isActive('/spending') ? 'text-black' : 'text-gray-500'}`}>
           <Link to="/petpedia">
-            <Icon path={mdiNotebookOutline} size={1.5} className={isActive('/petpedia') ? 'text-black' : 'text-gray-500'} />
+            <Icon path={mdiNotebookOutline} size={1.2} className={isActive('/petpedia') ? 'text-black' : 'text-gray-500'} />
+          </Link>
+      </div>
+
+      {/* 지갑 아이콘 */}
+      <div  className="relative -mt-6">
+        <div className="bg-white p-3 rounded-full transform z-50 border shadow-xl">
+          <Link to="/main">
+            <Icon path={mdiWalletBifoldOutline} size={1.5} />
           </Link>
         </div>
       </div>
