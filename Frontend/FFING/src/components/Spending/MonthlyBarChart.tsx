@@ -1,18 +1,34 @@
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
-// import { Chart as ChartJS, ArcElement, Tooltip, Legend, layouts } from 'chart.js';
-
-// ChartJS.register(ArcElement, Tooltip, Legend);
+import { getCurrentYear, getCurrentMonth } from '../../utils/dataUtils';
 
 interface MonthlyBarChartProps {
   chartData: number[] // 숫자로 이루어진 배열
 }
 
 const MonthlyBarChart: React.FC<MonthlyBarChartProps> = ({ chartData }) => {
+
+  // 5개월 전 ~ 현재까지의 'MM월' 형태의 리스트를 만드는 함수
+  const generateLastSixMonthsLabels = (): string[] => {
+    const currentMonth = parseInt(getCurrentMonth(), 10);
+    const labels: string[] = [];
+  
+    for (let i = 5; i >= 0; i--) {
+      const month = currentMonth - i;
+      if (month > 0) {
+        labels.push(`${month}월`);
+      } else {
+        labels.push(`${12 + month}월`);
+      }
+    }
+  
+    return labels;
+  };
+
+
   const config = {
     data: {
-      // API를 통해 이번 달 정보 가져오기
-      labels: ['5월', '6월', '7월', '8월', '9월', '10월'],
+      labels: generateLastSixMonthsLabels(),
       datasets: [
         {
           data: chartData,

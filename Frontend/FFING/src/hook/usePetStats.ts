@@ -1,18 +1,37 @@
 import { useQuery } from "@tanstack/react-query";
+import { getPets } from "../api/PetPediaApi";
 
-export const usePetStats = () => {
+export const usePetStats = (userId: string) => {
   return useQuery({
-    queryKey: ['petStats'],  // 고유한 쿼리 키
-    queryFn: () => {
-      // 실제 API 호출 대신 임시 데이터를 반환
+    queryKey: ['petStats', userId],  // 고유한 쿼리 키
+    queryFn: async () => {
+      const responsePetStats = await getPets(userId);
       return {
-        currentWeek: { 식비: 6, 쇼핑: 8, 교통: 7, 생활: 6, 문화: 6 },
-        previousWeek: { 식비: 8, 쇼핑: 6, 교통: 6, 생활: 8, 문화: 8 },
-      };
+        currentWeek: {
+          stats: {
+            '식비': responsePetStats.data.result.currentPetInfo.foodBakeryStat,
+            '쇼핑': responsePetStats.data.result.currentPetInfo.shoppingStat,
+            '교통': responsePetStats.data.result.currentPetInfo.transportationStat,
+            '생활/문화': responsePetStats.data.result.currentPetInfo.lifeCultureStat,
+            '금융': responsePetStats.data.result.currentPetInfo.financeStat,
+          },
+          'petCode': responsePetStats.data.result.currentPetInfo.petCode,
+          'winCount': responsePetStats.data.result.currentPetInfo.winCount,
+        },
+        previousWeek: {
+          stats: {
+            '식비': responsePetStats.data.result.beforePetInfo.foodBakeryStat,
+            '쇼핑': responsePetStats.data.result.beforePetInfo.shoppingStat,
+            '교통': responsePetStats.data.result.beforePetInfo.transportationStat,
+            '생활/문화': responsePetStats.data.result.beforePetInfo.lifeCultureStat,
+            '금융': responsePetStats.data.result.beforePetInfo.financeStat,
+          }
+        },
+      }
     },
     initialData: {
-      currentWeek: { 식비: 5, 쇼핑: 7, 교통: 5, 생활: 7, 문화: 7 },
-      previousWeek: { 식비: 6, 쇼핑: 5, 교통: 7, 생활: 6, 문화: 6 },
+      currentWeek: { stats: {'식비': 0, '쇼핑': 0, '교통': 0, '생활/문화': 0, '금융': 0,}, 'petCode': '000', 'winCount': 0},
+      previousWeek: { stats: {'식비': 0, '쇼핑': 0, '교통': 0, '생활/문화': 0, '금융': 0, }}, 
     }
   });
 };

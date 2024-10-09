@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';  
 import Icon from '@mdi/react';
 import { mdiBell, mdiChevronLeft } from '@mdi/js';
 
@@ -17,10 +17,10 @@ const LinkHeader: React.FC<LinkHeaderProps> = ({ contentName, contentRoute }) =>
       {/* 컨텐츠 메뉴 이름 */}
         <Link to={contentRoute} className='flex items-center'>
           <Icon path={mdiChevronLeft} size={2} />
-          <p className='text-xl'>{ contentName }</p>
+          <p className='text-xl font-galmuri-11-bold'>{ contentName }</p>
         </Link>
-      <div style={{ position: 'relative' }}> {/* 아이콘 위치 설정 */}
-        {/* 종 아이콘 */}
+      <Link to='/alarm' style={{ position: 'relative' }}> {/* 아이콘 위치 설정 */}
+        {/* 종 아이콘 알람 페이지로 연결 */}
         <Icon path={mdiBell} size={1.5} /> 
         {hasUnreadNotifications && ( // 보지 않은 알림이 있을 경우 점 표시
           <span style={{ 
@@ -33,7 +33,7 @@ const LinkHeader: React.FC<LinkHeaderProps> = ({ contentName, contentRoute }) =>
             borderRadius: '50%'
           }} />
         )}
-      </div>
+      </Link>
     </div>
   );
 };

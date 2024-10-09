@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import LinkHeader from "../components/Common/LinkHeader";
 import useViewportStore from "../store/useViewportStore";
 import NavBar from "../components/Common/Navbar";
 import DepositSavingCard from "../components/Asset/DepositSavingCard";
 import { getDepositSaving, getAccount } from '../api/AssetApi';
+import useAssetType from "../store/userAssetType";
 
 const DepositSavingsPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
   const [ financialProducts, setFinancialProducts ] = useState([]) // 보유 예금적금 자산 관리
-
-  const type = useLocation().state as { title: string }; // useNavigate를 통해 가져온 데이터를 사용
-
+  const { assetType, setAssetType } = useAssetType();
+  
   // 이번 달 지출액을 가져오는 함수
-  const fetchData = async (type: string) => {
+  const fetchData = async (assetType: string) => {
     try {
-      if (type === '예금/적금') {
+      if (assetType === '예금/적금') {
         // userId를 가져올 수 있는 시점에 store 활용해서 가져오기
-        const response = await getDepositSaving('1');
+        const response = await getDepositSaving('1')
+        console.log(response);
         setFinancialProducts(response.data.result)
-      } else if (type === '입출금 통장') {
+      } else if (assetType === '입출금 통장') {
         const response = await getAccount('1');
         setFinancialProducts(response.data.result)
       }
@@ -30,14 +30,14 @@ const DepositSavingsPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchData(type.title);
+    fetchData(assetType);
   }, []);
 
   return (
     <div className="flex justify-center items-center">
       <div className="w-screen h-screen">
         <header style={{ height: `${dvh * 10}px` }}>
-          <LinkHeader contentName="예금, 적금" contentRoute="/asset" />
+          <LinkHeader contentName={assetType} contentRoute="/asset" />
         </header>
         <main
           className="mx-auto"
