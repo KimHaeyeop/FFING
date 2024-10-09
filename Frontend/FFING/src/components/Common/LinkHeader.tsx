@@ -20,7 +20,7 @@ const LinkHeader: React.FC<LinkHeaderProps> = ({ contentName, contentRoute }) =>
           <p className='text-xl font-galmuri-11-bold'>{ contentName }</p>
         </Link>
       <Link to='/alarm' style={{ position: 'relative' }}> {/* 아이콘 위치 설정 */}
-        {/* 종 아이콘 */}
+        {/* 종 아이콘 알람 페이지로 연결 */}
         <Icon path={mdiBell} size={1.5} /> 
         {hasUnreadNotifications && ( // 보지 않은 알림이 있을 경우 점 표시
           <span style={{ 
