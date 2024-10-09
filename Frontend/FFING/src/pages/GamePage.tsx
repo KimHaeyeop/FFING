@@ -13,7 +13,7 @@ const GamePage: React.FC = () => {
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
-  const { userId } = useAuthStore();
+  const { userId, nickname } = useAuthStore();
 
   // 랜덤 매칭 모달 열기
   const handleOpenRandomModal = () => {
@@ -39,7 +39,7 @@ const GamePage: React.FC = () => {
     <div className="flex justify-center items-center">
       <div className="w-screen h-screen">
         <header style={{ height: `${dvh * 10}px` }}>
-          <TextHeader title="이규석 님" />
+          <TextHeader title={nickname} />
         </header>
         <main className="mx-auto" style={{ height: `${dvh * 80}px`, width: `${dvw * 90}px` }}>
           {/* 내 펫이 인사를 하는 컴포넌트 */}
