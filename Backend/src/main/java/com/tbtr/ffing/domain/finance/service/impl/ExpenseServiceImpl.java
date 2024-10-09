@@ -16,7 +16,6 @@ import com.tbtr.ffing.domain.finance.repository.AccountTransactionRepository;
 import com.tbtr.ffing.domain.finance.repository.AssetRepository;
 import com.tbtr.ffing.domain.finance.repository.ExpenseRepository;
 import com.tbtr.ffing.domain.finance.repository.GoalRepository;
-import com.tbtr.ffing.domain.finance.service.AssetService;
 import com.tbtr.ffing.domain.finance.service.ExpenseService;
 import com.tbtr.ffing.domain.user.entity.User;
 import java.math.BigDecimal;
@@ -192,14 +191,14 @@ public class ExpenseServiceImpl implements ExpenseService {
         BigDecimal yearlyTotalExpense = calculateYearlyTotalExpense();
 
         // 총 목표 소비액 계산: 올해 처음 목표 소비액 * 당시 남은 개월 수
-        Goal firstSpendingGoal = goalRepository.findFirstSpendingByUserId(userId, String.valueOf(now.getYear()));
+        Goal firstSpendingGoal = goalRepository.findFirstSpendingByUserIdAndThisYear(userId, String.valueOf(now.getYear()));
         BigDecimal totalTargetExpense = calculateTotalTargetExpense(firstSpendingGoal);
 
         // 5개월간 평균 소비액 계산
         BigDecimal monthAverageExpense = calculateMonthAverageExpense(sixMonthTotalExpense);
 
         // 이번달 목표 소비액
-        BigDecimal monthlyTargetExpense = goalRepository.findRecentSpendingBalanceByUserIdAndYear(userId);
+        BigDecimal monthlyTargetExpense = goalRepository.findRecentSpendingBalanceByUserId(userId);
 
         // 앞으로의 매달 소비액 계산
         Goal yearGoal = goalRepository.findGoalByUserIdAndYear(userId, String.valueOf(now.getYear()));
