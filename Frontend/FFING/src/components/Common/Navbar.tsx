@@ -46,12 +46,11 @@ const NavBar: React.FC = () => {
 
   return (
     <footer className="fixed bottom-0 left-0 right-0 bg-white p-4 rounded-t-xl flex justify-around items-center shadow-lg z-10 border">
-
-      {/* 도감 아이콘 (원형 박스 안에 위치) */}
-      <div className={`flex flex-col items-center ${isActive('/spending') ? 'text-black' : 'text-gray-500'}`}>
-          <Link to="/petpedia">
-            <Icon path={mdiNotebookOutline} size={1.2} className={isActive('/petpedia') ? 'text-black' : 'text-gray-500'} />
-          </Link>
+      {/* 조이스틱 아이콘 */}
+      <div className={`flex flex-col items-center ${isActive('/game') ? 'text-black' : 'text-gray-500'}`}>
+        <Link to="/game">
+          <Icon path={mdiGamepadVariantOutline} size={1.2} />
+        </Link>
       </div>
 
       {/* 지갑 아이콘 */}
@@ -63,11 +62,11 @@ const NavBar: React.FC = () => {
         </div>
       </div>
 
-      {/* 조이스틱 아이콘 */}
-      <div className={`flex flex-col items-center ${isActive('/game') ? 'text-black' : 'text-gray-500'}`}>
-        <Link to="/game">
-          <Icon path={mdiGamepadVariantOutline} size={1.2} />
-        </Link>
+      {/* 도감 아이콘 (원형 박스 안에 위치) */}
+      <div className={`flex flex-col items-center ${isActive('/spending') ? 'text-black' : 'text-gray-500'}`}>
+          <Link to="/petpedia">
+            <Icon path={mdiNotebookOutline} size={1.2} className={isActive('/petpedia') ? 'text-black' : 'text-gray-500'} />
+          </Link>
       </div>
     </footer>
   );
