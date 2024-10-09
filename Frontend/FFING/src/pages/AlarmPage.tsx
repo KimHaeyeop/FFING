@@ -33,13 +33,13 @@ const AlarmPage: React.FC = () => {
   const getBubbleColor = (type: string) => {
     switch (type) {
       case "확인":
-        return "bg-blue-200";
+        return "bg-[#D7F0E3]";
       case "경고":
-        return "bg-yellow-200";
+        return "bg-[#FFE4B5]";
       case "위험":
-        return "bg-red-200";
+        return "bg-[#FFCCCB]";
       default:
-        return "bg-gray-200";
+        return "bg-[#D7E0FF]";
     }
   };
 
@@ -75,31 +75,34 @@ const AlarmPage: React.FC = () => {
               {alarms.map((alarm) => (
                 <div
                   key={alarm.alarmId}
-                  className="my-8 rounded-lg flex items-center"
-                  style={{ backgroundColor: "#D9D9D9" }}
+                  className="mb-5 rounded-lg flex items-center bg-gray-300 bg-opacity-50 h-[6rem]"
                 >
                   {/* 왼쪽 1/5 부분에 이미지 추가 */}
-                  <div className="w-1/5">
+                  <div className="w-1/5 relative">
                     {/* 펫 이미지는 자신의 펫으로 */}
-                    <div className="relative flex flex-col jusitfy-end">
-                      <PetSprite
-                        imageUrl="/pets/computer.png"
-                        isUnlocked={true}
-                      />
+                    <div className="relative flex flex-col justify-end">
                       {/* 말풍선 */}
                       <div
-                        className={`absolute -top-8   left-0 p-1 rounded-xl px-2 ${getBubbleColor(
+                        className={`absolute top-5 left-1/2 transform -translate-x-1/2 py-1 px-2 rounded-xl z-10 ${getBubbleColor(
                           alarm.alarmType
                         )}`}
                       >
-                        <p className="text-xs p-1">{alarm.alarmType}</p>
+                        <p className="text-xs p-1 whitespace-nowrap">
+                          {alarm.alarmType}
+                        </p>
+                      </div>
+                      <div className="scale-50 transform-origin-bottom-left mt-8">
+                        <PetSprite
+                          imageUrl="/pets/computer.png"
+                          isUnlocked={true}
+                        />
                       </div>
                     </div>
                   </div>
-                  <div className="w-4/5">
-                    <p className="text-left flex flex-col justify-center">
-                      {alarm.alarmContent}
-                    </p>
+                  <div className="w-4/5 h-full flex flex-col justify-between py-2">
+                    <div className="flex-grow flex flex-col justify-end mx-1 pb-2">
+                      <p className="text-left">{alarm.alarmContent}</p>
+                    </div>
                     <div
                       className="flex justify-end text-sm"
                       style={{ color: "#F55322" }}
