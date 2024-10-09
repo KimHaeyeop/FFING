@@ -12,9 +12,8 @@ import SpendingCategoryPage from "./pages/SpendingCategoryPage";
 import SpendingMonthlyPage from "./pages/SpendingMonthlyPage";
 import SpendingAnalysisPage from "./pages/SpendingAnalysisPage";
 import SpendingWeeklyPage from "./pages/SpendingWeeklyPage";
+import StockPage from "./pages/StockPage";
 import AlarmPage from "./pages/AlarmPage";
-
-import { requestPermissionAndGetToken } from "./service/firebase";
 
 import AssetMainPage from "./pages/AssetMainPage";
 import DepositSavingsPage from "./pages/DepositSavingsPage";
@@ -23,26 +22,6 @@ import AdminPage from "./pages/AdminPage";
 import LoginPage from "./pages/LoginPage";
 
 const App: React.FC = () => {
-  useEffect(() => {
-    // const initializeFCM = async () => {
-    //   try {
-    //     // 여기서 사용자 ID를 가져오는 로직이 필요합니다.
-    //     // 예를 들어, 로컬 스토리지나 상태 관리 라이브러리에서 가져올 수 있습니다.
-    //     const userId = 1; // 이 함수는 실제로 구현해야 합니다.
-    //     if (userId) {
-    //       await requestPermissionAndGetToken(1);
-    //     } else {
-    //       console.log(
-    //         "사용자가 로그인하지 않았습니다. FCM 토큰을 요청하지 않습니다."
-    //       );
-    //     }
-    //   } catch (error) {
-    //     console.error("FCM 초기화 중 오류 발생:", error);
-    //   }
-    // };
-    // initializeFCM();
-  }, []);
-
   return (
     <Router>
       <Routes>
@@ -70,11 +49,13 @@ const App: React.FC = () => {
         <Route path="/asset" element={<AssetMainPage />} />
         {/* 예금 적금 페이지 */}
         <Route path="/asset/product" element={<DepositSavingsPage />} />
-        {/* 예금 적금 페이지 */}
+        {/* 예금 적금 상세 페이지 */}
         <Route
           path="/asset/product/detail"
           element={<DepositSavingDetailPage />}
         />
+        {/* 주식 페이지 */}
+        <Route path="/asset/stock" element={<StockPage />} />
         {/* 게임 페이지 */}
         <Route path="/game" element={<GamePage />} />
         {/* 매칭 잡는 페이지 */}

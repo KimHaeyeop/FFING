@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Icon from "@mdi/react";
-import { mdiChevronDown } from "@mdi/js";
-import LinkHeader from "../components/Common/LinkHeader";
+import { mdiChevronDown, mdiBell, mdiChevronLeft } from "@mdi/js";
 import useViewportStore from "../store/useViewportStore";
 import NavBar from "../components/Common/Navbar";
 import { getDsTransaction, getAcTransaction } from '../api/AssetApi';
@@ -30,6 +29,7 @@ interface FinancialProductInterface {
 }
 
 const DepositSavingDetailPage: React.FC = () => {
+  const navigate = useNavigate()
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
   const { product } = useLocation().state as { product: FinancialProductInterface }; // useNavigate를 통해 가져온 데이터를 사용
@@ -37,6 +37,9 @@ const DepositSavingDetailPage: React.FC = () => {
   const [filteredTransactions, setFilteredTransactions] = useState<TransactionInterface[]>([]); // 필터된 거래 내역
   const [filter, setFilter] = useState<string | null>(null); // 필터 상태 관리
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // 드롭다운 열림 여부
+  const productAccountName = product.accountName
+  // 기본적으로 보지 않은 알림이 있다고 가정
+  const hasUnreadNotifications = true; // 여기에 실제 알림 확인 로직을 추가해야 함
 
   // 이번 달 지출액을 가져오는 함수
   const fetchData = async () => {
@@ -73,9 +76,29 @@ const DepositSavingDetailPage: React.FC = () => {
   return (
     <div className="flex justify-center items-center">
       <div className="w-screen h-screen">
+        {/* 상단 헤더 */}
         <header style={{height: `${dvh * 10}px`}}>
-          {/* 사용자의 정보와 알람 API 연동 필요*/}
-          <LinkHeader contentName={product.accountName} contentRoute="/asset"/> 
+          <div className='flex justify-between p-3 items-center'>
+            {/* 컨텐츠 메뉴 이름은 삭제 */}
+              <p onClick={() => navigate('/asset/product', { state: { productAccountName }})} className='flex items-center'>
+                <Icon path={mdiChevronLeft} size={2} />
+              </p>
+            <div style={{ position: 'relative' }}> {/* 아이콘 위치 설정 */}
+              {/* 종 아이콘 알람 페이지로 연결 */}
+              <Icon path={mdiBell} size={1.5} /> 
+              {hasUnreadNotifications && ( // 보지 않은 알림이 있을 경우 점 표시
+                <span style={{ 
+                  position: 'absolute',
+                  top: '-1px',
+                  right: '-1px',
+                  width: '10px',
+                  height: '10px',
+                  backgroundColor: '#D8B9C3',
+                  borderRadius: '50%'
+                }} />
+              )}
+            </div>
+          </div>
         </header>
         <main className='mx-auto' style={{height: `${dvh * 80}px`, width: `${dvw * 90}px`}}>
           {/* 특정 상품을 보여주는 칸 */}
