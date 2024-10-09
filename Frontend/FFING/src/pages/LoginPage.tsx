@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { login } from '../api/LoginApi';  // 로그인 API 호출
-import { useAuthStore } from '../store/authStore';
-import axios from '../api/AxiosConfig';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { login } from "../api/LoginApi"; // 로그인 API 호출
+import { useAuthStore } from "../store/authStore";
+import FFING from "../assets/FFING.gif";
+import axios from "../api/AxiosConfig";
 
 const LoginPage: React.FC = () => {
-
   // const login3 = async () => {
   //   const response3 = await axios.get('/user/test', {
   //   });
   //   console.log(response3);
   // }
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -29,7 +29,7 @@ const LoginPage: React.FC = () => {
       // console.log('accessToken:', accessToken);
 
       // 로그인 성공 후 토큰 저장
-      localStorage.setItem('ACCESS_TOKEN', accessToken);
+      localStorage.setItem("ACCESS_TOKEN", accessToken);
       // console.log(localStorage);
 
       // Zustand에 사용자 정보 저장
@@ -38,7 +38,7 @@ const LoginPage: React.FC = () => {
       // console.log("Nickname:", user.nickname);
 
       // login3();
-      navigate('/'); // 페이지 이동 로직
+      navigate("/"); // 페이지 이동 로직
     } catch (error: any) {
       // 에러 메시지 설정
       setError(error.message);
@@ -46,31 +46,36 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-2xl font-semibold text-center mb-6">로그인</h2>
+    <div className="flex flex-col justify-start items-center min-h-screen bg-white pt-32">
+      <div className="w-full max-w-md bg-white">
+        <div className="flex justify-center items-center w-full">
+          <img src={FFING} alt="FFING Logo" className="w-48 h-48" />
+        </div>
         <form onSubmit={handleLogin} className="flex flex-col space-y-4">
           <input
             type="text"
             placeholder="아이디"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FFB300]"
           />
           <input
             type="password"
             placeholder="비밀번호"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FFB300]"
           />
           {error && <p className="text-red-500 text-center">{error}</p>}
           <button
             type="submit"
-            className="py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+            className="py-3 bg-[#CECECE] text-white rounded-md transition duration-300"
           >
             로그인
           </button>
+          <span className="text-center text-[#686E74] cursor-pointer hover:underline">
+            회원가입
+          </span>
         </form>
       </div>
     </div>
