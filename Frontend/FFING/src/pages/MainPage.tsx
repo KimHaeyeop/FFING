@@ -9,13 +9,10 @@ import MonthlyDoughnutChart from "../components/Spending/MonthlyDoughnutChart";
 import PetSprite from "../components/Game/PetSprite";
 import RandomPetSpeech from "../components/Common/RandomPetSpeech";
 import HorizontalBarChart from "../components/Asset/HorizontalBarChart";
-import { getMonthlyExpense } from "../api/SpendingApi";
-import { getDashBoardMain } from "../api/AssetApi";
 import { initializeFirebaseMessaging } from "../service/firebase";
 import { useAuthStore } from "../store/authStore";
 import { useDashBoardInfo } from "../hook/useDashBoardInfo";
 import usePetInfoStore from "../store/usePetInfoStore";
-import { getCurrentYearMonth } from "../utils/dataUtils";
 
 const MainPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
