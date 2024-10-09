@@ -84,7 +84,7 @@ public class GoalServiceImpl implements GoalService {
         deleteExistingGoal(userId, GOAL_TYPE_SPENDING, yearMonth);
 
         // 목표 자산, 소비액 저장
-        Goal goal = GoalReq.goalTo(goalReq);
+        Goal goal = GoalReq.goalTo(goalReq, assetRepository.findCurrentAssetByUserId(userId).getTotalAsset());
         Goal spending = GoalReq.spendingTo(goalReq);
         goalRepository.save(goal);
         goalRepository.save(spending);

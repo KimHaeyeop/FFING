@@ -25,6 +25,9 @@ public class Goal {
     @Column(nullable = false, precision = 16, scale = 2)
     private BigDecimal balance;
 
+    @Column(precision = 16, scale = 2)
+    private BigDecimal startBalance;
+
     @Column(nullable = false)
     private LocalDate createdAt;
 
