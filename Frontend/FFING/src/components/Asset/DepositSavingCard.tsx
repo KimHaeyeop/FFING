@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import useFinanceFirmCodeStore from '../../store/useFinanceFirmCodeStore';
 
 interface FinancialProductInterface {
   accountId: number;
@@ -15,13 +16,10 @@ interface DepositSavingCardProps {
 }
 
 const DepositSavingCard: React.FC<DepositSavingCardProps> = ({ product }) => {
+  const {financeFirmMetaData, setFinancialProducts} = useFinanceFirmCodeStore() // 금융 회사 코드의 배경과 이미지를 가지고 있는 저장소
   const navigate = useNavigate();
-  
-  const bankCodeBgColor: { [key: string]: string } = {
-    '001': 'linear-gradient(100deg, #6C64AA 0%, #B6ADF4 100%)',
-    '002': 'linear-gradient(100deg, #DD29C3 0%, #FBB18E 100%)',
-    '003': 'linear-gradient(100deg, #50AB55 0%, #90E13D 100%)',
-  }
+
+  // 상품 상세 정보로 전달하는 함수
   const handleProductClick = (product: FinancialProductInterface) => {
     navigate('/asset/product/detail', { state: { product }})
   }
@@ -30,7 +28,7 @@ const DepositSavingCard: React.FC<DepositSavingCardProps> = ({ product }) => {
     <div
       key={product.accountNo}
       className="flex justify-around items-end rounded-md m-4"
-      style={{background: bankCodeBgColor[product.bankCode]}}
+      style={{background: financeFirmMetaData[product.bankCode].background}}
       onClick={() => handleProductClick(product)}
     >
       <div className="text-white text-left text-xs m-2">
@@ -39,7 +37,7 @@ const DepositSavingCard: React.FC<DepositSavingCardProps> = ({ product }) => {
         <p style={{color: '#FFEF60'}}>{product.accountNo}</p>
       </div>
         {/* 원래는 이미지가 들어가야 함 */}
-        <p className="m-2">{product.bankCode}</p>
+        <img src={financeFirmMetaData[product.bankCode].logoUrl} alt="" className='m-2 w-1/4 h-1/4'/>
     </div>
     )
 };
