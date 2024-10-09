@@ -24,7 +24,7 @@ interface ModalProps {
 const MatchingPageModal: React.FC<ModalProps> = ({ isOpen, onClose, opponentUserId }) => {
   const navigate = useNavigate();
 
-  const { userId, nickname } = useAuthStore();
+  const { nickname, userId } = useAuthStore();
   const [opponentInfo, setOpponentInfo] = useState<PlayerInfo | null>(null);
   const [myInfo, setMyInfo] = useState<PlayerInfo>({
     nickname: nickname || 'myNickName',
