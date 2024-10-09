@@ -17,7 +17,6 @@ interface HorizontalBarChartProps {
 }
 
 const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ( {assetDiff} ) => {
-  console.log(assetDiff, 'ㅁㄴㄴㄷㅅ')
   const [property, setProperty] = React.useState(0);
   const [target, setTarget] = React.useState(0);
   const progressPercentage = (property / target) * 100;
