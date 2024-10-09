@@ -28,7 +28,7 @@ const PetRecord: React.FC<PetRecordProps> = ({ week, petName, wins, losses, petI
           <span className="bg-[#D23B8C] text-white py-1 px-3 rounded-full">{losses}패</span>
         </div>
       </div>
-      <div className="bg-[#919AA2] rounded-lg w-20 h-20 flex items-center justify-center" style={{width: '50%', height: '100%'}}>
+      <div className="bg-stone-300 rounded-lg w-20 h-20 flex items-center justify-center" style={{width: '50%', height: '100%'}}>
         {/* 펫 이미지 */}
         <PetSprite 
           imageUrl={petImageUrl}

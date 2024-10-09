@@ -77,7 +77,7 @@ const SpendingCategoryPage: React.FC = () => {
       <div className="w-screen h-screen">
         {/* 메인 화면으로 되돌아가는 링크와 알람 header */}
         <header style={{ height: `${dvh * 10}px` }}>
-          <LinkHeader contentName="항목별 지출" contentRoute="/" />
+          <LinkHeader contentName="항목별 지출" contentRoute="/main" />
         </header>
         <main
           className="mx-auto"

@@ -63,7 +63,7 @@ const AlarmPage: React.FC = () => {
       <div className="w-screen h-screen">
         <header style={{ height: `${dvh * 10}px` }}>
           {/* 바로 이전에 있던 페이지로 보내야 할 것 같은데 */}
-          <LinkHeader contentName="알림" contentRoute="/" />
+          <LinkHeader contentName="알림" contentRoute="/main" />
         </header>
         <main className="mx-auto"style={{ height: `${dvh * 80}px`, width: `${dvw * 90}px` }}>
          {alarms ?  (
