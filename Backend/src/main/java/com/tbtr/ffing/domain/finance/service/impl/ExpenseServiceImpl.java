@@ -13,6 +13,7 @@ import com.tbtr.ffing.domain.finance.entity.Expense;
 import com.tbtr.ffing.domain.finance.entity.ExpenseCategory;
 import com.tbtr.ffing.domain.finance.entity.Goal;
 import com.tbtr.ffing.domain.finance.repository.AccountTransactionRepository;
+import com.tbtr.ffing.domain.finance.repository.AssetRepository;
 import com.tbtr.ffing.domain.finance.repository.ExpenseRepository;
 import com.tbtr.ffing.domain.finance.repository.GoalRepository;
 import com.tbtr.ffing.domain.finance.service.AssetService;
@@ -39,7 +40,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final AccountTransactionRepository accountTransactionRepository;
     private final GoalRepository goalRepository;
-    private final AssetService assetService;
+    private final AssetRepository assetRepository;
 
     /**
      * 카드 지출 -> 전체 지출에 반영
@@ -272,7 +273,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
         BigDecimal fixedIncome = accountTransactionRepository.getTotalFixedIncomeForYearMonthBySsafyUserId(lastMonth,
                 ssafyUserId);
-        BigDecimal currentAsset = assetService.getCurrentAsset(userId).getTotalAsset();
+        BigDecimal currentAsset = assetRepository.findCurrentAssetByUserId(userId).getTotalAsset();
 
         int remainingMonths = remainingMonths(currentDate.getMonthValue());
         return fixedIncome.subtract(
