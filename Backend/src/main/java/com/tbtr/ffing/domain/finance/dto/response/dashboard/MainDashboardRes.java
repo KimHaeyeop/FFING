@@ -17,5 +17,6 @@ public class MainDashboardRes {
     BigDecimal totalAsset; // 총 자산액
     String petCode; // 펫 코드
     BigDecimal monthTotalSpending; // 이번 달 총 소비
+    BigDecimal monthGoalSpending; // 아번 달 목표 소비액
     List<CategoryExpenseRes> monthCategoryExpenses; // 이번 달 카테고리 별 소비
 }

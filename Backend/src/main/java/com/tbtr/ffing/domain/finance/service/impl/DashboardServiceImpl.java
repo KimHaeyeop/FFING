@@ -44,6 +44,10 @@ public class DashboardServiceImpl implements DashboardService {
         String petCode = petService.getHomePetInfo(userId).get("currentPetInfo").getPetCode();
         // 이번 달 총 소비
         BigDecimal monthTotalSpending = expenseRepository.getTotalExpenseForMonth(yearMonth);
+
+        // 이번 달 목표 소바액
+        BigDecimal monthGoalSpending = goalRepository.findRecentSpendingBalanceByUserId(userId);
+
         // 이번 달 카테고리 별 소비
         List<CategoryExpenseRes> monthCategoryExpenses = expenseService.getThisMonthCategoryExpenses();
 
@@ -52,6 +56,7 @@ public class DashboardServiceImpl implements DashboardService {
                 .totalAsset(totalAsset)
                 .petCode(petCode)
                 .monthTotalSpending(monthTotalSpending)
+                .monthGoalSpending(monthGoalSpending)
                 .monthCategoryExpenses(monthCategoryExpenses).build();
     }
 }
