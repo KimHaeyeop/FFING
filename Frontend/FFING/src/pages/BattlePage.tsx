@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-// import GameBar from '../components/Game/GameBar';
-// import NavBar from '../components/Common/Navbar';
+import { useParams } from 'react-router-dom';
 import PhaserGame from '../components/Game/PhaserGame';
 import AttackSelection from '../components/Game/AttackSelection';
 import AttackResult from '../components/Game/AttackResult';
@@ -13,6 +12,7 @@ interface AttackOption {
 }
 
 const BattlePage: React.FC = () => {
+  const { matchId } = useParams<{ matchId: string }>();
   const [selectedAttack, setSelectedAttack] = useState<{ name: string; damage: number } | null>(null);  // 내가 선택한 공격
   const [opponentAttack, setOpponentAttack] = useState<{ name: string; damage: number } | null>(null);  // 상대가 선택한 공격
   const [winner, setWinner] = useState<string | null>(null);  // 승리자
