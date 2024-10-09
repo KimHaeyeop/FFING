@@ -108,7 +108,6 @@ export async function getAcTransaction(accountId: string) {
 export async function getDashBoardMain(userId: string) {
   try {
     const response = await axios.get<getTotalAssetInterface>(`/dashboard/main?userId=${userId}`);
-    console.log(response.data.result, '이거 뭐임')
     return response;
   } catch (error) {
     console.error('Error fetching get Main Dashboard data:', error);
