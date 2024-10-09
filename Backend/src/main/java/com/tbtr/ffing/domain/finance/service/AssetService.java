@@ -22,5 +22,5 @@ public interface AssetService {
 
     List<AccountTransactionAssetRes> getAccountTransactionList(long accountId);
 
-    Asset addAccountTransferToAsset(AccountTransaction newAccountTransaction, User user);
+    void addAccountTransferToAsset(AccountTransaction newAccountTransaction, User user);
 }

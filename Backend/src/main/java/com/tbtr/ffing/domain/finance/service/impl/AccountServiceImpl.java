@@ -100,7 +100,7 @@ public class AccountServiceImpl implements AccountService {
             addAlarmForAccountTransfer(newAccountTransaction, user);
 
             // asset 업데이트 추가 필요
-            Asset newAsset = assetService.addAccountTransferToAsset(newAccountTransaction, user);
+            assetService.addAccountTransferToAsset(newAccountTransaction, user);
         }
     }
 
