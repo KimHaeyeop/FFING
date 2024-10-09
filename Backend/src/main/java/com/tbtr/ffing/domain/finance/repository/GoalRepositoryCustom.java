@@ -1,6 +1,7 @@
 package com.tbtr.ffing.domain.finance.repository;
 
 import com.tbtr.ffing.domain.finance.entity.Goal;
+import java.math.BigDecimal;
 
 public interface GoalRepositoryCustom {
 
@@ -10,4 +11,7 @@ public interface GoalRepositoryCustom {
 
     // 해당 연도의 첫 번째 목표 소비액
     Goal findFirstSpendingByUserId(Long userId, String year);
+
+    // 올해 목표 자산액
+    BigDecimal findGoalBalanceByUserIdAndThisYear(Long userId);
 }
