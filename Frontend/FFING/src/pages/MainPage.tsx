@@ -10,13 +10,15 @@ import PetSprite from "../components/Game/PetSprite";
 import RandomPetSpeech from "../components/Common/RandomPetSpeech";
 import HorizontalBarChart from "../components/Asset/HorizontalBarChart";
 import { getMonthlyExpense } from "../api/SpendingApi";
-import { getTotalAsset } from "../api/AssetApi";
+import { getDashBoardMain } from "../api/AssetApi";
 import { initializeFirebaseMessaging } from "../service/firebase";
+import { useAuthStore } from "../store/authStore";
 
 const MainPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
   const [thisMonthExpense, setThisMonthExpese] = useState(0); // 이번 달 지출액 관리
+  const { username } = useAuthStore();
 
   // 이번 달 지출액을 가져오는 함수
   const fetchData = async (userId: string) => {
@@ -27,8 +29,8 @@ const MainPage: React.FC = () => {
         .replace(/-/g, "")
         .slice(0, 6);
       const response = await getMonthlyExpense(yyyyMm);
-      // const response1 = await getTotalAsset('1');
-      // console.log(response1);
+      const response1 = await getDashBoardMain(userId);
+      console.log(response1);
       setThisMonthExpese(response.data.result.totalExpense);
     } catch (error) {
       console.error("Error fetching certain spending data:", error);
@@ -63,7 +65,7 @@ const MainPage: React.FC = () => {
       <div className="w-screen h-screen">
         <header style={{ height: `${dvh * 10}px` }}>
           {/* 사용자의 정보와 알람 API 연동 필요*/}
-          <TextHeader title="이규석 님" />
+          <TextHeader title={`${username} 님`} />
         </header>
         <main
           className="mx-auto"
@@ -121,7 +123,7 @@ const MainPage: React.FC = () => {
             className="border-black border-4 rounded-lg py-2 px-2"
             style={{ height: "38%" }}
           >
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center pb-2">
               <p className="text-lg">이번달 지출내역</p>
               <Link to="/spending" className="flex items-center">
                 {/* 사용 금액 API 가져오기 */}

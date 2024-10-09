@@ -6,6 +6,14 @@ import { useAuthStore } from '../store/authStore';
 
 const LandingPage: React.FC = () => {
 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setTimeout(() => {
+      navigate('/login');
+    }, 3000);
+  }, []);
+
   return (
     <div className="flex justify-center items-center">
       <div className="w-screen h-screen">
