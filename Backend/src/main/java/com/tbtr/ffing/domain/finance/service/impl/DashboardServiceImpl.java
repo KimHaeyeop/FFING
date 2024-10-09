@@ -3,6 +3,7 @@ package com.tbtr.ffing.domain.finance.service.impl;
 import com.tbtr.ffing.domain.finance.dto.response.asset.AssetRes;
 import com.tbtr.ffing.domain.finance.dto.response.dashboard.MainDashboardRes;
 import com.tbtr.ffing.domain.finance.dto.response.expense.CategoryExpenseRes;
+import com.tbtr.ffing.domain.finance.repository.AssetRepository;
 import com.tbtr.ffing.domain.finance.repository.ExpenseRepository;
 import com.tbtr.ffing.domain.finance.repository.GoalRepository;
 import com.tbtr.ffing.domain.finance.service.AssetService;
@@ -22,7 +23,7 @@ import org.springframework.stereotype.Service;
 public class DashboardServiceImpl implements DashboardService {
 
     private final GoalRepository goalRepository;
-    private final AssetService assetService;
+    private final AssetRepository assetRepository;
     private final PetService petService;
     private final ExpenseRepository expenseRepository;
     private final ExpenseService expenseService;
@@ -36,7 +37,7 @@ public class DashboardServiceImpl implements DashboardService {
         // 목표 자산액
         BigDecimal goalBalance = goalRepository.findGoalBalanceByUserIdAndThisYear(userId);
         // 총 자산액
-        AssetRes assetRes = assetService.getCurrentAsset(userId);
+        AssetRes assetRes = assetRepository.findCurrentAssetByUserId(userId);
         BigDecimal totalAsset = assetRes == null ? BigDecimal.ZERO : assetRes.getTotalAsset();
         // 펫 코드
 
