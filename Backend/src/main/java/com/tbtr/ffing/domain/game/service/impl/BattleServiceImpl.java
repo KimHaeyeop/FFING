@@ -2,12 +2,15 @@ package com.tbtr.ffing.domain.game.service.impl;
 
 import com.tbtr.ffing.domain.game.dto.internal.BattleInfo;
 import com.tbtr.ffing.domain.game.dto.internal.BattlePetInfo;
+import com.tbtr.ffing.domain.game.dto.internal.DamageInfo;
 import com.tbtr.ffing.domain.game.dto.request.BattleRoundInfoReq;
 import com.tbtr.ffing.domain.game.dto.response.BattleInfoRes;
 import com.tbtr.ffing.domain.game.dto.internal.MatchInfo;
 import com.tbtr.ffing.domain.game.dto.response.BattlePetInfoDetailsRes;
 import com.tbtr.ffing.domain.game.dto.response.BattleRoundInfoRes;
+import com.tbtr.ffing.domain.game.entity.BattleHistory;
 import com.tbtr.ffing.domain.game.entity.PetInfo;
+import com.tbtr.ffing.domain.game.repository.BattleHistoryRepository;
 import com.tbtr.ffing.domain.game.service.BattleService;
 import com.tbtr.ffing.domain.game.service.PetService;
 import com.tbtr.ffing.domain.user.repository.UserRepository;
@@ -15,23 +18,29 @@ import com.tbtr.ffing.global.error.code.ErrorCode;
 import com.tbtr.ffing.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
 public class BattleServiceImpl implements BattleService {
 
-    private final PetService petService;
-    private final UserRepository userRepository;
+    private final SimpMessageSendingOperations messagingTemplate;
     private final RedisTemplate<String, BattleInfo> battleRedisTemplate;
     private final RedisTemplate<String, Integer> countRedisTemplate;
+    private final RedisTemplate<String, BattleRoundInfoReq> userSignalRedisTemplate;
+    private final PetService petService;
+    private final UserRepository userRepository;
 
     private static final String BATTLE_KEY = "battle_key-";
     private static final String USER1_KEY = "user1Signal";
     private static final String USER2_KEY = "user2Signal";
     private static final int REQUIRED_SIGNALS = 2;
+    private final BattleHistoryRepository battleHistoryRepository;
 
     @Override
     public BattleInfoRes setBattleMatchInfo(String matchId, MatchInfo matchInfo) {
@@ -61,7 +70,7 @@ public class BattleServiceImpl implements BattleService {
         // redis 에 배틀 세팅하기
         BattlePetInfo battlePetInfo1 = BattlePetInfo.from(pet1);
         BattlePetInfo battlePetInfo2 = BattlePetInfo.from(pet2);
-        BattleInfo battleInfo = BattleInfo.from(matchId, battlePetInfo1, battlePetInfo2);
+        BattleInfo battleInfo = BattleInfo.from(matchId, battlePetInfo1, battlePetInfo2, LocalDateTime.now());
         battleRedisTemplate.opsForValue().set(redisKey, battleInfo);
         countRedisTemplate.opsForValue().set(redisKey, 0);
 
@@ -77,116 +86,167 @@ public class BattleServiceImpl implements BattleService {
 
     @Override
     public BattleRoundInfoRes handleBattleSignal(BattleRoundInfoReq battleRoundInfo) {
-//        String redisKey = BATTLE_KEY + battleRoundInfo.getMatchId();
-//
-//        Long currentCount = countRedisTemplate.opsForValue().increment(redisKey, 1);
-//        System.out.println("Signal received from user: " + battleRoundInfo.getUserId() + ". Current count: " + currentCount);
-//
-//        if (currentCount != null) {
-//            if (currentCount == 1) {
-//                redisTemplate.opsForValue().set(USER1_KEY, "User: " + userId + ", Data: " + signalData);
-//            } else if (currentCount == 2) {
-//                redisTemplate.opsForValue().set(USER2_KEY, "User: " + userId + ", Data: " + signalData);
-//            }
-//
-//            // Check if both signals have arrived
-//            if (currentCount == REQUIRED_SIGNALS) {
-//                // Retrieve the stored signal information
-//                String user1Signal = (String) redisTemplate.opsForValue().get(USER1_KEY);
-//                String user2Signal = (String) redisTemplate.opsForValue().get(USER2_KEY);
-//
-//                // Perform the next action with both signals
-//                performNextAction(user1Signal, user2Signal);
-//
-//                // Reset the counter and clear the stored data for the next signals
-//                redisTemplate.opsForValue().set(SIGNAL_COUNTER_KEY, 0);
-//                redisTemplate.delete(USER1_KEY);
-//                redisTemplate.delete(USER2_KEY);
-//            }
-//        }
+        String redisKey = BATTLE_KEY + battleRoundInfo.getMatchId();
+
+        Long currentCount = countRedisTemplate.opsForValue().increment(redisKey, 1);
+        System.out.println("Signal received from user: " + battleRoundInfo.getPetInfoId() + ". Current count: " + currentCount);
+
+        if (currentCount != null) {
+            if (currentCount == 1) {
+                userSignalRedisTemplate.opsForValue().set(USER1_KEY, battleRoundInfo);
+            } else if (currentCount == 2) {
+                userSignalRedisTemplate.opsForValue().set(USER2_KEY, battleRoundInfo);
+            }
+
+            // Check if both signals have arrived
+            if (currentCount == REQUIRED_SIGNALS) {
+                // Retrieve the stored signal information
+                BattleRoundInfoReq user1Signal = userSignalRedisTemplate.opsForValue().get(USER1_KEY);
+                BattleRoundInfoReq user2Signal = userSignalRedisTemplate.opsForValue().get(USER2_KEY);
+
+                // Perform the next action with both signals
+                performBattle(battleRoundInfo.getMatchId(), user1Signal, user2Signal);
+
+                // Reset the counter and clear the stored data for the next signals
+                countRedisTemplate.delete(redisKey);
+                userSignalRedisTemplate.delete(USER1_KEY);
+                userSignalRedisTemplate.delete(USER2_KEY);
+            }
+        }
         return null;
     }
 
-    public BattleRoundInfoRes performBattle(BattleRoundInfoReq battleRoundInfo) {
-//        String redisKey = BATTLE_KEY + battleRoundInfo.getMatchId();
-//
-//        BattleInfo battleInfo = battleRedisTemplate.opsForValue().get(redisKey);
-//
-//        if (battleInfo != null) {
-//            BattlePetInfo battlePetInfo1 = battleInfo.getBattlePet1();
-//            BattlePetInfo battlePetInfo2 = battleInfo.getBattlePet2();
-////            PetStatus fromUserPet = battleInfo.getFromUserPetInfo();
-////            PetStatus toUserPet = battleInfo.getToUserPetInfo();
-//
-//            // [싸움 로직]
-//            int pet1AtkNum = battleRoundInfo.getFromUserAttackNum();
-//            int pet2AtkNum = battleRoundInfo.getToUserAttackNum();
-//
-//            // 데미지 계산
-//            double pet1Hp = battlePetInfo1.getHp();
-//            double pet2Hp = battlePetInfo2.getHp();
-//
-//            int getPet1Stat = battlePetInfo1.getStats().get(pet2AtkNum);
-//            int getPet2AtkStat = battlePetInfo2.getStats().get(pet2AtkNum);
-//            int getPet2Stat = battlePetInfo2.getStats().get(pet1AtkNum);
-//            int getPet1AtkStat = battlePetInfo1.getStats().get(pet1AtkNum);
-//
-//            pet1Hp -= doDamage(getPet1Stat, getPet1AtkStat);
-//            pet2Hp -= doDamage(getPet2Stat, getPet2AtkStat);
-//            if (pet1Hp <= 0) {
-//                pet1Hp = 0;
-//            }
-//            if (pet2Hp <= 0) {
-//                pet2Hp = 0;
-//            }
-//
-//            // hp 업데이트
-//            battlePetInfo1.setHp(pet1Hp);
-//            battlePetInfo2.setHp(pet2Hp);
-//
-//            battleInfo.setBattlePet1(battlePetInfo1);
-//            battleInfo.setBattlePet2(battlePetInfo2);
-//
-//            // 만약 체력이 0 이면 redis에서 삭제
-//            if (pet1Hp <= 0 || pet2Hp <= 0) {
-//                battleRedisTemplate.delete(redisKey);
-//            } else {
-//                battleRedisTemplate.opsForValue().set(redisKey, battleInfo);
-//            }
-//
-//            // 턴 결과 반환
-//            battleInfo.get
-//            Long firstToMoverUserId =
-//
-//            BattleRoundInfoRes battleRoundResult = BattleRoundInfoRes.builder()
-//                    .matchId(battleRoundInfo.getMatchId())
-//                    .firstToMoveUserId(firstToMoverUserId)
-//                    .fromUserAttackNum(pet1AtkNum)
-//                    .toUserAttackNum(pet2AtkNum)
-//                    .fromUserPet(battlePetInfo1)
-//                    .toUserPet(battlePetInfo2)
-//                    .build();
-//
-//            return null;
-//        } else {
-//            throw new CustomException(ErrorCode.BATTLE_NOT_EXISTS);
-//        }
-        return null;
+    public void performBattle(String matchId, BattleRoundInfoReq battleRoundInfo1, BattleRoundInfoReq battleRoundInfo2) {
+        String redisKey = BATTLE_KEY + matchId;
+
+        BattleInfo battleInfo = battleRedisTemplate.opsForValue().get(redisKey);
+
+        if (battleInfo != null) {
+            BattlePetInfo battlePetInfo1 = null;
+            BattlePetInfo battlePetInfo2 = null;
+
+            if (battleInfo.getBattlePet1().getPetInfoId() == battleRoundInfo1.getPetInfoId()) {
+                battlePetInfo1 = battleInfo.getBattlePet1();
+                battlePetInfo2 = battleInfo.getBattlePet2();
+            } else {
+                battlePetInfo1 = battleInfo.getBattlePet2();
+                battlePetInfo2 = battleInfo.getBattlePet1();
+            }
+
+            int pet1AtkNum = battleRoundInfo1.getPetAttackNum();
+            int pet2AtkNum = battleRoundInfo2.getPetAttackNum();
+
+            // [싸움 로직]
+            double pet1Hp = battlePetInfo1.getHp();
+            double pet2Hp = battlePetInfo2.getHp();
+
+            int getPet1Stat = battlePetInfo1.getStats().get(pet2AtkNum);
+            int getPet2AtkStat = battlePetInfo2.getStats().get(pet2AtkNum);
+            int getPet2Stat = battlePetInfo2.getStats().get(pet1AtkNum);
+            int getPet1AtkStat = battlePetInfo1.getStats().get(pet1AtkNum);
+
+            DamageInfo pet2DamageInfo = doDamage(getPet1Stat, getPet1AtkStat);
+            DamageInfo pet1DamageInfo = doDamage(getPet2Stat, getPet2AtkStat);
+
+            // 데미지 넣기
+            pet1Hp -= pet2DamageInfo.getDamage();
+            pet2Hp -= pet1DamageInfo.getDamage();
+            if (pet1Hp <= 0) {
+                pet1Hp = 0;
+            }
+            if (pet2Hp <= 0) {
+                pet2Hp = 0;
+            }
+
+            // hp 업데이트
+            battlePetInfo1.setHp(pet1Hp);
+            battlePetInfo2.setHp(pet2Hp);
+
+            battleInfo.setBattlePet1(battlePetInfo1);
+            battleInfo.setBattlePet2(battlePetInfo2);
+
+            // 먼저 공격할 pet 정하기
+            Random random = new Random();
+            Long firstToMovePetId = random.nextBoolean() ? battlePetInfo1.getPetInfoId() : battlePetInfo2.getPetInfoId();
+
+            // 만약 체력이 0 이면 redis에서 삭제
+            if (pet1Hp <= 0 || pet2Hp <= 0) {
+                battleRedisTemplate.delete(redisKey);
+
+                // + 배틀 히스토리 기록
+                Long winnerPetId = findWinner(battlePetInfo1.getPetInfoId(), battlePetInfo2.getPetInfoId(), pet1Hp, pet2Hp, firstToMovePetId);
+
+                BattleHistory battleHistory = BattleHistory.builder()
+                        .createdAt(battleInfo.getCreatedAt())
+                        .pet1Id(battlePetInfo1.getPetInfoId())
+                        .pet2Id(battlePetInfo2.getPetInfoId())
+                        .winnerPetId(winnerPetId)
+                        .build();
+                battleHistoryRepository.save(battleHistory);
+
+            } else {
+                battleRedisTemplate.opsForValue().set(redisKey, battleInfo);
+            }
+
+            // 턴 결과 반환
+            BattleRoundInfoRes battleRoundResult = BattleRoundInfoRes.builder()
+                    .matchId(matchId)
+                    .firstToMovePetId(firstToMovePetId)
+                    .pet1AttackNum(pet1AtkNum)
+                    .pet1DamageStatus(pet1DamageInfo.getDamageStatus())
+                    .pet2AttackNum(pet2AtkNum)
+                    .pet2DamageStatus(pet2DamageInfo.getDamageStatus())
+                    .pet1Info(battlePetInfo1)
+                    .pet2Info(battlePetInfo2)
+                    .build();
+
+            // 두 사용자에게 결과 보내기
+            messagingTemplate.convertAndSend("/sub/battle/playing/" + matchId, battleRoundResult);
+        } else {
+            throw new CustomException(ErrorCode.BATTLE_NOT_EXISTS);
+        }
+
     }
 
     /*
     [데미지 계산 로직]
-    내 스탯보다 낮거나 같은 스탯 => 데미지 절반
-    내 스탯보다 높은 스탯 => 데미지 그대로
+    내 스탯보다 낮은 스탯 => 데미지 절반 (효과 : 별로)
+    내 스탯과 같은 스탯 => 데미지 그대로 (효과 : 보통)
+    내 스탯보다 높은 스탯 => 데미지 1.2배 (효과 : 좋음
+    반환 : 소수점 1자리까지만
      */
-    public double doDamage (int myStat, int atkStat) {
+    public DamageInfo doDamage (int myStat, int atkStat) {
         double damage = 0;
+        String damageStatus = "";
         if (myStat > atkStat) {
             damage = (double)atkStat / 2;
+            damageStatus = "Bad";
+        } else if (myStat == atkStat) {
+            damage = atkStat;
+            damageStatus = "Normal";
         } else {
-            damage = atkStat ;
+            damage = atkStat * 1.2;
+            damageStatus = "Good";
         }
 
-        return damage;
+        return DamageInfo.builder()
+                .damage(Math.round(damage * 10.0) / 10.0)
+                .damageStatus(damageStatus)
+                .build();
+
+    }
+
+    public Long findWinner (Long pet1Id, Long pet2Id, double pet1Hp, double pet2Hp, Long moveFirstPetId) {
+        Long winnerPetId = null;
+
+        if (pet1Hp <= 0 && pet2Hp <= 0) {
+            winnerPetId = moveFirstPetId;
+        } else if (pet1Hp > 0 && pet2Hp == 0) {
+            winnerPetId = pet1Id;
+        } else if (pet1Hp == 0 && pet2Hp > 0) {
+            winnerPetId = pet2Id;
+        }
+
+        return winnerPetId;
     }
 }
