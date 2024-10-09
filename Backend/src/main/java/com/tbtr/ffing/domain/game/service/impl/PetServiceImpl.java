@@ -8,8 +8,10 @@ import com.tbtr.ffing.domain.finance.repository.GoalRepository;
 import com.tbtr.ffing.domain.game.dto.response.PetCollectionRes;
 import com.tbtr.ffing.domain.game.dto.response.PetHistoryRes;
 import com.tbtr.ffing.domain.game.dto.response.PetInfoRes;
-import com.tbtr.ffing.domain.game.entity.PetCollection;
+import com.tbtr.ffing.domain.game.entity.BattleHistory;
+import com.tbtr.ffing.domain.game.repository.BattleHistoryRepository;
 import com.tbtr.ffing.domain.game.entity.PetInfo;
+import com.tbtr.ffing.domain.game.entity.PetCollection;
 import com.tbtr.ffing.domain.game.entity.PetList;
 import com.tbtr.ffing.domain.game.entity.PetType;
 import com.tbtr.ffing.domain.game.repository.PetCollectionRepository;
@@ -17,10 +19,13 @@ import com.tbtr.ffing.domain.game.repository.PetRepository;
 import com.tbtr.ffing.domain.game.service.PetService;
 import com.tbtr.ffing.domain.user.entity.User;
 import com.tbtr.ffing.domain.user.repository.UserRepository;
+import com.tbtr.ffing.global.error.code.ErrorCode;
+import com.tbtr.ffing.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.DayOfWeek;
@@ -37,11 +42,40 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PetServiceImpl implements PetService {
 
+    private final UserRepository userRepository;
     private final PetRepository petRepository;
+    private final BattleHistoryRepository battleHistoryRepository;
     private final ExpenseRepository expenseRepository;
     private final GoalRepository goalRepository;
-    private final UserRepository userRepository;
     private final PetCollectionRepository petCollectionRepository;
+
+    @Override
+    public PetInfo getLatestPetInfo(Long userId) {
+        User user = userRepository.findByUserId(userId);
+
+        return petRepository.findFirstByUserOrderByPetInfoIdDesc(user)
+                .orElseThrow(()-> new CustomException(ErrorCode.PET_NOT_FOUND));
+
+    }
+
+    // 이기면 1, 지면 0
+    @Override
+    public ArrayList<Integer> getRecentBattleScore(Long petId) {
+        List<BattleHistory> battleHistories = battleHistoryRepository.getRecent5BattleHistoriesByPetId(petId);
+        ArrayList<Integer> battleScores = new ArrayList<>();
+
+        for (BattleHistory battleHistory : battleHistories) {
+            if (battleHistory.getWinnerPetId().equals(petId)){
+                battleScores.add(1);
+            }
+            else {
+                battleScores.add(0);
+            }
+        }
+
+        return battleScores;
+
+    }
 
     @Override
     @Transactional
