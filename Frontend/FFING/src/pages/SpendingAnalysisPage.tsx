@@ -1,19 +1,24 @@
-import React from "react";
-// import { useState } from "react";
-// import { Link } from 'react-router-dom';
+import React, { useEffect } from "react";
 import Icon from '@mdi/react';
 import { mdiTriangle, mdiTriangleDown } from '@mdi/js';
 import LinkHeader from '../components/Common/LinkHeader'
 import NavBar from "../components/Common/Navbar";
 import useViewportStore from "../store/useViewportStore";
 import MonthlyBarChart from "../components/Spending/MonthlyBarChart";
+import { useSpendingAnalysis } from "../hook/useSpendingAnalysis";
+import { formatCurrency } from "../utils/formatCurrency";
+import { getCurrentMonth } from '../utils/dataUtils'
+
 
 const SpendingCategoryPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
 
+  // 6개월 분석 정보
+  const { data: spendingAnalysisData } = useSpendingAnalysis('1', '1'); // (userId, ssafyUserId)
+
   // API 연동 필요
-  const MonthlyExpenses = [100000, 200000, 300000, 400000, 500000, 600000]
+  const MonthlyExpenses = spendingAnalysisData.sixMonthTotalExpense
   const lastMonthExpense = MonthlyExpenses[MonthlyExpenses.length - 1]; 
   const previousMonthExpense = MonthlyExpenses[MonthlyExpenses.length - 2];
 
@@ -28,19 +33,21 @@ const SpendingCategoryPage: React.FC = () => {
           {/* 전달 대비 지출액 */}
           <div style={{height: '50%'}}>
             <div className="text-left text-2xl m-2">
-              <span >9월보다</span>
+              <span >{getCurrentMonth()}월보다</span>
               <br />
+              {/* 전달 지출보다 이번달 지출이 큰 경우 */}
               {lastMonthExpense > previousMonthExpense ? (
                 <div className="flex items-center">
                   <Icon path={mdiTriangle} size={1} style={{color: '#465A65'}}></Icon>
-                  <span className="font-galmuri-11-bold text-2xl" style={{color: '#465A65'}}>{(lastMonthExpense - previousMonthExpense).toLocaleString()}원</span>
+                  <span className="font-galmuri-11-bold text-2xl" style={{color: '#465A65'}}>{(lastMonthExpense - previousMonthExpense).toLocaleString(undefined, {maximumFractionDigits: 0})}원</span>
                   &nbsp;
                   <span>늘었어요</span>
                 </div>
               ) : (
+                // 이번 달 지출보다 전달 지출이 큰 경우
                 <div className="flex">
                   <Icon path={mdiTriangleDown} size={1} style={{color: '#465A65'}}></Icon>
-                  <span className="font-galmuri-11-bold text-2xl" style={{color: '#465A65'}}>{(previousMonthExpense - lastMonthExpense).toLocaleString()}원</span>
+                  <span className="font-galmuri-11-bold text-2xl" style={{color: '#465A65'}}>{(previousMonthExpense - lastMonthExpense).toLocaleString(undefined, {maximumFractionDigits: 0})}원</span>
                   &nbsp;
                   <span>줄었어요</span>
                 </div>
@@ -58,22 +65,22 @@ const SpendingCategoryPage: React.FC = () => {
               <div className="flex justify-around my-4">
                 <p>올해 총 소비</p>
                 <div className="text-right">
-                  <p className="font-galmuri-11-bold">※API 연동 필요※만 원</p>
-                  <p>목표 소비액 ※API 연동 필요※만 원</p>
+                  <p className="font-galmuri-11-bold">{spendingAnalysisData.yearlyTotalExpense.toLocaleString(undefined, {maximumFractionDigits: 0})}원</p>
+                  <p className="text-xs">목표 소비액 {formatCurrency(spendingAnalysisData.totalTargetExpense)}</p>
                 </div>
               </div>
               {/* 월 평균 소비 */}
               <div className="flex justify-around my-4">
                 <p>월 평균 소비</p>
                 <div className="text-right">
-                  <p className="font-galmuri-11-bold">※API 연동 필요※원</p>
-                  <p>목표 소비액 ※API 연동 필요※만 원</p>
+                  <p className="font-galmuri-11-bold">{spendingAnalysisData.monthAverageExpense.toLocaleString(undefined, {maximumFractionDigits: 0})}원</p>
+                  <p className="text-xs">목표 소비액 {formatCurrency(spendingAnalysisData.monthlyTargetExpense)}</p>
                 </div>
               </div>
               {/* 목표 달성을 위한 조언 */}
               <div className="mb-4">
                 <p>목표 달성을 위해 매달</p>
-                <p>약 <span className="font-galmuri-11-bold" style={{color: "#C8A1E0"}}>※API 연동 필요※원</span> 이하로 사용해야 합니다.</p>
+                <p>약 <span className="font-galmuri-11-bold" style={{color: "#C8A1E0"}}>{spendingAnalysisData.futureMonthlyExpenses.toLocaleString(undefined, {maximumFractionDigits: 0}).substr(1)}원</span> 이하로 사용해야 합니다.</p>
               </div>
             </div>
           </div>
