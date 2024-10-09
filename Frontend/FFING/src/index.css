@@ -74,90 +74,110 @@ button:focus-visible {
 
 /* 폰트 추가 */
 @font-face {
-  font-family: 'Galmuri7';
-  src: url('/fonts/Galmuri7.ttf') format('truetype');
+  font-family: "Galmuri7";
+  src: url("/fonts/Galmuri7.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
-  font-family: 'Galmuri9';
-  src: url('/fonts/Galmuri9.ttf') format('truetype');
+  font-family: "Galmuri9";
+  src: url("/fonts/Galmuri9.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
-  font-family: 'Galmuri11';
-  src: url('/fonts/Galmuri11.ttf') format('truetype');
+  font-family: "Galmuri11";
+  src: url("/fonts/Galmuri11.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
-  font-family: 'Galmuri11-Bold';
-  src: url('/fonts/Galmuri11-Bold.ttf') format('truetype');
+  font-family: "Galmuri11-Bold";
+  src: url("/fonts/Galmuri11-Bold.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
-  font-family: 'Galmuri11-Condensed';
-  src: url('/fonts/Galmuri11-Condensed.ttf') format('truetype');
+  font-family: "Galmuri11-Condensed";
+  src: url("/fonts/Galmuri11-Condensed.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
-  font-family: 'Galmuri14';
-  src: url('/fonts/Galmuri14.ttf') format('truetype');
+  font-family: "Galmuri14";
+  src: url("/fonts/Galmuri14.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
-  font-family: 'GalmuriMono7';
-  src: url('/fonts/GalmuriMono7.ttf') format('truetype');
+  font-family: "GalmuriMono7";
+  src: url("/fonts/GalmuriMono7.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
-  font-family: 'GalmuriMono9';
-  src: url('/fonts/GalmuriMono9.ttf') format('truetype');
+  font-family: "GalmuriMono9";
+  src: url("/fonts/GalmuriMono9.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
-  font-family: 'GalmuriMono11';
-  src: url('/fonts/GalmuriMono11.ttf') format('truetype');
+  font-family: "GalmuriMono11";
+  src: url("/fonts/GalmuriMono11.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 
 /* 굵은 폰트 클래스 */
 .font-galmuri-11-bold {
-  font-family: 'Galmuri11-bold', sans-serif;
+  font-family: "Galmuri11-bold", sans-serif;
 }
 
 /* 기본 폰트로 적용하기 */
 html body {
-  font-family: 'Galmuri11', sans-serif;
+  font-family: "Galmuri11", sans-serif;
 }
 
 /* 오늘 날짜는 원으로 표시 */
 .react-calendar__tile--now {
-  background-color: #FE830A;
+  background-color: #fe830a;
   border-radius: 100%;
 }
 
 /* 지출 내역이 있는 날짜에 점 표시 */
 .dot {
-  height: 8px;
-  width: 8px;
-  background-color: #D9D9D9;
+  height: 7px;
+  width: 7px;
+  background-color: #d9d9d9;
   border-radius: 50%;
   margin-left: 1px;
 }
 
 /* 날짜 네비게이션 */
 .react-calendar__navigation {
-	margin-bottom: 1rem; /* 6px */
+  margin-bottom: 1rem; /* 6px */
   font-size: 1.25rem; /* 20px */
   line-height: 1.75rem; /* 28px */
+}
+
+.react-calendar__navigation__label__labelText {
+  padding: 0 20px;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+  margin-bottom: 1rem; /* 6px */
+}
+
+.react-calendar__tile {
+  margin-bottom: 1rem; /* 6px */
+}
+
+.react-calendar__tile.react-calendar__month-view__days__day {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 3.6rem; /* 또는 특정 높이 값 */
 }
 
 @layer utilities {
