@@ -13,32 +13,22 @@ import { getMonthlyExpense } from "../api/SpendingApi";
 import { getDashBoardMain } from "../api/AssetApi";
 import { initializeFirebaseMessaging } from "../service/firebase";
 import { useAuthStore } from "../store/authStore";
+import { useDashBoardInfo } from "../hook/useDashBoardInfo";
+import usePetInfoStore from "../store/usePetInfoStore";
+import { getCurrentYearMonth } from "../utils/dataUtils";
 
 const MainPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
-  const [thisMonthExpense, setThisMonthExpese] = useState(0); // 이번 달 지출액 관리
-  const { username } = useAuthStore();
+  const { username, userId } = useAuthStore();
+  const { data: metaData } = useDashBoardInfo(String(userId)) // 필요한 API를 호출하는 훅
 
-  // 이번 달 지출액을 가져오는 함수
-  const fetchData = async (userId: string) => {
-    try {
-      const yyyyMm = new Date()
-        .toISOString()
-        .split("T")[0]
-        .replace(/-/g, "")
-        .slice(0, 6);
-      const response = await getMonthlyExpense(yyyyMm);
-      const response1 = await getDashBoardMain(userId);
-      console.log(response1);
-      setThisMonthExpese(response.data.result.totalExpense);
-    } catch (error) {
-      console.error("Error fetching certain spending data:", error);
-    }
-  };
+  const petCode = metaData?.petCode || '000';  // 메타데이터에서 petCode 가져오기 (없을 경우 '000' 기본값 사용)
+  const petInfo = usePetInfoStore((state) =>
+    state.petSpriteMetaData.find(pet => pet.petCode === petCode)
+  );
 
   useEffect(() => {
-    fetchData("1");
 
     initializeFirebaseMessaging(1);
 
@@ -89,7 +79,7 @@ const MainPage: React.FC = () => {
             </div>
             {/* 현재 보유액과 목표액을 보여주는 바 그래프 */}
             <div className="flex justify-center">
-              <HorizontalBarChart />
+              <HorizontalBarChart assetDiff={metaData.goalBalance - metaData.totalAsset}/>
             </div>
           </div>
           {/* 게임 화면 관련 */}
@@ -106,7 +96,7 @@ const MainPage: React.FC = () => {
             >
               {/* 펫 sprite sheet 넣기 */}
               <div className="absolute bottom-4 left-7 p-2 w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32">
-                <PetSprite imageUrl="/pets/penguin.png" isUnlocked={true} />
+                <PetSprite imageUrl={petInfo!.imageUrl} isUnlocked={true} />
                 <RandomPetSpeech x={dvw * 15} y={0} />
               </div>
               {/* 게임 화면으로 이동하는 버튼 */}
@@ -128,7 +118,7 @@ const MainPage: React.FC = () => {
               <Link to="/spending" className="flex items-center">
                 {/* 사용 금액 API 가져오기 */}
                 <p style={{ color: "#F55322" }}>
-                  {thisMonthExpense.toLocaleString(undefined, {
+                  {metaData.monthTotalSpending.toLocaleString(undefined, {
                     maximumFractionDigits: 0,
                   })}
                   원
