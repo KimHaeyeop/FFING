@@ -6,6 +6,10 @@ import Icon from "@mdi/react";
 import { mdiChevronRight } from "@mdi/js";
 import PetSprite from "../components/Game/PetSprite";
 import { getAlarms } from "../api/AlarmApi";
+import { useAuthStore } from "../store/authStore";
+import { usePetCode } from "../hook/useDashBoardInfo";
+import { getPetImageUrl } from "../utils/petUtils";
+
 
 interface alarmInterface {
   alarmId: string;
@@ -16,17 +20,15 @@ interface alarmInterface {
 const AlarmPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
-
+  const { userId } = useAuthStore() // 사용자 id
+  const petCode = usePetCode(String(userId))
+  // petCode와 일치하는 petCode를 가진 pet 객체를 가져옴
+  const petImageUrl = getPetImageUrl(petCode)
   const [alarms, setAlarms] = useState<alarmInterface[]>([
     {
       alarmId: "1",
       alarmType: "확인",
-      alarmContent: "감정통제",
-    },
-    {
-      alarmId: "2",
-      alarmType: "경고",
-      alarmContent: "존존스알렉스페레이라",
+      alarmContent: "check",
     },
   ]);
 
@@ -44,10 +46,10 @@ const AlarmPage: React.FC = () => {
     }
   };
 
-  // 증권 정보를 가져오는 함수
-  const fetchData = async () => {
+  // 알람 목록 정보를 가져오는 함수
+  const fetchData = async (userId: number | null) => {
     try {
-      const response = await getAlarms();
+      const response = await getAlarms(String(userId));
       setAlarms(response.data.result)
     } catch (error) {
       console.error('알림 데이터를 가져오는 중 오류 발생:', error);
@@ -55,7 +57,7 @@ const AlarmPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData(userId);
   }, []);
 
   return (
@@ -93,7 +95,7 @@ const AlarmPage: React.FC = () => {
                       </div>
                       <div className="scale-50 transform-origin-bottom-left mt-8">
                         <PetSprite
-                          imageUrl="/pets/computer.png"
+                          imageUrl={petImageUrl}
                           isUnlocked={true}
                         />
                       </div>
