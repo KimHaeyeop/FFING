@@ -6,6 +6,7 @@ import static com.tbtr.ffing.domain.finance.constants.GoalConstants.GOAL_TYPE_SP
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tbtr.ffing.domain.finance.entity.Goal;
 import com.tbtr.ffing.domain.finance.entity.QGoal;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -63,5 +64,22 @@ public class GoalRepositoryCustomImpl implements GoalRepositoryCustom {
                 )
                 .orderBy(transaction.createdAt.asc()) // 생성일 기준으로 정렬
                 .fetchFirst();
+    }
+
+    @Override
+    public BigDecimal findGoalBalanceByUserIdAndThisYear(Long userId) {
+        QGoal transaction = QGoal.goal;
+
+        BigDecimal result = queryFactory
+                .select(transaction.balance)
+                .from(transaction)
+                .where(
+                        transaction.userId.eq(userId)
+                                          .and(transaction.goalType.eq(GOAL_TYPE_ASSET))
+                                          .and((transaction.createdAt.year().eq(LocalDate.now().getYear())))
+                )
+                .orderBy(transaction.createdAt.desc())
+                .fetchFirst();
+        return result == null ? BigDecimal.ZERO : result;
     }
 }
