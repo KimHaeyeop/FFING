@@ -131,7 +131,7 @@ const PetDance: React.FC = () => {
 
     function create(this: Phaser.Scene) {
       // 로고 문구 렌더링
-      const text = this.add.text(this.scale.width / 2, this.scale.height / 2, 'FFING', { fontFamily: 'Galmuri11-bold', fontSize: 128, color: '#000' });
+      const text = this.add.text(this.scale.width / 2, this.scale.height / 2, 'FFING', { fontFamily: 'Galmuri11-Bold', fontSize: 128, color: '#000' });
       text.setAlpha(0);  // 초기 투명도 설정 (보이지 않음)
       text.setScale(0.5);  // 초기 크기 설정 (작게 시작)
       text.setOrigin(0.5, 0.5);  // 텍스트의 중심을 화면 중앙으로 설정
