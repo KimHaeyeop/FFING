@@ -6,12 +6,14 @@ import PetStatusChart from "../components/Game/PetStatusChart";
 import RandomMatching from "./RandomMatching";
 import DirectMatching from "./DirectMatching";
 import useViewportStore from "../store/useViewportStore";
+import { useAuthStore } from "../store/authStore";
 
 const GamePage: React.FC = () => {
   const [isRandomModalOpen, setIsRandomModalOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
+  const { userId } = useAuthStore();
 
   // 랜덤 매칭 모달 열기
   const handleOpenRandomModal = () => {
@@ -65,16 +67,16 @@ const GamePage: React.FC = () => {
           </div>
           {/* 랜덤 매칭 모달 */}
           {isRandomModalOpen && (
-            <RandomMatching isOpen={isRandomModalOpen} onClose={handleCloseRandomModal} myUserId={"1"} />
+            <RandomMatching isOpen={isRandomModalOpen} onClose={handleCloseRandomModal} myUserId={userId} />
           )}
           {/* 초대 매칭 모달 */}
           {isInviteModalOpen && (
             <DirectMatching isOpen={isInviteModalOpen} onClose={handleCloseInviteModal} myUserId={"1"} />
           )}
         </main>
-        <footer>
+        {/* <footer>
           <NavBar />
-        </footer>
+        </footer> */}
       </div>
     </div>
   );

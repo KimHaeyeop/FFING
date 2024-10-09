@@ -61,7 +61,7 @@ const App: React.FC = () => {
         {/* 매칭 잡는 페이지 */}
         {/* <Route path="/game/matching" element={<MatchingPageModal />} /> */}
         {/* 배틀 페이지 */}
-        <Route path="/game/battle" element={<BattlePage />} />
+        <Route path="/game/battle/:matchId" element={<BattlePage />} />
         {/* 랭킹 페이지 */}
         <Route path="/game/ranking" element={<RankingPage />} />
         {/* 도감 페이지 */}
