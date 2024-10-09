@@ -12,6 +12,7 @@ import com.tbtr.ffing.domain.finance.repository.AccountRepository;
 import com.tbtr.ffing.domain.finance.repository.AccountTransactionRepository;
 import com.tbtr.ffing.domain.finance.repository.ExpenseRepository;
 import com.tbtr.ffing.domain.finance.service.AccountService;
+import com.tbtr.ffing.domain.finance.service.AssetService;
 import com.tbtr.ffing.domain.finance.service.ExpenseService;
 import com.tbtr.ffing.domain.user.entity.User;
 import com.tbtr.ffing.domain.user.repository.UserRepository;
@@ -34,6 +35,7 @@ public class AccountServiceImpl implements AccountService {
     private final UserRepository userRepository;
     private final AccountRepository accountRepository;
     private final ExpenseService expenseService;
+    private final AssetService assetService;
 
     @Value("${SSAFY_DEVELOPER_API_KEY}")
     private String apiKey;
@@ -79,7 +81,7 @@ public class AccountServiceImpl implements AccountService {
             expenseService.addAccountTransferToExpense(newAccountTransaction, user);
 
             // asset 업데이트 추가 필요
-
+            assetService.addAccountTransferToAsset(newAccountTransaction, user);
         }
 
     }
