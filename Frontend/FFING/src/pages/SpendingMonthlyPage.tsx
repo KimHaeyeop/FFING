@@ -134,7 +134,7 @@ const SpendingCategoryPage: React.FC = () => {
               next2Label={null} // 월 단위로만 넘어갈 수 있게
               calendarType="gregory" // 일요일부터 시작
               formatDay={formatDay} // 숫자로만 이루어진 달력
-              tileClassName="my-[1%]" // 날짜 사이의 세로 margin 2%
+              tileClassName="my-[1%]" // 날짜 사이의 세로 margin 1%
               tileContent={tileContent} // 지출이 있는 날짜에 점 추가
               maxDate={lastDayOfMonth} // 마지막 날짜는 이번 달 말일
               onActiveStartDateChange={handleActiveStartDateChange} // 월 변경 시 이벤트 처리

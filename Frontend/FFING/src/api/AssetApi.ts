@@ -53,6 +53,7 @@ export async function getStockDetail(ssafyUserId: string, stockAccountId: string
 export async function getTotalAsset(userId: string) {
   try {
     const response = await axios.get<getTotalAssetInterface>(`/asset?userId=${userId}`);
+    console.log(response)
     return response;
   } catch (error) {
     console.error('Error fetching total asset:', error);
@@ -108,7 +109,6 @@ export async function getAcTransaction(accountId: string) {
 export async function getDashBoardMain(userId: string) {
   try {
     const response = await axios.get<getTotalAssetInterface>(`/dashboard/main?userId=${userId}`);
-    console.log(response.data.result, '이거 뭐임')
     return response;
   } catch (error) {
     console.error('Error fetching get Main Dashboard data:', error);

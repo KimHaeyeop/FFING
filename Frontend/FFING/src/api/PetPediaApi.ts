@@ -20,7 +20,6 @@ export async function getPets (userId: string) {
 export async function getPetPedia(userId: string) {
   try {
     const response = await axios.get<petInterface>(`/pet/collection?userId=${userId}`);
-    console.log(response);
     return response;
   } catch (error) {
     console.error('Error fetching get petpedias:', error);
