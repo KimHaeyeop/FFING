@@ -35,9 +35,6 @@ const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({ onClick }
     fetchData();
   }, []);
 
-  // API 연동 필요
-  const targetSpending = 100000;
-
   // FINANCE, FOOD_BAKERY, LIFE_CULTURE, SHOPPING, TRANSPORTATION, OVERSEAS
   // key를 문자열로 사용 가능하게 변경
   const mapKrUs: { [key: string]: string } = {
@@ -56,15 +53,17 @@ const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({ onClick }
   // 범례 클릭 시 카테고리 필터링 및 전달하는 함수
   const handleLegendClick = (event: React.MouseEvent<HTMLLIElement>, legendItem: any) => {
     console.log(legendItem.text.split(' ')[0], highlightedCategory)
+    // 기존 강조된 항목을 다시 클릭하면 필터링 해제
     if (legendItem.text.split(' ')[0] === highlightedCategory) {
-      console.log(1111)
       setHighlightedCategory(null)
       onClick('');
+    // 필터링 설정
+    } else {
+      const categoryLabel = legendItem.text.split(' ')[0];
+      const category = Object.keys(mapKrUs).find(key => mapKrUs[key] === categoryLabel);  // 카테고리 매핑
+      setHighlightedCategory(categoryLabel);  // 클릭된 카테고리 강조
+      onClick(category!); // 카테고리 전달
     }
-    const categoryLabel = legendItem.text.split(' ')[0];
-    const category = Object.keys(mapKrUs).find(key => mapKrUs[key] === categoryLabel);  // 카테고리 매핑
-    setHighlightedCategory(categoryLabel);  // 클릭된 카테고리 강조
-    onClick(category!); // 카테고리 전달
   };
 
   const config = {
