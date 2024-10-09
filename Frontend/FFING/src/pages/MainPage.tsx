@@ -13,12 +13,16 @@ import { getMonthlyExpense } from "../api/SpendingApi";
 import { getDashBoardMain } from "../api/AssetApi";
 import { initializeFirebaseMessaging } from "../service/firebase";
 import { useAuthStore } from "../store/authStore";
+import { useDashBoardInfo } from "../hook/useDashBoardInfo";
+import usePetInfoStore from "../store/usePetInfoStore";
 
 const MainPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
   const [thisMonthExpense, setThisMonthExpese] = useState(0); // 이번 달 지출액 관리
-  const { username } = useAuthStore();
+  const { username, userId } = useAuthStore();
+  const { data: metaData } = useDashBoardInfo(String(userId)) // 필요한 API를 호출하는 훅
+  const petSpriteMetaData = usePetInfoStore()
 
   // 이번 달 지출액을 가져오는 함수
   const fetchData = async (userId: string) => {
@@ -38,7 +42,7 @@ const MainPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchData("1");
+    fetchData(String(userId));
 
     initializeFirebaseMessaging(1);
 
@@ -106,7 +110,7 @@ const MainPage: React.FC = () => {
             >
               {/* 펫 sprite sheet 넣기 */}
               <div className="absolute bottom-4 left-7 p-2 w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32">
-                <PetSprite imageUrl="/pets/penguin.png" isUnlocked={true} />
+                {/* <PetSprite imageUrl={petSpriteMetaData.find(p => p.petCode === metaData.petCdoe).imageUrl} isUnlocked={true} /> */}
                 <RandomPetSpeech x={dvw * 15} y={0} />
               </div>
               {/* 게임 화면으로 이동하는 버튼 */}
@@ -128,7 +132,7 @@ const MainPage: React.FC = () => {
               <Link to="/spending" className="flex items-center">
                 {/* 사용 금액 API 가져오기 */}
                 <p style={{ color: "#F55322" }}>
-                  {thisMonthExpense.toLocaleString(undefined, {
+                  {metaData.monthTotalSpending.toLocaleString(undefined, {
                     maximumFractionDigits: 0,
                   })}
                   원
