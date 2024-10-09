@@ -1,6 +1,7 @@
 import React from 'react';
 import { mdiBell } from '@mdi/js';
 import Icon from '@mdi/react';
+import { Link } from 'react-router-dom';
 
 interface TextHeaderProps {
   title: string // 콘텐츠 이름
@@ -14,8 +15,8 @@ const TextHeader: React.FC<TextHeaderProps> = ({title}) => {
     <div className='flex justify-between p-3 items-center'>
       {/* 게임 이름 */}
       <p className='text-2xl font-galmuri-11-bold'>{title}</p> 
-      <div style={{ position: 'relative' }}> {/* 아이콘 위치 설정 */}
-        {/* 종 아이콘 */}
+      <Link to='/alarm' style={{ position: 'relative' }}> {/* 아이콘 위치 설정 */}
+        {/* 종 아이콘 알람 페이지로 연결*/}
         <Icon path={mdiBell} size={1.5} /> 
         {hasUnreadNotifications && ( // 보지 않은 알림이 있을 경우 점 표시
           <span style={{ 
@@ -28,7 +29,7 @@ const TextHeader: React.FC<TextHeaderProps> = ({title}) => {
             borderRadius: '50%'
           }} />
         )}
-      </div>
+      </Link>
     </div>
   );
 };
