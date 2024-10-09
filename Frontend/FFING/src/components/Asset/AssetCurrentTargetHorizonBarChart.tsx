@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatCurrency } from '../../utils/formatCurrency';  
 
 interface AssetPortfolioHorizontalBarChartProps {
   property: number;
@@ -28,7 +29,7 @@ const AssetCurrentTargetHorizonBarChart: React.FC<AssetPortfolioHorizontalBarCha
           </div>
           {/* 목표액 표시 */}
           <div className="absolute bottom-[-20px] -right-10 transform -translate-x-1/2 text-xs">
-            {`${(target / 10000).toLocaleString()}만 원`}
+            {`${formatCurrency(target)}`}
           </div>
         </div>
       </div>

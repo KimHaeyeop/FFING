@@ -12,20 +12,21 @@ import SpendingCategoryPage from "./pages/SpendingCategoryPage";
 import SpendingMonthlyPage from "./pages/SpendingMonthlyPage";
 import SpendingAnalysisPage from "./pages/SpendingAnalysisPage";
 import SpendingWeeklyPage from "./pages/SpendingWeeklyPage";
+import StockPage from "./pages/StockPage";
 import AlarmPage from "./pages/AlarmPage";
 
 import AssetMainPage from "./pages/AssetMainPage";
 import DepositSavingsPage from "./pages/DepositSavingsPage";
 import DepositSavingDetailPage from "./pages/DepositSavingDetailPage";
 import AdminPage from "./pages/AdminPage";
-// import LoginPage from "./pages/LoginPage";
+import LoginPage from "./pages/LoginPage";
 
 const App: React.FC = () => {
   return (
     <Router>
       <Routes>
         {/* 로그인 페이지 */}
-        {/* <Route path="/login" element={<LoginPage />} /> */}
+        <Route path="/login" element={<LoginPage />} />
         {/* 메인 페이지 */}
         <Route path="/" element={<MainPage />} />
         {/* 자산 페이지 */}
@@ -48,11 +49,13 @@ const App: React.FC = () => {
         <Route path="/asset" element={<AssetMainPage />} />
         {/* 예금 적금 페이지 */}
         <Route path="/asset/product" element={<DepositSavingsPage />} />
-        {/* 예금 적금 페이지 */}
+        {/* 예금 적금 상세 페이지 */}
         <Route
           path="/asset/product/detail"
           element={<DepositSavingDetailPage />}
         />
+        {/* 주식 페이지 */}
+        <Route path="/asset/stock" element={<StockPage />} />
         {/* 게임 페이지 */}
         <Route path="/game" element={<GamePage />} />
         {/* 매칭 잡는 페이지 */}

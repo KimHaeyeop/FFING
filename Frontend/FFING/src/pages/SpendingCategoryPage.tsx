@@ -24,12 +24,12 @@ const SpendingCategoryPage: React.FC = () => {
   const dvh = useViewportStore((state) => state.dvh);
 
   // 카테고리 필터링을 위한 상태 (초기값은 'all'로 설정해 모든 거래 내역을 보여 줌)
-  const [selectedCategory, setSelectedCategory] = React.useState('all');
+  const [selectedCategory, setSelectedCategory] = React.useState<string | null>('all');
   const [categorySpending, setCategorySpending] = useState<MonthlyCategorySpending[]>([]);
   const [loading, setLoading] = useState(true); // 로딩 상태 추가
 
   // 중복된 API 호출 처리 로직을 함수로 분리
-  const loadExpenseData = async (category = '') => {
+  const loadExpenseData = async (category: string) => {
     try {
       const response = await getExpenseDetail(category);
       setCategorySpending(response.data.result);
@@ -43,10 +43,11 @@ const SpendingCategoryPage: React.FC = () => {
   // 카테고리 클릭 이벤트 함수에서 API 호출 및 로직 처리
   const handleCategoryClick = async (category: string) => {
     setLoading(true); // 로딩 시작
+    console.log(category)
     // 빈 값이거나 undefined일 때
     if (!category) {  
       setSelectedCategory('all')
-      loadExpenseData();  // 전체 데이터 다시 로드
+      loadExpenseData('');  // 전체 데이터 다시 로드
     // 그 외에는 필터링
     } else {
       setSelectedCategory(category);
@@ -61,7 +62,7 @@ const SpendingCategoryPage: React.FC = () => {
 
   // 렌더링 되면 전체 데이터를 가져 옴
   useEffect(() => {
-    loadExpenseData();
+    loadExpenseData('');
   }, []);
 
   return (
@@ -73,7 +74,7 @@ const SpendingCategoryPage: React.FC = () => {
         </header>
         <main className='mx-auto'style={{height: `${dvh * 80}px`, width: `${dvw * 90}px`}}>
           {/* 이번 달 지출 금액 */}
-          <div className="border-black border-4 rounded-lg" style={{height: '40%'}}>
+          <div className="border-black border-4 rounded-lg" style={{height: '50%'}}>
             <div className='flex justify-end items-center mt-2 mx-2'>
               {/* 이번 달 지출 확인 route */}
               <Link to='monthly' className='flex items-center'>
