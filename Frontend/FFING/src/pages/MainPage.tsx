@@ -121,7 +121,7 @@ const MainPage: React.FC = () => {
             className="border-black border-4 rounded-lg py-2 px-2"
             style={{ height: "38%" }}
           >
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center pb-2">
               <p className="text-lg">이번달 지출내역</p>
               <Link to="/spending" className="flex items-center">
                 {/* 사용 금액 API 가져오기 */}
