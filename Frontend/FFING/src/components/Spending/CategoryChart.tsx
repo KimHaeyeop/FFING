@@ -70,7 +70,6 @@ const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({
     event: React.MouseEvent<HTMLLIElement>,
     legendItem: any
   ) => {
-    console.log(legendItem.text.split(" ")[0], highlightedCategory);
     // 기존 강조된 항목을 다시 클릭하면 필터링 해제
     if (legendItem.text.split(" ")[0] === highlightedCategory) {
       setHighlightedCategory(null);

@@ -41,13 +41,16 @@ const GamePage: React.FC = () => {
         <header style={{ height: `${dvh * 10}px` }}>
           <TextHeader title={nickname} />
         </header>
-        <main className="mx-auto" style={{ height: `${dvh * 80}px`, width: `${dvw * 90}px` }}>
+        <main
+          className="mx-auto"
+          style={{ height: `${dvh * 80}px`, width: `${dvw * 90}px` }}
+        >
           {/* 내 펫이 인사를 하는 컴포넌트 */}
           <div style={{ height: "40%" }}>
             <PetIdle />
           </div>
           {/* 내 펫의 스탯 차트 */}
-          <div style={{ height: "40%" }}>
+          <div className="my-4" style={{ height: "40%" }}>
             <PetStatusChart />
           </div>
           {/* 매칭 시작과 초대 버튼 */}
@@ -67,11 +70,19 @@ const GamePage: React.FC = () => {
           </div>
           {/* 랜덤 매칭 모달 */}
           {isRandomModalOpen && (
-            <RandomMatching isOpen={isRandomModalOpen} onClose={handleCloseRandomModal} myUserId={userId} />
+            <RandomMatching
+              isOpen={isRandomModalOpen}
+              onClose={handleCloseRandomModal}
+              myUserId={userId}
+            />
           )}
           {/* 초대 매칭 모달 */}
           {isInviteModalOpen && (
-            <DirectMatching isOpen={isInviteModalOpen} onClose={handleCloseInviteModal} myUserId={"1"} />
+            <DirectMatching
+              isOpen={isInviteModalOpen}
+              onClose={handleCloseInviteModal}
+              myUserId={"1"}
+            />
           )}
         </main>
         {/* <footer>

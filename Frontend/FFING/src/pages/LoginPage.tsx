@@ -1,47 +1,32 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../api/LoginApi"; // 로그인 API 호출
+import { login } from "../api/LoginApi";
 import { useAuthStore } from "../store/authStore";
 import FFING from "../assets/FFING.gif";
-import axios from "../api/AxiosConfig";
 
 const LoginPage: React.FC = () => {
-  // const login3 = async () => {
-  //   const response3 = await axios.get('/user/test', {
-  //   });
-  //   console.log(response3);
-  // }
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const setAuth = useAuthStore((state) => state.setAuth); // zustand에서 setAuth 가져옴
+  const setAuth = useAuthStore((state) => state.setAuth);
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
-    setError(null); // 에러 초기화
+    setError(null);
+    setIsLoading(true);
 
     try {
-      // LoginApi.ts에서 정의한 login 함수를 호출
       const { accessToken, user } = await login(email, password);
-      // console.log('accessToken:', accessToken);
-
-      // 로그인 성공 후 토큰 저장
       localStorage.setItem("ACCESS_TOKEN", accessToken);
-      // console.log(localStorage);
-
-      // Zustand에 사용자 정보 저장
       setAuth(user.nickname, user.userId, user.username);
-      // console.log("Username:", user.username);
-      // console.log("Nickname:", user.nickname);
-
-      // login3();
-      navigate("/main"); // 페이지 이동 로직
+      navigate("/main");
     } catch (error: any) {
-      // 에러 메시지 설정
       setError(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -69,9 +54,35 @@ const LoginPage: React.FC = () => {
           {error && <p className="text-red-500 text-center">{error}</p>}
           <button
             type="submit"
-            className="py-3 bg-[#CECECE] text-white rounded-md transition duration-300"
+            disabled={isLoading}
+            className="py-3 bg-[#CECECE] text-white rounded-md transition duration-300 font-galmuri-11-bold flex justify-center items-center"
           >
-            로그인
+            {isLoading ? (
+              <>
+                <svg
+                  className="animate-spin h-5 w-5 mr-3 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+              </>
+            ) : (
+              "로그인"
+            )}
           </button>
           <span className="text-center text-[#686E74] cursor-pointer hover:underline">
             회원가입
