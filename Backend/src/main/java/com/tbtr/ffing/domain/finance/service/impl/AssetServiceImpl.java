@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -84,17 +85,30 @@ public class AssetServiceImpl implements AssetService {
 
     @Override
     public Asset addAccountTransferToAsset(AccountTransaction newAccountTransaction, User user) {
-        AssetRes nowAsset = assetRepository.findCurrentAssetByUserId(user.getUserId());
+        AssetRes nowAssetRes = assetRepository.findCurrentAssetByUserId(user.getUserId());
         LocalDate now = LocalDate.now();
-        String nowYearMonth = String.valueOf(now.getYear()) + String.valueOf(now.getMonth());
-        BigDecimal transactionBalance = newAccountTransaction.getTransactionBalance();
+        String nowStr = now.format(DateTimeFormatter.BASIC_ISO_DATE);
 
         Asset newAsset = null;
 
-        if (nowAsset.getUpdatedDate().substring(0, 6).equals(nowYearMonth)) {
-
+        if (nowAssetRes.getUpdatedDate().substring(0, 6).equals(nowStr.substring(0, 6))) {
+            newAsset = nowAssetRes.toOldEntity(user);
+        } else {
+            newAsset = nowAssetRes.toNewEntity(user);
         }
 
-        return null;
+        BigDecimal totalAsset = nowAssetRes.getTotalAsset();
+        BigDecimal accountBallance = nowAssetRes.getAccountBalance();
+        BigDecimal transactionBalance = newAccountTransaction.getTransactionBalance();
+
+        if (newAccountTransaction.getTransactionType().equals("1")) {
+            newAsset.setTotalAsset(totalAsset.add(transactionBalance));
+            newAsset.setAccountBalance(accountBallance.add(transactionBalance));
+        } else {
+            newAsset.setTotalAsset(totalAsset.subtract(transactionBalance));
+            newAsset.setAccountBalance(accountBallance.subtract(transactionBalance));
+        }
+
+        return newAsset;
     }
 }
