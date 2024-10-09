@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { Radar } from "react-chartjs-2";
 import Icon from '@mdi/react';
 import { mdiFoodForkDrink, mdiTheater, mdiSubwayVariant, mdiFinance, mdiShopping } from '@mdi/js'
@@ -13,12 +13,12 @@ interface PetDetailModalProps {
   petCode: string;
   petImageUrl: string;
   petTrait: string;
-  totalStat: number
-  financeStat: number
-  foodBakeryStat: number
-  lifeCultureStat: number
-  shoppingStat: number
-  transportationStat: number
+  totalStat: number;
+  financeStat: number;
+  foodBakeryStat: number;
+  lifeCultureStat: number;
+  shoppingStat: number;
+  transportationStat: number;
 }
 
 const PetDetailModal: React.FC<PetDetailModalProps> = ({
@@ -33,10 +33,9 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
   foodBakeryStat,
   lifeCultureStat,
   shoppingStat,
-  transportationStat
+  transportationStat,
 }) => {
-
-  const dvw = useViewportStore((state) => state.dvw); 
+  const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
 
   const currentWeek = { '금융': financeStat, '식비': foodBakeryStat, '생활': lifeCultureStat, '쇼핑': shoppingStat, '교통': transportationStat };
@@ -64,23 +63,24 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
     },
   };
 
-  const labels = ['식비', '쇼핑', '교통', '생활/문화', '금융'];
+  const labels = ["식비", "쇼핑", "교통", "생활/문화", "금융"];
 
   const data = {
     labels,
     datasets: [
       {
-        label: '이번 주',
+        label: "이번 주",
         data: Object.values(currentWeek),
-        backgroundColor: 'rgba(54, 162, 235, 0.2)', 
-        borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        borderColor: "rgba(54, 162, 235, 1)",
         borderWidth: 1,
       },
     ],
   };
 
   const options = {
-    responsive: false,
+    responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         display: false,
@@ -102,8 +102,8 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
           padding: 0,
           font: {
             size: 10,
-            weight: 'bold'
-          }
+            weight: "bold",
+          },
         },
       },
     },
@@ -113,20 +113,21 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
       {/* 모달 창 */}
-      <div className="bg-white rounded-lg border-4 border-gray-400 relative"
+      <div
+        className="bg-white rounded-lg relative flex flex-col"
         style={{
-          width: `${60 * dvw}px`,   // dvw를 활용해 모달 너비 설정
-          height: `${70 * dvh}px`,  // dvh를 활용해 모달 높이 설정
+          width: `${80 * dvw}px`, // dvw를 활용해 모달 너비 설정
+          height: `${75 * dvh}px`, // dvh를 활용해 모달 높이 설정
         }}
       >
         {/* 모달 닫기 버튼 */}
         <button
           onClick={onClose}
-          className="absolute top-2 right-2 text-gray-700"
+          className="absolute top-2 right-2 text-gray-700 text-xl"
         >
-          X
+          x
         </button>
         
         {/* 상단의 둥근 원형 영역 */}
@@ -143,7 +144,7 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
         </div>
 
         {/* 펫 이름과 도감 인덱스 */}
-        <div className="mt-[5%] flex justify-around px-1 items-center">
+        <div className="mt-4 flex justify-around px-1 items-center">
           <h2 className="text-xl font-bold mr-4">{petName}</h2>
           <span className="text-sm text-gray-500">{petCode}</span>
         </div>
@@ -154,20 +155,10 @@ const PetDetailModal: React.FC<PetDetailModalProps> = ({
         </div>
 
         {/* 레이더 차트 (펫 능력치) */}
-        <div className="mt-6 flex justify-center items-center">
+        <div className="flex-grow mt-4 flex justify-center items-center mb-4">
           {/* 레이더 차트 */}
-          <div
-            style={{
-              height: `${70 * 0.4 * dvh}px`,  // dvh를 기반으로 차트 높이 설정
-              width: `${70 * dvw}px`,   // dvw를 기반으로 차트 너비 설정
-              // maxHeight: '100%',        // 모달을 벗어나지 않게 최대 높이 설정
-              // maxWidth: '100%'          // 모달을 벗어나지 않게 최대 너비 설정
-            }}>
-            <Radar 
-              data={data}
-              options={options}
-              className='mx-auto'
-            />
+          <div style={{ width: "100%", height: "100%", maxHeight: "250px" }}>
+            <Radar data={data} options={options} />
           </div>
         </div>
       </div>
