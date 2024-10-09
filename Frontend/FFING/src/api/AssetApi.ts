@@ -46,7 +46,7 @@ export async function getStockDetail(ssafyUserId: string, stockAccountId: string
     console.log(response.data.result)
     return response;
   } catch (error) {
-    console.error('Error fetching getStocks:', error);
+    console.error('Error fetching get stock detail:', error);
     throw error;
   }
 }
@@ -58,7 +58,7 @@ export async function getTotalAsset(userId: string) {
     console.log(response.data.result)
     return response;
   } catch (error) {
-    console.error('Error fetching get3:', error);
+    console.error('Error fetching total asset:', error);
     throw error;
   }
 }
@@ -114,7 +114,7 @@ export async function getAcTransaction(accountId: string) {
 // 메인 페이지 API 획득 정보 조회
 export async function getDashBoardMain(userId: string) {
   try {
-    const response = await axios.get<getTotalAssetInterface>(`/dashboard/main/${userId}`);
+    const response = await axios.get<getTotalAssetInterface>(`/dashboard/main?userId=${userId}`);
     console.log(response.data.result)
     return response;
   } catch (error) {

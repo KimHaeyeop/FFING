@@ -5,6 +5,7 @@ import LinkHeader from "../components/Common/LinkHeader";
 import Icon from "@mdi/react";
 import { mdiChevronRight } from "@mdi/js";
 import PetSprite from "../components/Game/PetSprite";
+import { getAlarms } from "../api/AlarmApi";
 
 interface alarmInterface {
   alarmId: string;
@@ -44,19 +45,19 @@ const AlarmPage: React.FC = () => {
   };
 
   // 증권 정보를 가져오는 함수
-  // const fetchData = async () => {
-  //   try {
-  //     const response = await getStocks('1');
-  //     console.log(response)
-  //     setAlarms(response.data.result)
-  //   } catch (error) {
-  //     console.error('알림 데이터를 가져오는 중 오류 발생:', error);
-  //   }
-  // };
+  const fetchData = async () => {
+    try {
+      const response = await getAlarms();
+      console.log(response, '이규석')
+      setAlarms(response.data.result)
+    } catch (error) {
+      console.error('알림 데이터를 가져오는 중 오류 발생:', error);
+    }
+  };
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <div className="flex justify-center items-center">

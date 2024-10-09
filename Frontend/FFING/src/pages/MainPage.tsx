@@ -10,7 +10,7 @@ import PetSprite from "../components/Game/PetSprite";
 import RandomPetSpeech from "../components/Common/RandomPetSpeech";
 import HorizontalBarChart from "../components/Asset/HorizontalBarChart";
 import { getMonthlyExpense } from "../api/SpendingApi";
-import { getTotalAsset } from "../api/AssetApi";
+import { getDashBoardMain } from "../api/AssetApi";
 import { initializeFirebaseMessaging } from "../service/firebase";
 
 const MainPage: React.FC = () => {
@@ -27,8 +27,8 @@ const MainPage: React.FC = () => {
         .replace(/-/g, "")
         .slice(0, 6);
       const response = await getMonthlyExpense(yyyyMm);
-      // const response1 = await getTotalAsset('1');
-      // console.log(response1);
+      const response1 = await getDashBoardMain(userId);
+      console.log(response1);
       setThisMonthExpese(response.data.result.totalExpense);
     } catch (error) {
       console.error("Error fetching certain spending data:", error);
