@@ -52,7 +52,7 @@ public class GoalRepositoryCustomImpl implements GoalRepositoryCustom {
     }
 
     @Override
-    public Goal findFirstSpendingByUserId(Long userId, String year) {
+    public Goal findFirstSpendingByUserIdAndThisYear(Long userId, String year) {
         QGoal transaction = QGoal.goal;
 
         return queryFactory
@@ -67,7 +67,7 @@ public class GoalRepositoryCustomImpl implements GoalRepositoryCustom {
     }
 
     @Override
-    public BigDecimal findRecentSpendingBalanceByUserIdAndYear(Long userId) {
+    public BigDecimal findRecentSpendingBalanceByUserId(Long userId) {
         QGoal transaction = QGoal.goal;
 
         BigDecimal result = queryFactory
