@@ -41,12 +41,12 @@ class WebSocketClient {
       WebSocketClient.instance = new WebSocketClient();
       console.log("웹 소켓 생성됐어요", this.getInstance);
     }
-    console.log("인스턴스 반환");
+    // console.log("인스턴스 반환");
     return WebSocketClient.instance;
   }
 
   public getClient(): Client {
-    console.log("클라이언트 반환");
+    // console.log("클라이언트 반환");
     return this.client;
   }
 
@@ -76,6 +76,7 @@ class WebSocketClient {
   public disconnect() {
     this.client.deactivate();
     this.isConnected = false;
+    console.log("연결 끊김");
   }
 }
 

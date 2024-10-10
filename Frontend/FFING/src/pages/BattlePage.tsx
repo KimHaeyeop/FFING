@@ -37,15 +37,17 @@ const BattlePage: React.FC = () => {
     const setupWebSocket = async () => {
       try {
         if (!client.isConnectedStatus()) {
+          console.log("연결이 안되어있네요");
           await client.waitForConnect();
         }
-
+        // console.log("배틀 구독하겠습니다");
         client.subscribe(`/sub/battle/playing/${matchId}`, (message) => {
           const result = JSON.parse(message.body);
           console.log("상대 공격 수신:", result);
           setOpponentAttack(result.opponentAttack);
           setWinner(result.winner);
         });
+        // console.log("배틀 구독 요청했습니다.");
       } catch (error) {
         console.error("웹소켓 연결 실패:", error);
       }
