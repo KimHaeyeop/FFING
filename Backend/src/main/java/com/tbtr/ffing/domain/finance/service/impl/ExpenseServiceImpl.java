@@ -135,10 +135,10 @@ public class ExpenseServiceImpl implements ExpenseService {
      * @return
      */
     @Override
-    public MonthlySummaryRes getMonthlySummary(String yearMonth, Long userId) {
+    public MonthlySummaryRes getMonthlySummary(String yearMonth, Long userId, Long ssafyUserId) {
         BigDecimal totalExpense = expenseRepository.getTotalExpenseForMonth(yearMonth, userId);
-        BigDecimal totalIncome = accountTransactionRepository.getTotalIncomeForMonth(yearMonth);
-        List<DailySummaryRes> dailySummary = expenseRepository.getDailySummaryForMonth(yearMonth);
+        BigDecimal totalIncome = accountTransactionRepository.getTotalIncomeForMonth(yearMonth, ssafyUserId);
+        List<DailySummaryRes> dailySummary = expenseRepository.getDailySummaryForMonth(yearMonth, userId, ssafyUserId);
 
         return MonthlySummaryRes.builder()
                                 .yearMonth(yearMonth)
@@ -149,12 +149,12 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public DailyExpenseRes getDailyExpense(String dateString) {
+    public DailyExpenseRes getDailyExpense(String dateString, Long userId) {
         LocalDate date = LocalDate.parse(dateString, DATE_FORMATTER);
 
-        List<ExpenseRes> dailyExpenses = expenseRepository.findExpensesByDate(dateString);
+        List<ExpenseRes> dailyExpenses = expenseRepository.findExpensesByDate(dateString, userId);
 
-        BigDecimal dailyTotal = expenseRepository.calculateTotalExpenseByDate(dateString);
+        BigDecimal dailyTotal = expenseRepository.calculateTotalExpenseByDate(dateString, userId);
 
         // 현재 날짜가 속한 주의 일요일을 시작일로 설정
         LocalDate startOfWeek = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
