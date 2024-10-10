@@ -10,7 +10,6 @@ import { useAuthStore } from "../store/authStore";
 import { usePetCode } from "../hook/useDashBoardInfo";
 import { getPetImageUrl } from "../utils/petUtils";
 
-
 interface alarmInterface {
   alarmId: string;
   alarmLabel: string;
@@ -20,10 +19,10 @@ interface alarmInterface {
 const AlarmPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
-  const { userId } = useAuthStore() // 사용자 id
-  const petCode = usePetCode(String(userId))
+  const { userId } = useAuthStore(); // 사용자 id
+  const petCode = usePetCode(String(userId));
   // petCode와 일치하는 petCode를 가진 pet 객체를 가져옴
-  const petImageUrl = getPetImageUrl(petCode)
+  const petImageUrl = getPetImageUrl(petCode);
   const [alarms, setAlarms] = useState<alarmInterface[]>([
     {
       alarmId: "1",
@@ -34,12 +33,11 @@ const AlarmPage: React.FC = () => {
 
   // alarmLabel에 따라 한국어로 변형해주는 딕셔너리
   const alarmLabelMap: { [key: string]: string } = {
-    "CHECK": "확인",
-    "ADVICE": "권고",
-    "CAUTION": "경고",
-    "WARNING": "위험",
+    CHECK: "확인",
+    ADVICE: "권고",
+    CAUTION: "경고",
+    WARNING: "위험",
   };
-
 
   // 말풍선 색상을 결정하는 함수
   const getBubbleColor = (type: string) => {
@@ -59,10 +57,10 @@ const AlarmPage: React.FC = () => {
   const fetchData = async (userId: number | null) => {
     try {
       const response = await getAlarms(String(userId));
-      setAlarms(response.data.result)
-      console.log(response.data.result)
+      setAlarms(response.data.result);
+      console.log(response.data.result);
     } catch (error) {
-      console.error('알림 데이터를 가져오는 중 오류 발생:', error);
+      console.error("알림 데이터를 가져오는 중 오류 발생:", error);
     }
   };
 
@@ -104,23 +102,20 @@ const AlarmPage: React.FC = () => {
                         </p>
                       </div>
                       <div className="scale-50 transform-origin-bottom-left mt-8">
-                        <PetSprite
-                          imageUrl={petImageUrl}
-                          isUnlocked={true}
-                        />
+                        <PetSprite imageUrl={petImageUrl} isUnlocked={true} />
                       </div>
                     </div>
                   </div>
                   <div className="w-4/5 h-full flex flex-col justify-between py-2">
                     <div className="flex-grow flex flex-col justify-end mx-1 pb-2">
-                      <p className="text-left">{alarm.alarmContent}</p>
+                      <p className="text-left text-sm">{alarm.alarmContent}</p>
                     </div>
                     <div
                       className="flex justify-end text-sm"
                       style={{ color: "#F55322" }}
                     >
-                      <p>자세히 보기</p>
-                      <Icon path={mdiChevronRight} size={1}></Icon>
+                      {/* <p>자세히 보기</p> */}
+                      {/* <Icon path={mdiChevronRight} size={1}></Icon> */}
                     </div>
                   </div>
                 </div>
