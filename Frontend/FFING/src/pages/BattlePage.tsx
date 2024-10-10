@@ -114,7 +114,7 @@ const BattlePage: React.FC = () => {
         />
        {/* 공격 선택 컴포넌트 */}
        <div className="mt-2">
-        {/* 랭킹 변동, 네이게이터를 보여주는 컴포넌트 */}
+        {/* 랭킹 변동, 네비게이터를 보여주는 컴포넌트 */}
           {winner ? (
             showGameResult ? (
               <GameResult 
