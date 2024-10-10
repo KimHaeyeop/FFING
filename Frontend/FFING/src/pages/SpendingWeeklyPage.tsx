@@ -148,7 +148,9 @@ const SpendingWeeklyPage: React.FC = () => {
                       expenseDate.getMonth() === day.getMonth() &&
                       expenseDate.getDate() === day.getDate()
                     );
-                  }) && <div className="dot"></div>}
+                  })}
+                  {/* 주단위로 점을 확인할 수 있게 개선이 필요함 */}
+                  {/* }) && <div className="dot"></div>} */}
                 </div>
               </div>
             ))}
