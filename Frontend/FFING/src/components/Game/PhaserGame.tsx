@@ -116,42 +116,50 @@ const PhaserGame: React.FC<PhaserGameProps> = (
       playRandomAttackSound() // 타격음
       attacker.attackMotion.current?.once('animationcomplete', onAnimationComplete);  // onAnimationComplete 함수를 한 번만 실행하게 설정
 
-      // 데미지 렌더링
-      const damageText = sceneRef.current?.add.text(defender.pet.current!.x - 50, defender.pet.current!.y - 200, `-${damage}`, {
-        fontFamily: 'Galmuri11',
-        fontStyle: '1000',
-        fontSize: '64px',
-        stroke: '#000000',
-        strokeThickness: 2,
-      })
-      damageText?.setTint(0xff00ff, 0xff00ff, 0x0000ff, 0x0000ff) // 텍스트 색상
-      // 1초 후 데미지 표시 삭제
-      sceneRef.current?.time.addEvent({
-        delay: 1000,
-        callback: () => {
-          damageText?.destroy()
-        }
-      })
+    // 데미지 렌더링
+    const damageText = sceneRef.current?.add.text(defender.pet.current!.x - 50, defender.pet.current!.y - 200, `-${damage}`, {
+      fontFamily: 'Galmuri11',
+      fontStyle: '1000',
+      fontSize: '64px',
+      stroke: '#000000',
+      strokeThickness: 2,
+    });
+    damageText?.setTint(0xff00ff, 0xff00ff, 0x0000ff, 0x0000ff);  // 텍스트 색상
+    // 1초 후 데미지 표시 삭제
+    sceneRef.current?.time.addEvent({
+      delay: 1000,
+      callback: () => {
+        damageText?.destroy();
+      }
+    });
 
-      // 데미지 상태 렌더링
-      const damageStatusText = sceneRef.current?.add.text(defender.pet.current!.x - 50, defender.pet.current!.y - 250, status, {
-        fontFamily: 'Galmuri11',
-        fontStyle: '1000',
-        fontSize: '32px',
-        stroke: '#000000',
-        strokeThickness: 2,
-      })
-      damageText?.setTint(0xff00ff, 0xff00ff, 0x0000ff, 0x0000ff) // 텍스트 색상
-      // 1초 후 데미지 표시 삭제
-      sceneRef.current?.time.addEvent({
-        delay: 1000,
-        callback: () => {
-          damageStatusText?.destroy()
-        }
-      })
-      
-    })
-  }
+    // 데미지 상태 렌더링
+    const damageStatusText = sceneRef.current?.add.text(defender.pet.current!.x - 50, defender.pet.current!.y - 225, status, {
+      fontFamily: 'Galmuri11',
+      fontStyle: '1000',
+      fontSize: '24px',
+      stroke: '#000000',
+      strokeThickness: 2,
+    });
+
+    // 상태에 따른 텍스트 색상 설정
+    if (status === 'Good') {
+      damageStatusText?.setTint(0x00ff00);  // 녹색
+    } else if (status === 'Bad') {
+      damageStatusText?.setTint(0xff0000);  // 빨간색
+    } else {
+      damageStatusText?.setTint(0xffffff);  // 흰색 (Normal)
+    }
+
+    // 1초 후 데미지 상태 표시 삭제
+    sceneRef.current?.time.addEvent({
+      delay: 1000,
+      callback: () => {
+        damageStatusText?.destroy();
+      }
+    });
+  });
+}
     
   // 전투에서 복귀하는 함수
   function moveToBase (attacker: PetRefs) {
@@ -358,24 +366,7 @@ const PhaserGame: React.FC<PhaserGameProps> = (
     
     // 프레임별 업데이트 함수 ()
     function update() {
-    //   // 체력 바 위치 업데이트
-    //   updateHpBar(myPetRefs, myHp, myMaxHp);
-    //   updateHpBar(opponentPetRefs, opponentHp, opponentMaxHp);
     }
-
-    // // 체력 바를 업데이트하는 함수
-    // function updateHpBar(petRefs: PetRefs, hp: number, maxHp: number) {
-    //   if (petRefs.hpFill.current && petRefs.pet.current) {
-    //     // 체력 바 위치를 펫의 현재 위치를 기준으로 다시 설정
-    //     const hpX = petRefs.pet.current.x - 50;
-    //     const hpY = petRefs.pet.current.y - 100;
-
-    //     // 체력 바 업데이트
-    //     petRefs.hpFill.current.clear();
-    //     petRefs.hpFill.current.fillStyle(0xff0000, 1); // 체력바 색상은 빨간 색
-    //     petRefs.hpFill.current.fillRoundedRect(hpX, hpY, (hp / maxHp) * 100, 20, 10); // 체력에 맞춰 크기 계산
-    //   }
-    // }
 
 
     return () => {
