@@ -67,6 +67,30 @@ button:focus-visible {
   }
 }
 
+.no-hover-effect {
+  color: inherit !important;
+}
+
+.no-hover-effect:hover {
+  color: inherit !important;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #f55322;
+  }
+  .no-hover-effect:hover {
+    color: inherit !important;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
 /* 태일윈드 css 적용하기 */
 @tailwind base;
 @tailwind components;
