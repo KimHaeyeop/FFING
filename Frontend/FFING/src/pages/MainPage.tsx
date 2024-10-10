@@ -179,8 +179,9 @@ const GoalSettingModal: React.FC<{
       getGoalData()
         .then((data) => {
           setGoalData(data);
-          setGoalBalance(Math.floor(data.recommendedGoalBalance).toString());
-          setSpendingBalance(Math.floor(data.upperLimitBalance).toString());
+          setGoalBalance("");
+          setSpendingBalance("");
+          console.log(data);
         })
         .catch((error) => {
           console.error("Error fetching goal data:", error);
@@ -234,42 +235,31 @@ const GoalSettingModal: React.FC<{
 
             <div className="space-y-6">
               <div>
-                <label className="block mb-2 font-medium">
-                  {/* <Icon path={mdiPiggyBank} size={1} className="inline mr-2" /> */}
-                  목표 자산
-                </label>
+                <label className="block mb-2 font-medium">목표 자산</label>
                 <input
                   type="number"
                   value={goalBalance}
                   onChange={(e) => setGoalBalance(e.target.value)}
                   className="border p-3 w-full rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder={`추천 : ${formatNumberWithCommas(
+                    goalData.recommendedGoalBalance
+                  )}원`}
                 />
                 <p className="text-sm text-gray-500 mt-1">
-                  추천:{" "}
-                  {formatNumberWithCommas(goalData.recommendedGoalBalance)}원
+                  가능 범위:{" "}
+                  {formatNumberWithCommas(goalData.lowerLimitBalance)}원 ~{" "}
+                  {formatNumberWithCommas(goalData.upperLimitBalance)}원
                 </p>
               </div>
 
               <div>
-                <label className="block mb-2 font-medium">
-                  {/* <Icon
-                    path={mdiCashMultiple}
-                    size={1}
-                    className="inline mr-2"
-                  /> */}
-                  월 지출 상한
-                </label>
+                <label className="block mb-2 font-medium">월 지출 상한</label>
                 <input
                   type="number"
                   value={spendingBalance}
                   onChange={(e) => setSpendingBalance(e.target.value)}
                   className="border p-3 w-full rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
-                <p className="text-sm text-gray-500 mt-1">
-                  추천 범위:{" "}
-                  {formatNumberWithCommas(goalData.lowerLimitBalance)}원 ~{" "}
-                  {formatNumberWithCommas(goalData.upperLimitBalance)}원
-                </p>
               </div>
             </div>
 
