@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class BattleHistory {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long battleHistoryId;
 
     @Column(name = "created_at", updatable = false)
@@ -27,8 +27,8 @@ public class BattleHistory {
     private Long winnerPetId;
 
     @Column(nullable = false)
-    private Long pet1Id;
+    private Long pet1_Id;
     @Column(nullable = false)
-    private Long pet2Id;
+    private Long pet2_Id;
 
 }

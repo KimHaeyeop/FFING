@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface BattleHistoryRepository extends JpaRepository<BattleHistory, Long> {
 
-    @Query("SELECT bh FROM BattleHistory bh WHERE bh.pet1Id = :petId or bh.pet2Id = :petId ORDER BY bh.createdAt DESC LIMIT 5")
+    @Query("SELECT bh FROM BattleHistory bh WHERE bh.pet1_Id = :petId or bh.pet2_Id = :petId ORDER BY bh.createdAt DESC LIMIT 5")
     List<BattleHistory> getRecent5BattleHistoriesByPetId(Long petId);
 
 }

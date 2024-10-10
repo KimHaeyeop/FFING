@@ -209,8 +209,8 @@ public class BattleServiceImpl implements BattleService {
 
                 BattleHistory battleHistory = BattleHistory.builder()
                         .createdAt(battleInfo.getCreatedAt())
-                        .pet1Id(battlePetInfo1.getPetInfoId())
-                        .pet2Id(battlePetInfo2.getPetInfoId())
+                        .pet1_Id(battlePetInfo1.getPetInfoId())
+                        .pet2_Id(battlePetInfo2.getPetInfoId())
                         .winnerPetId(winnerPetId)
                         .build();
                 battleHistoryRepository.save(battleHistory);
