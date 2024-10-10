@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TextHeader from "../components/Common/TextHeader";
-// import NavBar from "../components/Common/Navbar";
+import NavBar from "../components/Common/Navbar";
 import PetIdle from "../components/Game/PetIdle";
 import PetStatusChart from "../components/Game/PetStatusChart";
 import RandomMatching from "./RandomMatching";
@@ -54,16 +54,16 @@ const GamePage: React.FC = () => {
             <PetStatusChart />
           </div>
           {/* 매칭 시작과 초대 버튼 */}
-          <div className="flex rounded-lg overflow-hidden w-full max-w-screen-md mx-auto mt-6 h-16 text-2xl font-galmuri-11-bold">
+          <div className="flex rounded-lg overflow-hidden gap-2 w-full max-w-screen-md mx-auto h-16 text-2xl font-galmuri-11-bold">
             <button
               onClick={handleOpenRandomModal}
-              className="flex-grow bg-[#FFD874] text-black py-2 rounded-l-lg font-bold"
+              className="flex-grow bg-[#FFD874] text-black py-2 rounded-lg font-bold"
             >
               랜덤 매칭
             </button>
             <button
               onClick={handleOpenInviteModal}
-              className="flex-grow bg-[#FFA1A1] text-black py-2 rounded-r-lg font-bold"
+              className="flex-grow bg-[#FFA1A1] text-black py-2 rounded-lg font-bold"
             >
               초대 매칭
             </button>
@@ -85,9 +85,9 @@ const GamePage: React.FC = () => {
             />
           )}
         </main>
-        {/* <footer>
+        <footer>
           <NavBar />
-        </footer> */}
+        </footer>
       </div>
     </div>
   );
