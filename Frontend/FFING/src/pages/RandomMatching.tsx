@@ -55,8 +55,8 @@ const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUser
             setIsMatched(true);
 
             setTimeout(() => {
-              console.log("배틀페이지로 이동");
               navigate(`/game/battle/${data.matchId}`);
+              console.log("배틀페이지로 이동");
             }, 2000);
           });
           // 매칭 요청
@@ -74,8 +74,8 @@ const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUser
 
     return () => {
       // 매칭 취소
-      randomMatchService.cancelRandomMatch(myUserId);
-      resetMatchInfo();
+      // randomMatchService.cancelRandomMatch(myUserId);
+      // resetMatchInfo();
     };
   }, [isOpen, myUserId]);
 
