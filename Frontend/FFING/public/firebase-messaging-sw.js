@@ -42,7 +42,7 @@ self.addEventListener("activate", function (e) {
 });
 
 self.addEventListener("notificationclick", (event) => {
-  const urlToOpen = new URL(`http://localhost:5173`);
+  const urlToOpen = new URL(`https://j11a504.p.ssafy.io/`);
 
   event.waitUntil(
     clients
@@ -56,7 +56,7 @@ self.addEventListener("notificationclick", (event) => {
         for (let i = 0; i < windowClients.length; i++) {
           const client = windowClients[i];
 
-          if (client.url.includes("localhost:5173") && "focus" in client) {
+          if (client.url.includes("j11a504.p.ssafy.io") && "focus" in client) {
             foundWindowClient = client;
             break;
           }
