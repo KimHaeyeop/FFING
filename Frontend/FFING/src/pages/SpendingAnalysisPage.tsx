@@ -80,7 +80,7 @@ const SpendingCategoryPage: React.FC = () => {
               {/* 목표 달성을 위한 조언 */}
               <div className="mb-4">
                 <p>목표 달성을 위해 매달</p>
-                <p>약 <span className="font-galmuri-11-bold" style={{color: "#C8A1E0"}}>{spendingAnalysisData.futureMonthlyExpenses.toLocaleString(undefined, {maximumFractionDigits: 0}).substr(1)}원</span> 이하로 사용해야 합니다.</p>
+                <p>약 <span className="font-galmuri-11-bold" style={{color: "#C8A1E0"}}>{spendingAnalysisData.futureMonthlyExpenses.toLocaleString(undefined, {maximumFractionDigits: 0})}원</span> 이하로 사용해야 합니다.</p>
               </div>
             </div>
           </div>
