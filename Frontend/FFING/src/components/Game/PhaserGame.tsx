@@ -49,10 +49,8 @@ const PhaserGame: React.FC<PhaserGameProps> = (
   const [opponentHp, setOpponentHp] = React.useState<number>(opponentHp1); // 상대 펫의 현재 체력, 기본값 10(임시)
 
 
-  // 속도는 임시로 정함(추후에 선공 계산 로직 추가)
-  const isNotFirst = opponentAttack?.isFirst
-  const mySpeed = 10
-  const opponentSpeed = 5
+  // 상대방의 선공 여부
+  const isOpponentFirst = opponentAttack?.isFirst
 
   const myInfo = useMatchStore((state) => state.myInfo)
   const opponentInfo = useMatchStore((state) => state.opponentInfo)
@@ -401,7 +399,7 @@ const PhaserGame: React.FC<PhaserGameProps> = (
     // 배경 음악이 돌고 있지 않으면 배경 음악 재생
       sceneRef.current?.sound.play('game-background', {volume: 0.3, loop: true});
       (async () => {
-          if (isNotFirst) {
+          if (isOpponentFirst) {
             // 내 공격 -> 상대 공격
             await petFight(myPetRefs, opponentPetRefs, selectedAttack.damage, selectedAttack.damageStatus, setOpponentHp)
             // 상대가 전투 지속이 가능하면
