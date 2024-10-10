@@ -60,7 +60,7 @@ const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUser
             setTimeout(() => {
               navigate(`/game/battle/${data.matchId}`);
               console.log("배틀페이지로 이동");
-            }, 2000);
+            }, 3000);
           });
           // 매칭 요청
           console.log(myUserId);
