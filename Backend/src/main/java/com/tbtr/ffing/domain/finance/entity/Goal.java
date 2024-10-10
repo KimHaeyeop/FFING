@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @Entity
+@ToString
 @Table(name = "goal")
 public class Goal {
 
