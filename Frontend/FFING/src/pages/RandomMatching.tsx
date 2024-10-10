@@ -90,8 +90,6 @@ const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUser
     const myPosition = (myStat / maxStat) * 100;
     const opponentPosition = (opponentStat / maxStat) * 100;
 
-    console.log(myPosition, opponentPosition);
-
     return (
       <div className="mb-4">
         <p className="text-sm">{label}</p>
@@ -129,7 +127,7 @@ const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUser
                 <p className="bg-[#C8E697] p-1 rounded-md text-sm">{myInfo?.winCount}승</p>
                 <p className="bg-[#D23B8C] p-1 rounded-md text-white text-sm">{myInfo?.loseCount}패</p>
               </div>
-              <p className="text-xl mt-2 font-galmuri-11-bold">{myInfo?.totalStat}</p>
+              <p className="text-xl mt-2 font-galmuri-11-bold">전투력 {myInfo?.totalStat}</p>
             </div>  
 
             {myInfo?.stats.map((stat: number, index: number) => (
@@ -142,7 +140,7 @@ const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUser
                 <p className="bg-[#C8E697] p-1 rounded-md text-sm">{opponentInfo?.winCount}승</p>
                 <p className="bg-[#D23B8C] p-1 rounded-md text-white text-sm">{opponentInfo?.loseCount}패</p>
               </div>
-              <p className="text-xl mt-2 font-galmuri-11-bold">{opponentInfo?.totalStat}</p>
+              <p className="text-xl mt-2 font-galmuri-11-bold">전투력 {opponentInfo?.totalStat}</p>
             </div>
 
 
