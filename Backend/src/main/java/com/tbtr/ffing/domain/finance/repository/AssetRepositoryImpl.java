@@ -75,6 +75,7 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                         asset.updatedDate))
                 .from(asset)
                 .where(asset.user.userId.eq(userId))
+                .orderBy(asset.updatedDate.desc())
                 .limit(6)
                 .fetch();
     }
