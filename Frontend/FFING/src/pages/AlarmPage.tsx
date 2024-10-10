@@ -13,7 +13,7 @@ import { getPetImageUrl } from "../utils/petUtils";
 
 interface alarmInterface {
   alarmId: string;
-  alarmType: string;
+  alarmLabel: string;
   alarmContent: string;
 }
 
@@ -27,10 +27,19 @@ const AlarmPage: React.FC = () => {
   const [alarms, setAlarms] = useState<alarmInterface[]>([
     {
       alarmId: "1",
-      alarmType: "확인",
+      alarmLabel: "확인",
       alarmContent: "check",
     },
   ]);
+
+  // alarmLabel에 따라 한국어로 변형해주는 딕셔너리
+  const alarmLabelMap: { [key: string]: string } = {
+    "CHECK": "확인",
+    "ADVICE": "권고",
+    "CAUTION": "경고",
+    "WARNING": "위험",
+  };
+
 
   // 말풍선 색상을 결정하는 함수
   const getBubbleColor = (type: string) => {
@@ -51,6 +60,7 @@ const AlarmPage: React.FC = () => {
     try {
       const response = await getAlarms(String(userId));
       setAlarms(response.data.result)
+      console.log(response.data.result)
     } catch (error) {
       console.error('알림 데이터를 가져오는 중 오류 발생:', error);
     }
@@ -86,11 +96,11 @@ const AlarmPage: React.FC = () => {
                       {/* 말풍선 */}
                       <div
                         className={`absolute top-5 left-1/2 transform -translate-x-1/2 py-1 px-2 rounded-xl z-10 ${getBubbleColor(
-                          alarm.alarmType
+                          alarmLabelMap[alarm.alarmLabel]
                         )}`}
                       >
                         <p className="text-xs p-1 whitespace-nowrap">
-                          {alarm.alarmType}
+                          {alarmLabelMap[alarm.alarmLabel]}
                         </p>
                       </div>
                       <div className="scale-50 transform-origin-bottom-left mt-8">
