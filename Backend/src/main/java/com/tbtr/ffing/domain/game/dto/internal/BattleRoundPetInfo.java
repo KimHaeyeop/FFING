@@ -10,7 +10,6 @@ import java.util.ArrayList;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class BattleRoundPetInfo {
 
