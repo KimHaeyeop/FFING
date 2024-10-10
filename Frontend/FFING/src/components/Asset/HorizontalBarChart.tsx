@@ -13,10 +13,12 @@ import { getTargetPropertySpending } from "../../api/goalApi";
 ChartJS.register(Title, Tooltip, Legend, BarElement, LinearScale);
 
 interface HorizontalBarChartProps {
-  assetDiff: number
+  assetDiff: number;
 }
 
-const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ( {assetDiff} ) => {
+const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ({
+  assetDiff,
+}) => {
   const [property, setProperty] = React.useState(0);
   const [target, setTarget] = React.useState(0);
   const progressPercentage = (property / target) * 100;
@@ -51,9 +53,12 @@ const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ( {assetDiff} ) =>
       </div>
 
       {/* 목표 달성까지 남은 금액 표시 */}
-      <p className="mt-3">
-        {(assetDiff).toLocaleString()}원 남았습니다...
-      </p>
+      <div className="mt-4">
+        <span className="font-galmuri-11-bold">
+          {assetDiff.toLocaleString()}원
+        </span>
+        <span> 남았습니다...</span>
+      </div>
     </div>
   );
 };
