@@ -5,11 +5,9 @@ import AttackSelection from '../components/Game/AttackSelection';
 import AttackResult from '../components/Game/AttackResult';
 import DisplayWinner from '../components/Game/DisplayWinner';
 import GameResult from '../components/Game/DisplayResult';
-import randomMatchService from '../websocket/randomMatchService';  // randomMatchService 불러오기
 import { useAuthStore } from '../store/authStore';
 import { useMatchStore } from '../store/matchStore';
 import WebSocketClient from '../websocket/websocketClient';
-import { useLocation } from 'react-router-dom';
 
 interface AttackOption {
   name: string;
@@ -23,14 +21,15 @@ const BattlePage: React.FC = () => {
 
   const { matchId } = useParams<{ matchId: string }>();
   const { myInfo, opponentInfo } = useMatchStore();
-  const [selectedAttack, setSelectedAttack] = useState<{ name: string; damage: number; damageStatus: string; } | null>(null);
-  const [opponentAttack, setOpponentAttack] = useState<{ name: string; damage: number; damageStatus: string; } | null>(null);
+  const [selectedAttack, setSelectedAttack] = useState<{ name: string; damage: number; damageStatus: string } | null>(null);
+  const [opponentAttack, setOpponentAttack] = useState<{ name: string; damage: number; damageStatus: string; isFirst: boolean; } | null>(null);
   const [winner, setWinner] = useState<string | null>(null);
   const [showGameResult, setShowGameResult] = useState<boolean>(false);
-  
-  const [myPetUrl, setMyPetUrl] = useState<string>('/pets/default.png');  // 기본 이미지 설정
-  const [opponentPetUrl, setOpponentPetUrl] = useState<string>('/pets/default.png');
   const userId = useAuthStore((state) => state.userId);
+
+  // 추가: isFirst와 damageStatus를 상태로 저장
+  const [isFirst, setIsFirst] = useState<boolean>(false); 
+  const [damageStatus, setDamageStatus] = useState<string>('Normal'); 
 
   // 내 공격 리스트
   const myAttackOptions: AttackOption[] = myInfo?.stats.map((damage, index) => ({
@@ -50,7 +49,7 @@ const BattlePage: React.FC = () => {
   useEffect(() => {
     const client = WebSocketClient.getInstance();
 
-    const setupWebSocket = async (myUserId: number) => {
+    const setupWebSocket = async () => {
       try {
         if (!client.isConnectedStatus()) {
           await client.waitForConnect();
@@ -63,20 +62,14 @@ const BattlePage: React.FC = () => {
           if (result.pet1Info.petInfoId === myInfo?.petInfoId) {
             setMyPetInfo(result.pet1Info);
             setOpponentPetInfo(result.pet2Info);
+            setIsFirst(result.pet1Info.first); // 첫 번째 공격 여부 설정
+            setDamageStatus(result.pet1Info.damageStatus); // 데미지 상태 설정
           } else {
             setMyPetInfo(result.pet2Info);
             setOpponentPetInfo(result.pet1Info);
+            setIsFirst(result.pet2Info.first); // 첫 번째 공격 여부 설정
+            setDamageStatus(result.pet2Info.damageStatus); // 데미지 상태 설정
           }
-        });
-
-        // 나와 상대방의 펫 정보를 가져오는 구독
-        randomMatchService.subscribeToMatchReady(myUserId, (message) => {
-          const result = JSON.parse(message.body);
-          console.log("펫 정보 수신:", result);
-
-          // 나와 상대방의 petCode로 각각의 이미지 경로를 설정
-          setMyPetUrl(`/pets/${result.myPetInfo.petCode}.png`);
-          setOpponentPetUrl(`/pets/${result.opponentPetInfo.petCode}.png`);
         });
 
       } catch (error) {
@@ -84,7 +77,7 @@ const BattlePage: React.FC = () => {
       }
     };
 
-    setupWebSocket(userId || 1);
+    setupWebSocket();
 
     return () => {
       client.disconnect();
@@ -96,7 +89,8 @@ const BattlePage: React.FC = () => {
       setOpponentAttack({
         name: opponentAttackOptions[opponentPetInfo.attackNum].name,
         damage: opponentPetInfo.damageDealt,
-        damageStatus: opponentPetInfo.damageStatus,
+        damageStatus: damageStatus,
+        isFirst: isFirst,
       });
     }
   }, [opponentPetInfo]);
@@ -108,7 +102,7 @@ const BattlePage: React.FC = () => {
       setSelectedAttack({
         name: selected.name,
         damage: selected.damage,
-        damageStatus: 'ready',
+        damageStatus: 'Normal',
       });
 
       const client = WebSocketClient.getInstance();
