@@ -66,7 +66,7 @@ const PetStatusChart: React.FC = () => {
         },
         pointLabels: {
           font: {
-            family: "'Galmuri11'",
+            family: "'Galmuri11-Bold'",
             size: 12,
           },
           color: "#333",
