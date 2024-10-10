@@ -125,7 +125,7 @@ const AssetMainPage: React.FC = () => {
               </div>
             </div>
             <div className="flex justify-between m-4">
-              <p className="flex items-center text-left">월 평균 저축</p>
+              <p className="flex items-center text-left">월 평균 증액</p>
               <div className="text-right">
                 <p className="font-galmuri-11-bold">
                   {formatCurrency(assetGoal.averageIncrese)}

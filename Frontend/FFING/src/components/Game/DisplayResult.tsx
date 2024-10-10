@@ -12,7 +12,7 @@ const GameResult: React.FC<GameResultProps> = ({ winner }) => {
 
   return (
     <div
-      className="w-full max-w-lg mx-auto p-8 border-4 border-black rounded-lg flex flex-col justify-center items-center"
+      className="w-full h-full max-w-lg mx-auto p-8 border-4 border-black rounded-lg flex flex-col justify-center items-center"
       style={{ backgroundColor }}
     >
       <div className="flex w-full">
