@@ -37,6 +37,7 @@ public class BattleServiceImpl implements BattleService {
     private final UserRepository userRepository;
 
     private static final String BATTLE_KEY = "battle_key-";
+    private static final String COUNT_KEY = "count-";
     private static final String USER1_KEY = "user1Signal";
     private static final String USER2_KEY = "user2Signal";
     private static final int REQUIRED_SIGNALS = 2;
@@ -44,7 +45,8 @@ public class BattleServiceImpl implements BattleService {
 
     @Override
     public BattleInfoRes setBattleMatchInfo(String matchId, MatchInfo matchInfo) {
-        String redisKey = BATTLE_KEY + matchId;
+        String battleRedisKey = BATTLE_KEY + matchId;
+        String countRedisKey = COUNT_KEY + matchId;
 //        System.out.println(redisKey);
 
         // 1. 각 사용자들의 펫 정보
@@ -71,8 +73,8 @@ public class BattleServiceImpl implements BattleService {
         BattlePetInfo battlePetInfo1 = BattlePetInfo.from(pet1);
         BattlePetInfo battlePetInfo2 = BattlePetInfo.from(pet2);
         BattleInfo battleInfo = BattleInfo.from(matchId, battlePetInfo1, battlePetInfo2, LocalDateTime.now());
-        battleRedisTemplate.opsForValue().set(redisKey, battleInfo);
-        countRedisTemplate.opsForValue().set(redisKey, 0);
+        battleRedisTemplate.opsForValue().set(battleRedisKey, battleInfo);
+        countRedisTemplate.opsForValue().set(countRedisKey, 0);
         System.out.println(battleInfo.toString());
 
         // 사용자들에게 줄 정보 반환
@@ -87,9 +89,9 @@ public class BattleServiceImpl implements BattleService {
 
     @Override
     public BattleRoundInfoRes handleBattleSignal(BattleRoundInfoReq battleRoundInfo) {
-        String redisKey = BATTLE_KEY + battleRoundInfo.getMatchId();
+        String countRedisKey = COUNT_KEY + battleRoundInfo.getMatchId();
 
-        Long currentCount = countRedisTemplate.opsForValue().increment(redisKey, 1);
+        Long currentCount = countRedisTemplate.opsForValue().increment(countRedisKey, 1);
         System.out.println("Signal received from user: " + battleRoundInfo.getPetInfoId() + ". Current count: " + currentCount);
 
         if (currentCount != null) {
@@ -109,7 +111,7 @@ public class BattleServiceImpl implements BattleService {
                 performBattle(battleRoundInfo.getMatchId(), user1Signal, user2Signal);
 
                 // Reset the counter and clear the stored data for the next signals
-                countRedisTemplate.delete(redisKey);
+                countRedisTemplate.delete(countRedisKey);
                 userSignalRedisTemplate.delete(USER1_KEY);
                 userSignalRedisTemplate.delete(USER2_KEY);
             }
@@ -119,9 +121,9 @@ public class BattleServiceImpl implements BattleService {
     }
 
     public void performBattle(String matchId, BattleRoundInfoReq battleRoundInfo1, BattleRoundInfoReq battleRoundInfo2) {
-        String redisKey = BATTLE_KEY + matchId;
+        String battleRedisKey = BATTLE_KEY + matchId;
 
-        BattleInfo battleInfo = battleRedisTemplate.opsForValue().get(redisKey);
+        BattleInfo battleInfo = battleRedisTemplate.opsForValue().get(battleRedisKey);
 
         if (battleInfo != null) {
             System.out.println("Battle Start : " + battleInfo.toString());
@@ -174,7 +176,7 @@ public class BattleServiceImpl implements BattleService {
 
             // 만약 체력이 0 이면 redis에서 삭제
             if (pet1Hp <= 0 || pet2Hp <= 0) {
-                battleRedisTemplate.delete(redisKey);
+                battleRedisTemplate.delete(battleRedisKey);
 
                 // + 배틀 히스토리 기록
                 Long winnerPetId = findWinner(battlePetInfo1.getPetInfoId(), battlePetInfo2.getPetInfoId(), pet1Hp, pet2Hp, firstToMovePetId);
@@ -188,7 +190,7 @@ public class BattleServiceImpl implements BattleService {
                 battleHistoryRepository.save(battleHistory);
 
             } else {
-                battleRedisTemplate.opsForValue().set(redisKey, battleInfo);
+                battleRedisTemplate.opsForValue().set(battleRedisKey, battleInfo);
             }
 
             // 턴 결과 반환
