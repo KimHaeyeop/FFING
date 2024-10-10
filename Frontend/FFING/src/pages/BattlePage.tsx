@@ -28,8 +28,8 @@ const BattlePage: React.FC = () => {
   const userId = useAuthStore((state) => state.userId);
 
   // 추가: isFirst와 damageStatus를 상태로 저장
-  const [isFirst, setIsFirst] = useState<boolean>(false); 
-  const [damageStatus, setDamageStatus] = useState<string>('Normal'); 
+  // const [isFirst, setIsFirst] = useState<boolean>(false); 
+  // const [damageStatus, setDamageStatus] = useState<string>('Normal'); 
 
   // 내 공격 리스트
   const myAttackOptions: AttackOption[] = myInfo?.stats.map((damage, index) => ({
@@ -62,13 +62,13 @@ const BattlePage: React.FC = () => {
           if (result.pet1Info.petInfoId === myInfo?.petInfoId) {
             setMyPetInfo(result.pet1Info);
             setOpponentPetInfo(result.pet2Info);
-            setIsFirst(result.pet1Info.first); // 첫 번째 공격 여부 설정
-            setDamageStatus(result.pet1Info.damageStatus); // 데미지 상태 설정
+            // setIsFirst(result.pet1Info.first); // 첫 번째 공격 여부 설정
+            // setDamageStatus(result.pet1Info.damageStatus); // 데미지 상태 설정
           } else {
             setMyPetInfo(result.pet2Info);
             setOpponentPetInfo(result.pet1Info);
-            setIsFirst(result.pet2Info.first); // 첫 번째 공격 여부 설정
-            setDamageStatus(result.pet2Info.damageStatus); // 데미지 상태 설정
+            // setIsFirst(result.pet2Info.first); // 첫 번째 공격 여부 설정
+            // setDamageStatus(result.pet2Info.damageStatus); // 데미지 상태 설정
           }
         });
 
@@ -89,11 +89,21 @@ const BattlePage: React.FC = () => {
       setOpponentAttack({
         name: opponentAttackOptions[opponentPetInfo.attackNum].name,
         damage: opponentPetInfo.damageDealt,
-        damageStatus: damageStatus,
-        isFirst: isFirst,
+        damageStatus: opponentPetInfo.damageStatus,
+        isFirst: opponentPetInfo.first,
       });
     }
   }, [opponentPetInfo]);
+
+  useEffect(() => {
+    if (myPetInfo) {
+      setSelectedAttack({
+        name: myAttackOptions[myPetInfo.attackNum].name,
+        damage: myPetInfo.damageDealt,
+        damageStatus: myPetInfo.damageStatus,
+      });
+    }
+  }, [myPetInfo]);
 
   // 공격 선택 함수
   const handleAttackSelect = (attackName: string) => {
