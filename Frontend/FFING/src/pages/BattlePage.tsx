@@ -22,11 +22,20 @@ const BattlePage: React.FC = () => {
   const [winner, setWinner] = useState<string | null>(null);  // 승리자
   const [showGameResult, setShowGameResult] = useState<boolean>(false);  // GameResult 표시 여부
 
-  // 선택 가능한 모든 공격, 데미지는 임시로 지정
-  const attackOptions: AttackOption[] = myInfo?.stats.map((damage, index) => ({
+  // 내 공격 리스트
+  const myAttackOptions: AttackOption[] = myInfo?.stats.map((damage, index) => ({
     name: ['금융', '식비', '생활/문화', '교통', '쇼핑'][index],  // 공격 이름 배열
     damage: damage,
   })) || [];  // myInfo가 없을 경우 빈 배열로 초기화
+
+  // 상대 공격 리스트
+  const opponentAttackOptions: AttackOption[] = opponentInfo?.stats.map((damage, index) => ({
+    name: ['금융', '식비', '생활/문화', '교통', '쇼핑'][index],  // 공격 이름 배열
+    damage: damage,
+  })) || [];  // opponentInfo가 없을 경우 빈 배열로 초기화
+
+  const [myPetInfo, setMyPetInfo] = useState<any>(null);
+  const [opponentPetInfo, setOpponentPetInfo] = useState<any>(null);
 
   useEffect(() => {
     const client = WebSocketClient.getInstance();
@@ -44,10 +53,33 @@ const BattlePage: React.FC = () => {
         client.subscribe(`/sub/battle/playing/${matchId}`, (message) => {
           const result = JSON.parse(message.body);
           console.log("상대 공격 수신:", result);
-          setOpponentAttack(result.opponentAttack);
-          setWinner(result.winner);
+
+          if (result.pet1Info.petInfoId === myInfo?.petInfoId) {
+            setMyPetInfo(result.pet1Info);
+            setOpponentPetInfo(result.pet2Info);
+          } else {
+            setMyPetInfo(result.pet2Info);
+            setOpponentPetInfo(result.pet1Info);
+          }
+          
+          // setOpponentAttack({
+          //   name: opponentAttackOptions[opponentPetInfo.attackNum].name,
+          //   damage: opponentAttackOptions[opponentPetInfo.attackNum].damage,
+          // });
+
+          console.log(opponentAttack?.name);
+          console.log(opponentAttack?.damage);
+
+          if (result.isFinished) {
+            if (myPetInfo.isFirst) {
+              setWinner(myPetInfo);
+            } else {
+              setWinner(opponentPetInfo);
+            }
+          }
+
+
         });
-        // console.log("배틀 구독 요청했습니다.");
       } catch (error) {
         console.error("웹소켓 연결 실패:", error);
       }
@@ -60,9 +92,18 @@ const BattlePage: React.FC = () => {
     };
   }, [matchId]);
 
+  useEffect(() => {
+    if (opponentPetInfo) {
+      setOpponentAttack({
+        name: opponentAttackOptions[opponentPetInfo.attackNum].name,
+        damage: opponentAttackOptions[opponentPetInfo.attackNum].damage,
+      });
+    }
+  }, [opponentPetInfo]); // opponentPetInfo가 업데이트될 때만 실행
+
   // 공격을 선택하면 상대방이 임의로 공격을 선택하게 하는 함수 -> socket 연결 되면 없어질 함수
   const handleAttackSelect = (attackName: string) => {
-    const selected = attackOptions.find((attack) => attack.name === attackName);
+    const selected = myAttackOptions.find((attack) => attack.name === attackName);
     if (selected) {
       setSelectedAttack(selected);
 
@@ -70,8 +111,8 @@ const BattlePage: React.FC = () => {
 
       client.publish(`/pub/battle/${matchId}`, {
         matchId: matchId,
-        petInfoId: myInfo?.petInfoId, // 임의의 사용자 ID, 실제로는 인증된 사용자 ID를 사용
-        petAttackNum: attackOptions.indexOf(selected),
+        petInfoId: myInfo?.petInfoId,
+        petAttackNum: myAttackOptions.indexOf(selected),
       });
 
 
@@ -102,7 +143,7 @@ const BattlePage: React.FC = () => {
         <div className="flex justify-center items-center text-xm font-bold my-2 h-[5dvh]">
           <span className="mr-4">{myInfo?.nickname}</span>
           <span className="mx-4">vs</span>
-          <span className="ml-4">상대닉네임</span>
+          <span className="ml-4">{opponentInfo?.nickname}</span>
         </div>
         {/* Phaser 게임 컨테이너 */}
         <PhaserGame 
@@ -114,7 +155,7 @@ const BattlePage: React.FC = () => {
         />
        {/* 공격 선택 컴포넌트 */}
        <div className="mt-2">
-        {/* 랭킹 변동, 네비게이터를 보여주는 컴포넌트 */}
+        {/* 랭킹 변동, 네이게이터를 보여주는 컴포넌트 */}
           {winner ? (
             showGameResult ? (
               <GameResult 
@@ -131,7 +172,7 @@ const BattlePage: React.FC = () => {
             <AttackResult selectedAttack={selectedAttack} opponentAttack={opponentAttack}/> // 승자가 결정되지 않고, 모두 공격을 선택했을 때
           ) : (
             // 공격을 결정하는 컴포넌트
-            <AttackSelection attackOptions={attackOptions} onSelectAttack={handleAttackSelect} /> // 승자가 결정되지 않고, 모두 공격을 선택하지 않았을 때
+            <AttackSelection attackOptions={myAttackOptions} onSelectAttack={handleAttackSelect} /> // 승자가 결정되지 않고, 모두 공격을 선택하지 않았을 때
           )}
         </div>
       </div>
