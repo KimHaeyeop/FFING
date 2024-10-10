@@ -150,8 +150,8 @@ public class BattleServiceImpl implements BattleService {
             int getPet2Stat = battlePetInfo2.getStats().get(pet1AtkNum);
             int getPet1AtkStat = battlePetInfo1.getStats().get(pet1AtkNum);
 
-            DamageInfo pet2DamageInfo = doDamage(getPet1Stat, getPet1AtkStat);
-            DamageInfo pet1DamageInfo = doDamage(getPet2Stat, getPet2AtkStat);
+            DamageInfo pet2DamageInfo = doDamage(getPet1Stat, getPet2AtkStat);
+            DamageInfo pet1DamageInfo = doDamage(getPet2Stat, getPet1AtkStat);
 
             // 데미지 넣기
             pet1Hp -= pet2DamageInfo.getDamage();
