@@ -32,6 +32,3 @@ dev-dist/
 *.env
 .env.*
 .vite
-
-# 대부분의 public file 무시
-public/
