@@ -21,7 +21,7 @@ const PetStatusChart: React.FC = () => {
     문화: 0,
   };
 
-  const labels = ["식비", "쇼핑", "교통", "생활/문화", "금융"];
+  const labels = ["식비", "쇼핑", "교통", "생활", "금융"];
 
   const data = {
     labels,
