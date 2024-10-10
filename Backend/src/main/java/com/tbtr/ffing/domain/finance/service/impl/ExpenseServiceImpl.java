@@ -88,7 +88,7 @@ public class ExpenseServiceImpl implements ExpenseService {
      * @return
      */
     @Override
-    public WeeklyCategoryExpenseRes getWeeklyCategoryExpenses(boolean isThisWeek) {
+    public WeeklyCategoryExpenseRes getWeeklyCategoryExpenses(boolean isThisWeek, Long userId) {
         LocalDate today = LocalDate.now();
         LocalDate startDate;
         LocalDate endDate;
@@ -101,7 +101,7 @@ public class ExpenseServiceImpl implements ExpenseService {
             endDate = startDate.plusDays(6); // Saturday
         }
 
-        List<CategoryExpenseRes> categoryExpenses = expenseRepository.findCategoryExpenses(startDate, endDate);
+        List<CategoryExpenseRes> categoryExpenses = expenseRepository.findCategoryExpenses(startDate, endDate, userId);
 
         BigDecimal weeklyTotalAmount = categoryExpenses.stream()
                                                        .map(CategoryExpenseRes::getTotalAmount)

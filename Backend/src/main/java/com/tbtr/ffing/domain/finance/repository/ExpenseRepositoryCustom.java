@@ -14,7 +14,7 @@ public interface ExpenseRepositoryCustom {
 
     List<ExpenseRes> findMonthlyExpenses(LocalDate startDate, LocalDate endDate, ExpenseCategory category, Long userId);
 
-    List<CategoryExpenseRes> findCategoryExpenses(LocalDate startDate, LocalDate endDate);
+    List<CategoryExpenseRes> findCategoryExpenses(LocalDate startDate, LocalDate endDate, Long userId);
 
     BigDecimal getTotalExpenseForMonth(String yearMonth);
 

@@ -17,7 +17,7 @@ public interface ExpenseService {
 
     List<ExpenseRes> getMonthlyExpenses(ExpenseCategory category, Long userId);
 
-    WeeklyCategoryExpenseRes getWeeklyCategoryExpenses(boolean aThis);
+    WeeklyCategoryExpenseRes getWeeklyCategoryExpenses(boolean aThis, Long userId);
 
     List<CategoryExpenseRes> getThisMonthCategoryExpenses();
 
