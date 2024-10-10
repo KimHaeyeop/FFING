@@ -49,7 +49,7 @@ public class DashboardServiceImpl implements DashboardService {
         BigDecimal monthGoalSpending = goalRepository.findRecentSpendingBalanceByUserId(userId);
 
         // 이번 달 카테고리 별 소비
-        List<CategoryExpenseRes> monthCategoryExpenses = expenseService.getThisMonthCategoryExpenses();
+        List<CategoryExpenseRes> monthCategoryExpenses = expenseService.getThisMonthCategoryExpenses(userId);
 
         return MainDashboardRes.builder()
                 .goalBalance(goalBalance)

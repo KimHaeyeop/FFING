@@ -119,13 +119,13 @@ public class ExpenseServiceImpl implements ExpenseService {
      * @return
      */
     @Override
-    public List<CategoryExpenseRes> getThisMonthCategoryExpenses() {
+    public List<CategoryExpenseRes> getThisMonthCategoryExpenses(Long userId) {
 
         LocalDate today = LocalDate.now();
         LocalDate startDate = today.withDayOfMonth(1); // 이번 달의 첫 날
         LocalDate endDate = today.withDayOfMonth(today.lengthOfMonth()); // 이번 달의 마지막 날
 
-        return expenseRepository.findCategoryExpenses(startDate, endDate);
+        return expenseRepository.findCategoryExpenses(startDate, endDate, userId);
     }
 
     /**

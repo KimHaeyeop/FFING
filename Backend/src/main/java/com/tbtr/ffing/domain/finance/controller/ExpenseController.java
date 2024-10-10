@@ -64,8 +64,8 @@ public class ExpenseController {
     }
 
     @GetMapping("/monthly/category")
-    public ResponseEntity<Response<List<CategoryExpenseRes>>> getThisMonthCategoryExpenses() {
-        List<CategoryExpenseRes> expenses = expenseService.getThisMonthCategoryExpenses();
+    public ResponseEntity<Response<List<CategoryExpenseRes>>> getThisMonthCategoryExpenses(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        List<CategoryExpenseRes> expenses = expenseService.getThisMonthCategoryExpenses(userDetails.getUserId());
         return ResponseEntity.ok(Response.<List<CategoryExpenseRes>>builder()
                                          .code(200L)
                                          .message("성공")
