@@ -30,7 +30,7 @@ public class ExpenseRepositoryCustomImpl implements ExpenseRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<ExpenseRes> findMonthlyExpenses(LocalDate startDate, LocalDate endDate, ExpenseCategory category) {
+    public List<ExpenseRes> findMonthlyExpenses(LocalDate startDate, LocalDate endDate, ExpenseCategory category, Long userId) {
         QExpense expense = QExpense.expense;
 
         BooleanExpression dateCondition = expense.expenseDate.between(
@@ -53,7 +53,9 @@ public class ExpenseRepositoryCustomImpl implements ExpenseRepositoryCustom {
                         expense.expenseTime,
                         expense.expenseBalance))
                 .from(expense)
-                .where(dateCondition.and(categoryCondition))
+                .where(
+                        expense.user.userId.eq(userId),
+                        dateCondition.and(categoryCondition))
                 .fetch();
     }
 

@@ -15,7 +15,7 @@ public interface ExpenseService {
 
     void addAccountTransferToExpense(AccountTransaction newAccountTransaction, User user);
 
-    List<ExpenseRes> getMonthlyExpenses(ExpenseCategory category);
+    List<ExpenseRes> getMonthlyExpenses(ExpenseCategory category, Long userId);
 
     WeeklyCategoryExpenseRes getWeeklyCategoryExpenses(boolean aThis);
 
