@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class BattleHistory {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long battleHistoryId;
 
     @Column(name = "created_at", updatable = false)
