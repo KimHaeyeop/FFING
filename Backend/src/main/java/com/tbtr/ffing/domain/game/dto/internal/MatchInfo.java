@@ -3,10 +3,11 @@ package com.tbtr.ffing.domain.game.dto.internal;
 import com.tbtr.ffing.domain.game.dto.request.DirectMatchReq;
 import lombok.*;
 
-@AllArgsConstructor
 @Getter
 @Builder
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class MatchInfo {
     private Long fromUserId;

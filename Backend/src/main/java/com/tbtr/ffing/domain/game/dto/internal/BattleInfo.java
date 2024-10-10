@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class BattleInfo {

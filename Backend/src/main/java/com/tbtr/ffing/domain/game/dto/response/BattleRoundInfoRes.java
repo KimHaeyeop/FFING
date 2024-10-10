@@ -3,10 +3,11 @@ package com.tbtr.ffing.domain.game.dto.response;
 import com.tbtr.ffing.domain.game.dto.internal.BattlePetInfo;
 import lombok.*;
 
-@AllArgsConstructor
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class BattleRoundInfoRes {
     private String matchId;
