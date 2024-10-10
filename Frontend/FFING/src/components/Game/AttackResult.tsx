@@ -13,27 +13,6 @@ interface AttackResultProps {
 
 const AttackResult: React.FC<AttackResultProps> = ({ selectedAttack, opponentAttack }) => {
 
-  useEffect(() => {
-    // WebSocket 구독을 통해 상대방의 공격 데이터를 받아오는 로직이 들어갈 부분입니다.
-    // 현재는 임의로 데이터를 설정합니다.
-
-    // 주석으로 WebSocket 연결 로직 설명
-    /*
-    useEffect(() => {
-      const socket = new WebSocket('ws://your-websocket-url');
-
-      socket.onmessage = (event) => {
-        const opponentAttackData = JSON.parse(event.data);
-        setOpponentAttack(opponentAttackData);
-      };
-
-      return () => {
-        socket.close();
-      };
-    }, []);
-    */
-  }, []);
-
   return (
     <div className="flex flex-col items-center justify-center">
       {/* 내가 선택한 공격 */}
