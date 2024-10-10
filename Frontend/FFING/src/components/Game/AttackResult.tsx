@@ -19,9 +19,9 @@ const AttackResult: React.FC<AttackResultProps> = ({ selectedAttack, opponentAtt
       <div className="w-full max-w-md mx-auto p-4 border-4 border-black rounded-lg bg-[#FAF7E1]">
         <div className="flex justify-between items-center p-2 mb-2">
           <div className="flex items-center">
-            <span className="text-lg">{selectedAttack.name}</span>
+            <span className="text-xl">{selectedAttack.name}</span>
           </div>
-          <span className="text-lg text-gray-700">{selectedAttack.damage}</span>
+          <span className="text-xl text-gray-700"><span className='text-sm flex'>위력</span>{selectedAttack.damage}</span>
         </div>
       </div>
 
@@ -30,13 +30,13 @@ const AttackResult: React.FC<AttackResultProps> = ({ selectedAttack, opponentAtt
         {opponentAttack ? (
           <div className="flex justify-between items-center p-2 mb-2">
             <div className="flex items-center">
-              <span className="text-lg">{opponentAttack.name}</span>
+              <span className="text-xl">{opponentAttack.name}</span>
             </div>
-            <span className="text-lg text-gray-700">{opponentAttack.damage}</span>
+            <span className="text-xl text-gray-700"><span className='text-sm flex'>위력</span>{opponentAttack.damage}</span>
           </div>
         ) : (
           // 상대방이 아직 선택하지 않았을 때
-          <div className="text-center text-lg">waiting...</div>
+          <div className="text-center text-xl">waiting...</div>
         )}
       </div>
     </div>
