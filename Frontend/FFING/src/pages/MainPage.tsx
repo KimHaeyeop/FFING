@@ -15,8 +15,9 @@ import { useDashBoardInfo } from "../hook/useDashBoardInfo";
 import { getPetImageUrl } from "../utils/petUtils";
 import LockIcon from "../assets/LockIcon.png";
 import UnlockIcon from "../assets/UnlockIcon.png";
+import { getGoalData, setGoal } from "../api/goalApi";
 
-// New component for the goal setting section
+// GoalSettingSection component remains the same
 const GoalSettingSection: React.FC<{
   isGoalSet: boolean;
   onSetGoal: () => void;
@@ -56,44 +57,242 @@ const GoalSettingSection: React.FC<{
   );
 };
 
-// 목표 설정 모달
+// Updated GoalSettingModal component
+// const GoalSettingModal: React.FC<{
+//   isOpen: boolean;
+//   onClose: () => void;
+//   onSave: (goalBalance: number, spendingBalance: number) => void;
+//   userId: number;
+// }> = ({ isOpen, onClose, onSave, userId }) => {
+//   const [goalData, setGoalData] = useState<any>(null);
+//   const [goalBalance, setGoalBalance] = useState("");
+//   const [spendingBalance, setSpendingBalance] = useState("");
+//   const [isLoading, setIsLoading] = useState(false);
+
+//   useEffect(() => {
+//     if (isOpen) {
+//       setIsLoading(true);
+//       getGoalData()
+//         .then((data) => {
+//           setGoalData(data);
+//           setGoalBalance(data.recommendedGoalBalance);
+//           setSpendingBalance(data.upperLimitBalance);
+//         })
+//         .catch((error) => {
+//           console.error("Error fetching goal data:", error);
+//         })
+//         .finally(() => {
+//           setIsLoading(false);
+//         });
+//     }
+//   }, [isOpen]);
+
+//   const handleSave = async () => {
+//     try {
+//       await setGoal({
+//         userId,
+//         goalBalance,
+//         spendingBalance,
+//       });
+//       onSave(Number(goalBalance), Number(spendingBalance));
+//       onClose();
+//     } catch (error) {
+//       console.error("Error setting goal:", error);
+//     }
+//   };
+
+//   if (!isOpen) return null;
+
+//   return (
+//     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+//       <div className="bg-white p-6 rounded-lg max-w-md w-[80%]">
+//         <h2 className="text-xl mb-4">목표 설정</h2>
+//         {isLoading ? (
+//           <p>로딩 중...</p>
+//         ) : goalData ? (
+//           <>
+//             <p>
+//               현재 총 자산: {Number(goalData.totalAsset).toLocaleString()}원
+//             </p>
+//             <p>
+//               추천 목표 자산:{" "}
+//               {Number(goalData.recommendedGoalBalance).toLocaleString()}원
+//             </p>
+//             <p>
+//               추천 지출 상한 범위:{" "}
+//               {Number(goalData.lowerLimitBalance).toLocaleString()}원 ~{" "}
+//               {Number(goalData.upperLimitBalance).toLocaleString()}원
+//             </p>
+//             <div className="mt-4">
+//               <label className="block mb-2">목표 자산</label>
+//               <input
+//                 type="number"
+//                 value={goalBalance}
+//                 onChange={(e) => setGoalBalance(e.target.value)}
+//                 className="border p-2 w-full mb-4"
+//               />
+//               <label className="block mb-2">지출 상한</label>
+//               <input
+//                 type="number"
+//                 value={spendingBalance}
+//                 onChange={(e) => setSpendingBalance(e.target.value)}
+//                 className="border p-2 w-full mb-4"
+//               />
+//             </div>
+//             <div className="flex justify-end">
+//               <button
+//                 onClick={onClose}
+//                 className="mr-2 px-4 py-2 bg-gray-300 rounded"
+//               >
+//                 취소
+//               </button>
+//               <button
+//                 onClick={handleSave}
+//                 className="px-4 py-2 bg-[#FF4500] text-white rounded"
+//               >
+//                 저장
+//               </button>
+//             </div>
+//           </>
+//         ) : (
+//           <p>데이터를 불러오는 데 실패했습니다.</p>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
 const GoalSettingModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
-  onSave: (goal: number) => void;
-}> = ({ isOpen, onClose, onSave }) => {
-  const [goal, setGoal] = useState("");
+  onSave: (goalBalance: number, spendingBalance: number) => void;
+  userId: number;
+}> = ({ isOpen, onClose, onSave, userId }) => {
+  const [goalData, setGoalData] = useState<any>(null);
+  const [goalBalance, setGoalBalance] = useState("");
+  const [spendingBalance, setSpendingBalance] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsLoading(true);
+      getGoalData()
+        .then((data) => {
+          setGoalData(data);
+          setGoalBalance(Math.floor(data.recommendedGoalBalance).toString());
+          setSpendingBalance(Math.floor(data.upperLimitBalance).toString());
+        })
+        .catch((error) => {
+          console.error("Error fetching goal data:", error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [isOpen]);
+
+  const handleSave = async () => {
+    try {
+      await setGoal({
+        userId,
+        goalBalance,
+        spendingBalance,
+      });
+      onSave(Number(goalBalance), Number(spendingBalance));
+      onClose();
+    } catch (error) {
+      console.error("Error setting goal:", error);
+    }
+  };
+
+  const formatNumberWithCommas = (x: number) => {
+    return Math.floor(x)
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg">
-        <h2 className="text-xl mb-4">목표 설정</h2>
-        <input
-          type="number"
-          value={goal}
-          onChange={(e) => setGoal(e.target.value)}
-          placeholder="목표 금액을 입력하세요"
-          className="border p-2 mb-4 w-full"
-        />
-        <div className="flex justify-end">
-          <button
-            onClick={onClose}
-            className="mr-2 px-4 py-2 bg-gray-300 rounded"
-          >
-            취소
-          </button>
-          <button
-            onClick={() => {
-              onSave(Number(goal));
-              onClose();
-            }}
-            className="px-4 py-2 bg-blue-500 text-white rounded"
-          >
-            저장
-          </button>
-        </div>
+      <div className="bg-white p-8 rounded-xl max-w-md w-[90%] shadow-lg">
+        <h2 className="text-2xl font-galmuri-11-bold mb-6 text-center">
+          목표 설정
+        </h2>
+        {isLoading ? (
+          <div className="flex justify-center items-center h-40">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+          </div>
+        ) : goalData ? (
+          <>
+            <div className="mb-6 bg-gray-100 p-4 rounded-lg">
+              <p className="text-sm text-gray-600 mb-2">현재 총 자산</p>
+              <p className="text-xl font-galmuri-11-bold">
+                {formatNumberWithCommas(goalData.totalAsset)}원
+              </p>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <label className="block mb-2 font-medium">
+                  {/* <Icon path={mdiPiggyBank} size={1} className="inline mr-2" /> */}
+                  목표 자산
+                </label>
+                <input
+                  type="number"
+                  value={goalBalance}
+                  onChange={(e) => setGoalBalance(e.target.value)}
+                  className="border p-3 w-full rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <p className="text-sm text-gray-500 mt-1">
+                  추천:{" "}
+                  {formatNumberWithCommas(goalData.recommendedGoalBalance)}원
+                </p>
+              </div>
+
+              <div>
+                <label className="block mb-2 font-medium">
+                  {/* <Icon
+                    path={mdiCashMultiple}
+                    size={1}
+                    className="inline mr-2"
+                  /> */}
+                  월 지출 상한
+                </label>
+                <input
+                  type="number"
+                  value={spendingBalance}
+                  onChange={(e) => setSpendingBalance(e.target.value)}
+                  className="border p-3 w-full rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <p className="text-sm text-gray-500 mt-1">
+                  추천 범위:{" "}
+                  {formatNumberWithCommas(goalData.lowerLimitBalance)}원 ~{" "}
+                  {formatNumberWithCommas(goalData.upperLimitBalance)}원
+                </p>
+              </div>
+            </div>
+
+            <div className="flex justify-end mt-8 space-x-4">
+              <button
+                onClick={onClose}
+                className="px-6 py-2 bg-gray-200 text-gray-800 font-galmuri-11-bold rounded-md hover:bg-gray-300 transition duration-200"
+              >
+                취소
+              </button>
+              <button
+                onClick={handleSave}
+                className="px-6 py-2 bg-[#FF4500] text-white rounded-md font-galmuri-11-bold hover:bg-[#FF5722] transition duration-200"
+              >
+                저장
+              </button>
+            </div>
+          </>
+        ) : (
+          <p className="text-center text-red-500">
+            데이터를 불러오는 데 실패했습니다.
+          </p>
+        )}
       </div>
     </div>
   );
@@ -112,7 +311,6 @@ const MainPage: React.FC = () => {
   const dvh = useViewportStore((state) => state.dvh);
   const { username, userId } = useAuthStore();
   const { data: dashBoardInfo } = useDashBoardInfo(String(userId));
-  const navigate = useNavigate();
 
   const petCode = dashBoardInfo?.petCode || "001";
   const petImageUrl = getPetImageUrl(petCode);
@@ -151,8 +349,8 @@ const MainPage: React.FC = () => {
     }
   };
 
-  const handleSetGoal = (goal: number) => {
-    console.log("Goal set:", goal);
+  const handleSetGoal = (goalBalance: number, spendingBalance: number) => {
+    console.log("Goal set:", goalBalance, "Spending limit:", spendingBalance);
     setIsGoalSet(true);
     localStorage.setItem("goalSet", "true");
   };
@@ -303,6 +501,7 @@ const MainPage: React.FC = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSetGoal}
+        userId={Number(userId)}
       />
     </div>
   );
