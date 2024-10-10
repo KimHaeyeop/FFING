@@ -13,6 +13,7 @@ interface PlayerInfo { // 사용자 정보
   petType: string;
   petTotalStat: number;
   recentMatches: string[];
+  petCode: string;
 }
 
 interface ModalProps {
@@ -62,6 +63,7 @@ const MatchingPageModal: React.FC<ModalProps> = ({ isOpen, onClose, opponentUser
           stompClient.subscribe(`/sub/battle/ready/${userId}`, (message) => { // 대기열 열어놓고
             const data = JSON.parse(message.body);
             setOpponentInfo(data);
+            console.log('-------------------------------------------------------------------------------------------------------------')
             console.log('상대방 정보:', data);
           });
 
@@ -138,7 +140,7 @@ const MatchingPageModal: React.FC<ModalProps> = ({ isOpen, onClose, opponentUser
 
   const handleReady = () => {
     console.log('Ready button clicked');
-    navigate('/game/battle');
+    navigate('/game/battle', {state: opponentInfo});
   };
 
   if (!isOpen) return null;
