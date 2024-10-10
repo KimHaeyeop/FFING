@@ -117,13 +117,13 @@ public class CardServiceImpl implements CardService {
 
         if (spendingPercentage.compareTo(new BigDecimal("50")) >= 0) {
             alarmTitle = "🚨비상🚨";
-            alarmContent = String.format("💸경고💸 %s에서 지출 상한의 %.0f%%를 사용했어요! 지출이 EVEN하지 않습니다.",
+            alarmContent = String.format("🚨비상🚨 %s에서 지출 상한의 %.0f%%를 사용했어요! 지출이 EVEN하지 않습니다.",
                     cardTransaction.getMerchant(),
                     spendingPercentage);
             alarmLabel = Alarm.AlarmLabel.WARNING;
         } else {
-            alarmTitle = "💸주의💸";
-            alarmContent = String.format("🚨비상🚨 %s에서 지출 상한의 %.0f%%를 사용했어요! 지출이 EVEN하지 않지 않습니다.",
+            alarmTitle = "💸나야..핑알림💸";
+            alarmContent = String.format("💸나야..핑알림💸 %s에서 지출 상한의 %.0f%%를 사용했어요! 지출이 EVEN하지 않지 않습니다.",
                     cardTransaction.getMerchant(),
                     spendingPercentage);
             alarmLabel = Alarm.AlarmLabel.CAUTION;
@@ -156,7 +156,7 @@ public class CardServiceImpl implements CardService {
                         cardTransaction.getMerchant(),
                         spendingPercentage);
             } else {
-                title = "💸주의💸";
+                title = "💸나야..핑알림💸";
                 body = String.format("%s에서 지출 상한의 %.0f%%를 사용했어요! 지출이 EVEN하지 않지 않습니다.",
                         cardTransaction.getMerchant(),
                         spendingPercentage);
