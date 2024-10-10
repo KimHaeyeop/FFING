@@ -7,6 +7,8 @@ import java.util.List;
 public interface AssetRepositoryCustom {
     AssetRes findCurrentAssetByUserId(long userId);
 
+    AssetRes findRecentAssetByUserId(Long userId);
+
     List<AssetRes> findAssetHistoryByUserId(long userId);
 
     List<DepositAssetRes> findDepositAssetListByUserId(long ssafyUserId);
