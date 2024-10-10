@@ -90,7 +90,12 @@ const SpendingCategoryPage: React.FC = () => {
             <div className="flex justify-end items-center mt-4 mx-2">
               {/* 이번 달 지출 확인 route */}
               <Link to="monthly" className="flex items-center">
-                <p style={{ color: "#F55322" }}>이번 달 지출</p>
+                <p
+                  className="font-galmuri-11-bold"
+                  style={{ color: "#F55322" }}
+                >
+                  이번 달 지출
+                </p>
                 <Icon path={mdiChevronRight} size={1} color="#F55322" />
               </Link>
             </div>

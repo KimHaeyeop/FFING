@@ -57,111 +57,6 @@ const GoalSettingSection: React.FC<{
   );
 };
 
-// Updated GoalSettingModal component
-// const GoalSettingModal: React.FC<{
-//   isOpen: boolean;
-//   onClose: () => void;
-//   onSave: (goalBalance: number, spendingBalance: number) => void;
-//   userId: number;
-// }> = ({ isOpen, onClose, onSave, userId }) => {
-//   const [goalData, setGoalData] = useState<any>(null);
-//   const [goalBalance, setGoalBalance] = useState("");
-//   const [spendingBalance, setSpendingBalance] = useState("");
-//   const [isLoading, setIsLoading] = useState(false);
-
-//   useEffect(() => {
-//     if (isOpen) {
-//       setIsLoading(true);
-//       getGoalData()
-//         .then((data) => {
-//           setGoalData(data);
-//           setGoalBalance(data.recommendedGoalBalance);
-//           setSpendingBalance(data.upperLimitBalance);
-//         })
-//         .catch((error) => {
-//           console.error("Error fetching goal data:", error);
-//         })
-//         .finally(() => {
-//           setIsLoading(false);
-//         });
-//     }
-//   }, [isOpen]);
-
-//   const handleSave = async () => {
-//     try {
-//       await setGoal({
-//         userId,
-//         goalBalance,
-//         spendingBalance,
-//       });
-//       onSave(Number(goalBalance), Number(spendingBalance));
-//       onClose();
-//     } catch (error) {
-//       console.error("Error setting goal:", error);
-//     }
-//   };
-
-//   if (!isOpen) return null;
-
-//   return (
-//     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-//       <div className="bg-white p-6 rounded-lg max-w-md w-[80%]">
-//         <h2 className="text-xl mb-4">목표 설정</h2>
-//         {isLoading ? (
-//           <p>로딩 중...</p>
-//         ) : goalData ? (
-//           <>
-//             <p>
-//               현재 총 자산: {Number(goalData.totalAsset).toLocaleString()}원
-//             </p>
-//             <p>
-//               추천 목표 자산:{" "}
-//               {Number(goalData.recommendedGoalBalance).toLocaleString()}원
-//             </p>
-//             <p>
-//               추천 지출 상한 범위:{" "}
-//               {Number(goalData.lowerLimitBalance).toLocaleString()}원 ~{" "}
-//               {Number(goalData.upperLimitBalance).toLocaleString()}원
-//             </p>
-//             <div className="mt-4">
-//               <label className="block mb-2">목표 자산</label>
-//               <input
-//                 type="number"
-//                 value={goalBalance}
-//                 onChange={(e) => setGoalBalance(e.target.value)}
-//                 className="border p-2 w-full mb-4"
-//               />
-//               <label className="block mb-2">지출 상한</label>
-//               <input
-//                 type="number"
-//                 value={spendingBalance}
-//                 onChange={(e) => setSpendingBalance(e.target.value)}
-//                 className="border p-2 w-full mb-4"
-//               />
-//             </div>
-//             <div className="flex justify-end">
-//               <button
-//                 onClick={onClose}
-//                 className="mr-2 px-4 py-2 bg-gray-300 rounded"
-//               >
-//                 취소
-//               </button>
-//               <button
-//                 onClick={handleSave}
-//                 className="px-4 py-2 bg-[#FF4500] text-white rounded"
-//               >
-//                 저장
-//               </button>
-//             </div>
-//           </>
-//         ) : (
-//           <p>데이터를 불러오는 데 실패했습니다.</p>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
 const GoalSettingModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
@@ -179,8 +74,9 @@ const GoalSettingModal: React.FC<{
       getGoalData()
         .then((data) => {
           setGoalData(data);
-          setGoalBalance(Math.floor(data.recommendedGoalBalance).toString());
-          setSpendingBalance(Math.floor(data.upperLimitBalance).toString());
+          setGoalBalance("");
+          setSpendingBalance("");
+          console.log(data);
         })
         .catch((error) => {
           console.error("Error fetching goal data:", error);
@@ -234,42 +130,31 @@ const GoalSettingModal: React.FC<{
 
             <div className="space-y-6">
               <div>
-                <label className="block mb-2 font-medium">
-                  {/* <Icon path={mdiPiggyBank} size={1} className="inline mr-2" /> */}
-                  목표 자산
-                </label>
+                <label className="block mb-2 font-medium">목표 자산</label>
                 <input
                   type="number"
                   value={goalBalance}
                   onChange={(e) => setGoalBalance(e.target.value)}
                   className="border p-3 w-full rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder={`추천 : ${formatNumberWithCommas(
+                    goalData.recommendedGoalBalance
+                  )}원`}
                 />
                 <p className="text-sm text-gray-500 mt-1">
-                  추천:{" "}
-                  {formatNumberWithCommas(goalData.recommendedGoalBalance)}원
+                  가능 범위:{" "}
+                  {formatNumberWithCommas(goalData.lowerLimitBalance)}원 ~{" "}
+                  {formatNumberWithCommas(goalData.upperLimitBalance)}원
                 </p>
               </div>
 
               <div>
-                <label className="block mb-2 font-medium">
-                  {/* <Icon
-                    path={mdiCashMultiple}
-                    size={1}
-                    className="inline mr-2"
-                  /> */}
-                  월 지출 상한
-                </label>
+                <label className="block mb-2 font-medium">월 지출 상한</label>
                 <input
                   type="number"
                   value={spendingBalance}
                   onChange={(e) => setSpendingBalance(e.target.value)}
                   className="border p-3 w-full rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
-                <p className="text-sm text-gray-500 mt-1">
-                  추천 범위:{" "}
-                  {formatNumberWithCommas(goalData.lowerLimitBalance)}원 ~{" "}
-                  {formatNumberWithCommas(goalData.upperLimitBalance)}원
-                </p>
               </div>
             </div>
 
@@ -431,10 +316,13 @@ const MainPage: React.FC = () => {
                 className="border-black border-4 rounded-lg py-2 px-2"
                 style={{ height: "38%" }}
               >
-                <div className="flex justify-between items-center pb-2">
+                <div className="flex justify-between items-center pb-4">
                   <p className="text-lg">이번달 지출내역</p>
                   <Link to="/spending" className="flex items-center">
-                    <p style={{ color: "#F55322" }}>
+                    <p
+                      className="font-galmuri-11-bold"
+                      style={{ color: "#F55322" }}
+                    >
                       {dashBoardInfo.monthTotalSpending.toLocaleString(
                         undefined,
                         {
