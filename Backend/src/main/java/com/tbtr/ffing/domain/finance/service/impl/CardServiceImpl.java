@@ -9,16 +9,15 @@ import com.tbtr.ffing.domain.finance.dto.request.card.cHeader;
 import com.tbtr.ffing.domain.finance.dto.response.card.SsafyCreateCardTransactionRes;
 import com.tbtr.ffing.domain.finance.entity.Card;
 import com.tbtr.ffing.domain.finance.entity.CardTransaction;
-import com.tbtr.ffing.domain.finance.entity.Expense;
 import com.tbtr.ffing.domain.finance.entity.ExpenseCategory;
+import com.tbtr.ffing.domain.finance.entity.Goal;
 import com.tbtr.ffing.domain.finance.repository.CardRepository;
 import com.tbtr.ffing.domain.finance.repository.CardTransactionRepository;
-import com.tbtr.ffing.domain.finance.repository.ExpenseRepository;
+import com.tbtr.ffing.domain.finance.repository.GoalRepository;
 import com.tbtr.ffing.domain.finance.service.CardService;
 import com.tbtr.ffing.domain.finance.service.ExpenseService;
 import com.tbtr.ffing.domain.user.entity.User;
 import com.tbtr.ffing.domain.user.repository.UserRepository;
-import com.tbtr.ffing.global.batch.expense.ExpenseItemProcessor;
 import com.tbtr.ffing.global.openfeign.SsafyDeveloperClient;
 import com.tbtr.ffing.global.util.InstitutionTransactionNoGenerator;
 import com.tbtr.ffing.domain.alarm.entity.Alarm;
@@ -32,6 +31,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -47,8 +48,9 @@ public class CardServiceImpl implements CardService {
     private final ExpenseService expenseService;
     private final FcmRepository fcmRepository;
     private final AlarmRepository alarmRepository;
+    private final GoalRepository goalRepository;
 
-    private static final Logger logger = LoggerFactory.getLogger(ExpenseItemProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(CardServiceImpl.class);
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
@@ -56,13 +58,9 @@ public class CardServiceImpl implements CardService {
     @Value("${SSAFY_DEVELOPER_API_KEY}")
     private String apiKey;
 
-    /**
-     * 카드 지출 발생
-     */
     @Override
     @Transactional
     public void addCardTransaction(CreateCardTransactionReq createCardTransactionReq) {
-
         String userKey = createCardTransactionReq.getUserKey();
         ExpenseCategory category = createCardTransactionReq.getCategory();
 
@@ -79,55 +77,98 @@ public class CardServiceImpl implements CardService {
         SsafyCreateCardTransactionReq ssafyCreateCardTransactionReq = SsafyCreateCardTransactionReq.of(header, createCardTransactionReq.getCardNo(), createCardTransactionReq.getCvc(), createCardTransactionReq.getMerchantId(), createCardTransactionReq.getPaymentBalance());
         SsafyCreateCardTransactionRes res = ssafyDeveloperClient.createCreditCardTransaction(ssafyCreateCardTransactionReq);
 
-        // cardNo로 card찾기
         Card card = cardRepository.findByCardNo(ssafyCreateCardTransactionReq.getCardNo());
 
         if(card != null) {
-            // cardTransaction 추가
             CardTransaction newCardTransaction = res.toEntity(card, category);
             cardTransactionRepository.save(newCardTransaction);
 
-            // expense 추가
             expenseService.addCardTransactionToExpense(newCardTransaction, user);
 
-            // Alarm 엔티티에 알림 추가
-            addAlarmForCardTransaction(newCardTransaction, user);
+            BigDecimal spendingPercentage = calculateSpendingPercentage(user.getUserId(), newCardTransaction.getPaymentBalance());
 
-            // FCM 토큰 찾기
-            Fcm fcm = fcmRepository.findByUser(user);
+            addAlarmForCardTransaction(newCardTransaction, user, spendingPercentage);
 
-            if (fcm != null && fcm.getFcmToken() != null) {
-                // FCM 이벤트 발생
-                FcmEvent fcmEvent = new FcmEvent(this,
-                        "💥💥새로운 지출 등록💥💥",
-                        "지출 항목: " + newCardTransaction.getMerchant() + ", 금액: " + newCardTransaction.getPaymentBalance(),
-                        fcm.getFcmToken());
-
-                logger.info("Publishing FCM event for user: {}", user.getUsername());
-                eventPublisher.publishEvent(fcmEvent);
-                logger.info("FCM event published successfully for user: {}", user.getUsername());
-            } else {
-                logger.warn("No FCM token found for user: {}", user.getUsername());
-            }
+            sendFcmNotification(user, newCardTransaction, spendingPercentage);
         }
     }
 
-    private void addAlarmForCardTransaction(CardTransaction cardTransaction, User user) {
+    private BigDecimal calculateSpendingPercentage(Long userId, BigDecimal spendingAmount) {
+        String yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
+        Goal spendingGoal = goalRepository.findSpendingByUserIdAndYearMonth(userId, yearMonth);
+
+        System.out.println(spendingGoal);
+
+        if (spendingGoal != null && spendingGoal.getBalance().compareTo(BigDecimal.ZERO) > 0) {
+            return spendingAmount.divide(spendingGoal.getBalance(), 4, RoundingMode.HALF_UP)
+                    .multiply(new BigDecimal("100"));
+        }
+
+        return BigDecimal.ZERO;
+    }
+
+    private void addAlarmForCardTransaction(CardTransaction cardTransaction, User user, BigDecimal spendingPercentage) {
         LocalDate currentDate = LocalDate.now();
         LocalTime currentTime = LocalTime.now();
+
+        String alarmTitle;
+        String alarmContent;
+        Alarm.AlarmLabel alarmLabel;
+
+        if (spendingPercentage.compareTo(new BigDecimal("50")) >= 0) {
+            alarmTitle = "🚨비상🚨";
+            alarmContent = String.format("💸경고💸 %s에서 지출 상한의 %.0f%%를 사용했어요! 지출이 EVEN하지 않습니다.",
+                    cardTransaction.getMerchant(),
+                    spendingPercentage);
+            alarmLabel = Alarm.AlarmLabel.WARNING;
+        } else {
+            alarmTitle = "💸주의💸";
+            alarmContent = String.format("🚨비상🚨 %s에서 지출 상한의 %.0f%%를 사용했어요! 지출이 EVEN하지 않지 않습니다.",
+                    cardTransaction.getMerchant(),
+                    spendingPercentage);
+            alarmLabel = Alarm.AlarmLabel.CAUTION;
+        }
 
         Alarm alarm = Alarm.builder()
                 .alarmDate(currentDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")))
                 .alarmTime(currentTime.format(DateTimeFormatter.ofPattern("HHmmss")))
                 .alarmType(Alarm.AlarmType.EVENT)
-                .alarmTitle("💥💥새로운 지출이 등록💥💥")
-                .alarmContent("지출 항목: " + cardTransaction.getMerchant() + ", 금액: " + cardTransaction.getPaymentBalance())
-                .alarmLabel(Alarm.AlarmLabel.CAUTION)
+                .alarmTitle(alarmTitle)
+                .alarmContent(alarmContent)
+                .alarmLabel(alarmLabel)
                 .alarmStatus(false)
                 .userId(user.getUserId())
                 .build();
 
         alarmRepository.save(alarm);
         logger.info("Alarm created for card transaction: {}", cardTransaction.getCardTransactionId());
+    }
+
+    private void sendFcmNotification(User user, CardTransaction cardTransaction, BigDecimal spendingPercentage) {
+        Fcm fcm = fcmRepository.findByUser(user);
+
+        if (fcm != null && fcm.getFcmToken() != null) {
+            String title;
+            String body;
+            if (spendingPercentage.compareTo(new BigDecimal("50")) >= 0) {
+                title = "🚨비상🚨";
+                body = String.format("%s에서 지출 상한의 %.0f%%를 사용했어요! 지출이 EVEN하지 않습니다.",
+                        cardTransaction.getMerchant(),
+                        spendingPercentage);
+            } else {
+                title = "💸주의💸";
+                body = String.format("%s에서 지출 상한의 %.0f%%를 사용했어요! 지출이 EVEN하지 않지 않습니다.",
+                        cardTransaction.getMerchant(),
+                        spendingPercentage);
+            }
+
+            FcmEvent fcmEvent = new FcmEvent(this, title, body, fcm.getFcmToken());
+
+            logger.info("Publishing FCM event for user: {}", user.getUsername());
+            eventPublisher.publishEvent(fcmEvent);
+            logger.info("FCM event published successfully for user: {}", user.getUsername());
+        } else {
+            logger.warn("No FCM token found for user: {}", user.getUsername());
+        }
     }
 }
