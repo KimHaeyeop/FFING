@@ -49,7 +49,7 @@ const AttackSelection: React.FC<AttackSelectionProps> = ({ attackOptions, onSele
       {attackOptions.map((attack) => (
         <div
           key={attack.name}
-          className={`flex justify-between items-center p-2 mb-2 border-b-2 border-gray-300 cursor-pointer hover:bg-gray-100 transition ${typeColorMap[attack.name].background}`}
+          className={`flex justify-between items-center p-1 mb-2 border-b-2 border-gray-300 cursor-pointer hover:bg-gray-100 transition ${typeColorMap[attack.name].background}`}
           onClick={() => handleAttackSelect(attack.name)}
         >
           {/* 공격 이름 */}
@@ -57,7 +57,7 @@ const AttackSelection: React.FC<AttackSelectionProps> = ({ attackOptions, onSele
             <span className="text-xl">{attack.name}</span>
           </div>
           {/* 공격 데미지 */}
-          <span className="text-xl text-gray-700 mr-4">{attack.damage}</span>
+          <span className="text-xl text-gray-700 mr-4"><span className='text-sm flex'>위력</span>{attack.damage}</span>
         </div>
       ))}
     </div>

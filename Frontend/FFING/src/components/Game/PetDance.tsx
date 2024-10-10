@@ -37,7 +37,7 @@ const PetDance: React.FC = () => {
     const game = new Phaser.Game(config);
 
     function preload(this: Phaser.Scene) {
-      this.load.image('ffingLogo', '/logo/FFING.png') // FFING.png 파일을 로드
+      this.load.image('ffingLogo', '/logo/FFING-galmuri-11-bold.png') // FFING.png 파일을 로드
       this.load.spritesheet('pet1', pet1Sprite, { frameWidth: 128, frameHeight: 128 });
       this.load.spritesheet('pet2', pet2Sprite, { frameWidth: 128, frameHeight: 128 });
       this.load.spritesheet('pet3', pet3Sprite, { frameWidth: 128, frameHeight: 128 });
@@ -141,7 +141,7 @@ const PetDance: React.FC = () => {
       this.tweens.add({
         targets: image,
         alpha: { from: 0, to: 1 },  // 0에서 1로 서서히 보이게 함
-        scale: { from: 0.5, to: 1.5 },  // 크기를 0.5에서 1.5로 확대
+        scale: { from: 0.5, to: 1 },  // 크기를 0.5에서 1.5로 확대
         ease: 'Power1',  // 애니메이션 곡선(완만하게 가속/감속)
         duration: 2000,  // 2초 동안 애니메이션
       });
