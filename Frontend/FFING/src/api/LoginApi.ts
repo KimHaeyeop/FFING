@@ -20,7 +20,7 @@ export const login = async (email: string, password: string) => {
     }
   } catch (error: any) {
     // 에러가 발생하면 상위 컴포넌트로 에러를 던짐
-    if (error.response && error.response.status === 401) {
+    if (error.response && (error.response.status === 401 || error.response.status === 404)) {
       throw new Error('아이디 또는 비밀번호가 잘못되었습니다.');
     } else {
       throw new Error('로그인 중 오류가 발생하였습니다.');

@@ -17,7 +17,7 @@ const randomMatchService = {
     const client = WebSocketClient.getInstance();
     if (client.isConnectedStatus()) {
       client.publish('/pub/match/random/cancel', { userId });
-      console.log("cancle 요청 보냈어요");
+      console.log("cancel 요청 보냈어요");
     } else {
       console.log("웹 소켓이 연결되지 않았습니다.")
     }
