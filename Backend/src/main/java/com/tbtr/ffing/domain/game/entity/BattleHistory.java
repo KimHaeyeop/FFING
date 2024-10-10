@@ -26,9 +26,9 @@ public class BattleHistory {
     @Column(nullable = false)
     private Long winnerPetId;
 
-    @Column(nullable = false)
+    @Column(name = "pet1_id", nullable = false)
     private Long pet1_Id;
-    @Column(nullable = false)
+    @Column(name = "pet2_id", nullable = false)
     private Long pet2_Id;
 
 }
