@@ -33,9 +33,8 @@ const SpendingCategoryPage: React.FC = () => {
           {/* 전달 대비 지출액 */}
           <div style={{height: '50%'}}>
             <div className="text-left text-2xl m-2">
-              <span >{getCurrentMonth()}월보다</span>
-              <br />
-              {/* 전달 지출보다 이번달 지출이 큰 경우 */}
+			<span>{Number(getCurrentMonth()) - 1 === 0 ? 12 : Number(getCurrentMonth()) - 1}월보다</span>
+			{/* 전달 지출보다 이번달 지출이 큰 경우 */}
               {lastMonthExpense > previousMonthExpense ? (
                 <div className="flex items-center">
                   <Icon path={mdiTriangle} size={1} style={{color: '#465A65'}}></Icon>
@@ -80,7 +79,7 @@ const SpendingCategoryPage: React.FC = () => {
               {/* 목표 달성을 위한 조언 */}
               <div className="mb-4">
                 <p>목표 달성을 위해 매달</p>
-                <p>약 <span className="font-galmuri-11-bold" style={{color: "#C8A1E0"}}>{spendingAnalysisData.futureMonthlyExpenses.toLocaleString(undefined, {maximumFractionDigits: 0}).substr(1)}원</span> 이하로 사용해야 합니다.</p>
+                <p>약 <span className="font-galmuri-11-bold" style={{color: "#C8A1E0"}}>{spendingAnalysisData.futureMonthlyExpenses.toLocaleString(undefined, {maximumFractionDigits: 0})}원</span> 이하로 사용해야 합니다.</p>
               </div>
             </div>
           </div>
