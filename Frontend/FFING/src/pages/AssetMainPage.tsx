@@ -55,9 +55,6 @@ const AssetMainPage: React.FC = () => {
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
   const todayYear = new Date().getFullYear(); // 현재 연도
-  const assetDifference = assetHistory[0].totalAsset - assetHistory[1].totalAsset;
-  const iconPath = assetDifference > 0 ? mdiTriangle : mdiTriangleDown;
-  const message = assetDifference > 0 ? "늘었어요!" : "줄었어요!";
 
   // API로 자산 데이터를 가져오는 함수
   const fetchData = async () => {
@@ -69,7 +66,6 @@ const AssetMainPage: React.FC = () => {
       setAssetHistory(assetHistory);  // 자산 변동 추이 설정
       setAssetGoal(assetGoal);        // 목표 자산 설정
 
-      console.log(response.data.result.assetGoal.targetIncrease)
     } catch (error) {
       console.error("Error fetching certain asset data:", error);
     }
@@ -78,6 +74,11 @@ const AssetMainPage: React.FC = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  // assetHistory 배열이 비어있지 않은지 확인
+  const assetDifference = assetHistory.length > 1 ? assetHistory[0].totalAsset - assetHistory[1].totalAsset : 0;
+  const iconPath = assetDifference > 0 ? mdiTriangle : mdiTriangleDown;
+  const message = assetDifference > 0 ? "늘었어요!" : "줄었어요!";
 
   return (
     <div className="flex justify-center items-center">
@@ -161,7 +162,7 @@ const AssetMainPage: React.FC = () => {
                 >
                   {formatCurrency(assetDifference)}
                 </span>
-                &nbsp;
+                 
                 <span>{message}</span>
               </div>
             </div>

@@ -143,9 +143,6 @@ const PetDance: React.FC = () => {
         scale: { from: 0.5, to: 1.5 },  // 크기를 0.5에서 1.5로 확대
         ease: 'Power1',  // 애니메이션 곡선(완만하게 가속/감속)
         duration: 2000,  // 2초 동안 애니메이션
-        onComplete: () => {
-          console.log('Animation Complete');
-        }
       });
 
       // 펫 객체 생성
