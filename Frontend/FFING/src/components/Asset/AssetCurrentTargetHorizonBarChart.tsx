@@ -36,7 +36,7 @@ const AssetCurrentTargetHorizonBarChart: React.FC<
         0원
       </div>
       {/* 목표액 표시 */}
-      <div className="absolute bottom-[-20px] right-[5%] transform translate-x-1/2 text-xs">
+      <div className="absolute bottom-[-20px] right-[10%] transform translate-x-1/2 text-xs">
         {formatCurrency(target)}
       </div>
     </div>

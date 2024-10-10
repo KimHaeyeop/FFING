@@ -57,11 +57,15 @@ const SpendingCategoryPage: React.FC = () => {
             <div className="dot"></div>
             {/* 지출이 0보다 크면 렌더링, 소수점 절삭 */}
             {expense.totalExpense > 0 && (
-              <p className="text-[10px]">-{expense.totalExpense.toFixed(0)}</p>
+              <p className="text-[10px] text-red-500">
+                -{expense.totalExpense.toFixed(0)}
+              </p>
             )}
             {/* 수입이 0보다 크면 렌더링 */}
             {expense.totalIncome > 0 && (
-              <p className="text-[10px]">+{expense.totalIncome.toFixed(0)}</p>
+              <p className="text-[10px] text-blue-500">
+                +{expense.totalIncome.toFixed(0)}
+              </p>
             )}
           </div>
         );
@@ -119,7 +123,7 @@ const SpendingCategoryPage: React.FC = () => {
             className="flex justify-end items-center"
           >
             {/* 이번 달 소비액 */}
-            <p>
+            <p className="font-galmuri-11-bold">
               {monthTotalExpense.toLocaleString(undefined, {
                 maximumFractionDigits: 0,
               })}
@@ -147,10 +151,12 @@ const SpendingCategoryPage: React.FC = () => {
           </div>
           {/* 지출 분석 버튼 */}
           <div
-            className="bg-[#71D7DD] rounded-lg flex justify-center items-center"
+            className="bg-[#71D7DD] font-galmuri-11-bold rounded-lg flex justify-center items-center"
             style={{ height: "10%" }}
           >
-            <Link to="analysis">월간 지출 분석</Link>
+            <Link to="analysis" className="no-hover-effect">
+              월간 지출 분석
+            </Link>
           </div>
         </main>
         {/* 페이지 이동을 위한 footer */}

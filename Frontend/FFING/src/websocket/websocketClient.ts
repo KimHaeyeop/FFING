@@ -37,9 +37,9 @@ class WebSocketClient {
   }
 
   public static getInstance(): WebSocketClient {
-    if (!WebSocketClient.instance) {
-      WebSocketClient.instance = new WebSocketClient();
+    if (!WebSocketClient.instance || !WebSocketClient.instance.isConnected) {
       console.log("웹 소켓 생성됐어요", this.getInstance);
+      WebSocketClient.instance = new WebSocketClient();
     }
     // console.log("인스턴스 반환");
     return WebSocketClient.instance;

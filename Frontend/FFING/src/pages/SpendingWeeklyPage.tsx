@@ -106,13 +106,15 @@ const SpendingWeeklyPage: React.FC = () => {
           <div className="flex justify-between text-lg">
             <p className="text-sm">{weekRange}</p>
             <div>
-              <p className="text-sm">총 지출 </p>
-              <p className="text-sm">
-                {weeklyTotal.toLocaleString(undefined, {
-                  maximumFractionDigits: 0,
-                })}
-                원
-              </p>
+              <div>
+                <span className="text-sm">총 지출 </span>
+                <span className="text-sm font-galmuri-11-bold">
+                  {weeklyTotal.toLocaleString(undefined, {
+                    maximumFractionDigits: 0,
+                  })}
+                  원
+                </span>
+              </div>
             </div>
           </div>
           {/* 주간 달력을 나타내는 부분 */}
@@ -159,7 +161,7 @@ const SpendingWeeklyPage: React.FC = () => {
           <div className="flex justify-between text-lg mx-1">
             <p>일간 지출</p>
             {dailyTotal > 0 ? (
-              <p className="text-right mb-4">
+              <p className="text-right mb-4 font-galmuri-11-bold">
                 {dailyTotal.toLocaleString(undefined, {
                   maximumFractionDigits: 0,
                 })}
