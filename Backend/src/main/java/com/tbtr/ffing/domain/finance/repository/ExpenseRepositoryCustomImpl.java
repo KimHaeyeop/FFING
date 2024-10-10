@@ -119,7 +119,7 @@ public class ExpenseRepositoryCustomImpl implements ExpenseRepositoryCustom {
     }
 
     @Override
-    public List<DailySummaryRes> getDailySummaryForMonth(String yearMonth) {
+    public List<DailySummaryRes> getDailySummaryForMonth(String yearMonth, Long userId, Long ssafyUserId) {
         QExpense expense = QExpense.expense;
         QAccountTransaction transaction = QAccountTransaction.accountTransaction;
 
@@ -134,7 +134,9 @@ public class ExpenseRepositoryCustomImpl implements ExpenseRepositoryCustom {
         Map<LocalDate, BigDecimal> expenseMap = queryFactory
                 .select(expense.expenseDate, expense.expenseBalance.sum())
                 .from(expense)
-                .where(expense.expenseDate.between(
+                .where(
+                        expense.user.userId.eq(userId),
+                        expense.expenseDate.between(
                         startDate.format(DateTimeFormatter.BASIC_ISO_DATE),
                         endDate.format(DateTimeFormatter.BASIC_ISO_DATE)))
                 .groupBy(expense.expenseDate)
@@ -151,7 +153,9 @@ public class ExpenseRepositoryCustomImpl implements ExpenseRepositoryCustom {
         Map<LocalDate, BigDecimal> incomeMap = queryFactory
                 .select(transaction.transactionDate, transaction.transactionBalance.sum())
                 .from(transaction)
-                .where(transaction.transactionDate.between(
+                .where(
+                        transaction.account.ssafyUser.ssafyUserId.eq(ssafyUserId),
+                        transaction.transactionDate.between(
                                 startDate.format(DateTimeFormatter.BASIC_ISO_DATE),
                                 endDate.format(DateTimeFormatter.BASIC_ISO_DATE))
                         .and(transaction.transactionType.eq("1")))
@@ -176,7 +180,7 @@ public class ExpenseRepositoryCustomImpl implements ExpenseRepositoryCustom {
     }
 
     @Override
-    public List<ExpenseRes> findExpensesByDate(String date) {
+    public List<ExpenseRes> findExpensesByDate(String date, Long userId) {
         QExpense expense = QExpense.expense;
         return queryFactory
                 .select(Projections.constructor(ExpenseRes.class,
@@ -188,7 +192,9 @@ public class ExpenseRepositoryCustomImpl implements ExpenseRepositoryCustom {
                         expense.expenseTime,
                         expense.expenseBalance))
                 .from(expense)
-                .where(expense.expenseDate.eq(date))
+                .where(
+                        expense.user.userId.eq(userId),
+                        expense.expenseDate.eq(date))
                 .fetch();
     }
 
@@ -210,12 +216,14 @@ public class ExpenseRepositoryCustomImpl implements ExpenseRepositoryCustom {
     }
 
     @Override
-    public BigDecimal calculateTotalExpenseByDate(String date) {
+    public BigDecimal calculateTotalExpenseByDate(String date, Long userId) {
         QExpense expense = QExpense.expense;
         BigDecimal total = queryFactory
                 .select(expense.expenseBalance.sum())
                 .from(expense)
-                .where(expense.expenseDate.eq(date))
+                .where(
+                        expense.user.userId.eq(userId),
+                        expense.expenseDate.eq(date))
                 .fetchOne();
         return total != null ? total : BigDecimal.ZERO;
     }

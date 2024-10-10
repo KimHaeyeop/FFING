@@ -76,7 +76,8 @@ public class ExpenseController {
     @GetMapping("/monthly/{yearMonth}")
     public ResponseEntity<Response<MonthlySummaryRes>> getMonthlyExpenseSummary(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                                 @PathVariable String yearMonth) {
-        MonthlySummaryRes summary = expenseService.getMonthlySummary(yearMonth, userDetails.getUserId());
+        MonthlySummaryRes summary = expenseService.getMonthlySummary(yearMonth, userDetails.getUserId(),
+                userDetails.getSsafyUserId());
         return ResponseEntity.ok(Response.<MonthlySummaryRes>builder()
                                          .code(200L)
                                          .message("성공")
@@ -86,8 +87,9 @@ public class ExpenseController {
 
     @GetMapping
     public ResponseEntity<Response<DailyExpenseRes>> getDailyExpense(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestParam("date") @DateTimeFormat(pattern = "yyyyMMdd") String date) {
-        DailyExpenseRes dailyExpense = expenseService.getDailyExpense(date);
+        DailyExpenseRes dailyExpense = expenseService.getDailyExpense(date, userDetails.getUserId());
         return ResponseEntity.ok(Response.<DailyExpenseRes>builder()
                                          .code(200L)
                                          .message("성공")

@@ -20,13 +20,13 @@ public interface ExpenseRepositoryCustom {
 
     List<DailySummaryRes> getDailyExpensesForMonth(String yearMonth);
 
-    List<DailySummaryRes> getDailySummaryForMonth(String yearMonth);
+    List<DailySummaryRes> getDailySummaryForMonth(String yearMonth, Long userId, Long ssafyUserId);
 
-    List<ExpenseRes> findExpensesByDate(String date);
+    List<ExpenseRes> findExpensesByDate(String date, Long userId);
 
     List<ExpenseRes> findExpensesBetweenDates(String startDate, String endDate);
 
-    BigDecimal calculateTotalExpenseByDate(String date);
+    BigDecimal calculateTotalExpenseByDate(String date, Long userId);
 
     BigDecimal calculateTotalExpenseBetweenDates(String startDate, String endDate);
 }
