@@ -194,7 +194,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
 
     // 자원을 미리 로드하는 함수
     function preload(this: Phaser.Scene) {
-      this.load.image('background', `/backgrounds/battle-background-${Math.floor(Math.random() * 35)}.png`); // 랜덤 이미지 로드, 배경 이미지의 사이즈는 모두 동일함
+      this.load.image('background', `/backgrounds/battle-background-${Math.floor(Math.random() * 5)}.png`); // 랜덤 이미지 로드, 배경 이미지의 사이즈는 모두 동일함
       
       // 필요한 wav 파일을 가져오기(공격 효과음)
       for (let i = 1; i <= 7; i++) {
