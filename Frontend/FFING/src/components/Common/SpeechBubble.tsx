@@ -71,7 +71,7 @@ const SpeechBubble: React.FC<SpeechBubbleProps> = ({ text, x, y, containerWidth 
       <div
         style={{
           position: 'absolute',  // 말풍선의 꼬리 부분을 절대 위치로 배치
-          bottom: '-20px',  // 말풍선 아래에 꼬리 배치
+          bottom: '-15px',  // 말풍선 아래에 꼬리 배치
           left: '80%',  // 꼬리의 위치를 말풍선의 80% 지점에 배치
           transform: 'translateX(-50%)',  // 꼬리의 중앙 정렬
           width: 0,  // 꼬리의 너비는 0 (삼각형을 만들기 위해)

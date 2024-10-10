@@ -47,7 +47,6 @@ const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUser
             //   setOpponentInfo(user1PetInfo);
             // }
             if (user1PetInfo.nickname === nickname) {
-              console.log(user1PetInfo, '이규석')
               setMyInfo(user1PetInfo);
               setOpponentInfo(user2PetInfo);
             } else {
@@ -146,12 +145,7 @@ const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUser
               <p className="text-xl mt-2 font-galmuri-11-bold">{opponentInfo?.totalStat}</p>
             </div>
 
-            <button 
-              onClick={handleReadyClick} 
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300"
-            >
-              준비 완료
-            </button>
+
           </div>
         ) : (
           <p className="text-center text-lg">매칭 중...</p>
