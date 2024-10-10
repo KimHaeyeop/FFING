@@ -90,8 +90,6 @@ const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUser
     const myPosition = (myStat / maxStat) * 100;
     const opponentPosition = (opponentStat / maxStat) * 100;
 
-    console.log(myPosition, opponentPosition);
-
     return (
       <div className="mb-4">
         <p className="text-sm">{label}</p>

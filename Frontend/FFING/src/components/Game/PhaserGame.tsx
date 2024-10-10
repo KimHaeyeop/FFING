@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, Dispatch, SetStateAction } from 'react';
+import React, { useEffect, useRef, Dispatch, SetStateAction, useState } from 'react';
 import Phaser from 'phaser';
 import useViewportStore from '../../store/useViewportStore';
 // 우선 펫과 배경 시트는 임의로 지정, 나중에 연동해야겠지?
@@ -11,9 +11,11 @@ import opponentPetAttackSpriteSheet from '/pets/oni-attack.png';
 interface PhaserGameProps {
   selectedAttack: { name: string; damage: number } | null;
   opponentAttack: { name: string; damage: number } | null;
-  setSelectedAttack: (attack: { name: string; damage: number } | null) => void;
-  setOpponentAttack: (attack: { name: string; damage: number } | null) => void;
+  setSelectedAttack: (attack: { name: string; damage: number; damageStatus: string } | null) => void;
+  setOpponentAttack: (attack: { name: string; damage: number; damageStatus: string; } | null) => void;
   setWinner: (winner: string) => void;
+  myHp1: number,
+  opponentHp1: number,
 }
 
 // 타입을 지정하기 위한 interface 정의
@@ -28,16 +30,19 @@ interface PetRefs {
 }
 
 // 게임판 객체
-const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack, setSelectedAttack, setOpponentAttack, setWinner }) => {
+const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack, setSelectedAttack, setOpponentAttack, setWinner, myHp1, opponentHp1 }) => {
+
   const sceneRef = useRef<Phaser.Scene | null>(null);
   const gameContainerRef = useRef<HTMLDivElement>(null); // HTML DOM 요소를 참조하기 위한 ref
   const backgroundRef = useRef<Phaser.GameObjects.Image | null>(null)  // 배경을 참조하기 위한 ref
   // const backgroundRef = useRef<Phaser.GameObjects.TileSprite | null>(null)  // 움직이는 배경 설정
   const { dvw, dvh } = useViewportStore();  // 화면 뷰포트 크기 관리 (동적으로 화면 크기를 변경하기 위해 사용)
-  const [myMaxHp, setMyMaxHp] = React.useState<number>(10); // 내 펫의 최대 체력, 기본값 10(임시)
-  const [myHp, setMyHp] = React.useState<number>(myMaxHp); // 내 펫의 현재 체력, 기본값 10(임시)
-  const [opponentMaxHp, setOpponentMaxHp] = React.useState<number>(10); // 상대 펫의 최대 체력, 기본값 10(임시)
-  const [opponentHp, setOpponentHp] = React.useState<number>(opponentMaxHp); // 상대 펫의 현재 체력, 기본값 10(임시)
+  // const [myMaxHp, setMyMaxHp] = React.useState<number>(100); // 내 펫의 최대 체력, 기본값 10(임시)
+  const [myHp, setMyHp] = React.useState<number>(myHp1); // 내 펫의 현재 체력, 기본값 10(임시)
+  // const [opponentMaxHp, setOpponentMaxHp] = React.useState<number>(100); // 상대 펫의 최대 체력, 기본값 10(임시)
+  const [opponentHp, setOpponentHp] = React.useState<number>(opponentHp1); // 상대 펫의 현재 체력, 기본값 10(임시)
+
+  const maxHp = 100
 
   // 속도는 임시로 정함(추후에 선공 계산 로직 추가)
   const mySpeed = 10
@@ -85,7 +90,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
   }
   
   // 상대방을 공격하는 함수
-  function attackOpponent (attacker: PetRefs, defender: PetRefs, damage: number, setHp: Dispatch<SetStateAction<number>>) {
+  function attackOpponent (attacker: PetRefs, defender: PetRefs, damage: number, status: string, setHp: Dispatch<SetStateAction<number>>) {
     return new Promise<void> ((resolve) => {
       // 애니메이션 완료마다 체력을 계산하고 이벤트 리스너를 제거하여 턴이 지날 때마다 중복 호출을 제어하는 함수
       const onAnimationComplete = () => {
@@ -117,6 +122,24 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
           damageText?.destroy()
         }
       })
+
+      // 데미지 상태 렌더링
+      const damageStatusText = sceneRef.current?.add.text(defender.pet.current!.x - 50, defender.pet.current!.y - 250, status, {
+        fontFamily: 'Galmuri11',
+        fontStyle: '1000',
+        fontSize: '32px',
+        stroke: '#000000',
+        strokeThickness: 2,
+      })
+      damageText?.setTint(0xff00ff, 0xff00ff, 0x0000ff, 0x0000ff) // 텍스트 색상
+      // 1초 후 데미지 표시 삭제
+      sceneRef.current?.time.addEvent({
+        delay: 1000,
+        callback: () => {
+          damageStatusText?.destroy()
+        }
+      })
+      
     })
   }
     
@@ -156,10 +179,10 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
   }
   
   // 전투(한 턴)을 수행하는 함수
-  async function petFight (attacker: PetRefs, defender: PetRefs, damage: number, setHp: Dispatch<SetStateAction<number>>) {
+  async function petFight (attacker: PetRefs, defender: PetRefs, damage: number, status: string, setHp: Dispatch<SetStateAction<number>>) {
       // 단계적으로 함수를 수행하고 모두 완료하면 전투 상태 해제
       await moveToOpponent(attacker, defender)  // 접근
-      await attackOpponent(attacker, defender, damage, setHp)  // 공격
+      await attackOpponent(attacker, defender, damage, status, setHp)  // 공격
       await moveToBase(attacker)  // 복귀
     }
 
@@ -277,7 +300,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       // 내 펫 체력 표시
       const myHpFill = this.add.graphics();
       myHpFill.fillStyle(0xff0000, 1);
-      myHpFill.fillRoundedRect(myPet.x - 50, myPet.y - 100, myHp / myMaxHp * 100, 20, 10);
+      myHpFill.fillRoundedRect(myPet.x - 50, myPet.y - 100, myHp / maxHp * 100, 20, 10);
       myPetRefs.hpFill.current = myHpFill
 
       // 상대방 전체 체력 생성하기
@@ -288,7 +311,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       // 상대방 현재 체력 생성하기
       const opponentHpFill = this.add.graphics();
       opponentHpFill.fillStyle(0xff0000, 1);
-      opponentHpFill.fillRoundedRect(opponentPet.x - 50, opponentPet.y - 100, opponentHp / opponentMaxHp * 100, 20, 10);
+      opponentHpFill.fillRoundedRect(opponentPet.x - 50, opponentPet.y - 100, opponentHp / maxHp * 100, 20, 10);
       opponentPetRefs.hpFill.current = opponentHpFill
 
 
@@ -353,10 +376,10 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       (async () => {
           if (mySpeed > opponentSpeed) {
             // 내 공격 -> 상대 공격
-            await petFight(myPetRefs, opponentPetRefs, selectedAttack.damage, setOpponentHp)
+            await petFight(myPetRefs, opponentPetRefs, selectedAttack.damage, selectedAttack.damageStatus, setOpponentHp)
             // 상대가 전투 지속이 가능하면
             if (opponentHp - selectedAttack.damage > 0) {
-              await petFight(opponentPetRefs, myPetRefs, opponentAttack.damage, setMyHp)
+              await petFight(opponentPetRefs, myPetRefs, opponentAttack.damage, opponentAttack.damageStatus, setMyHp)
             }
             setTimeout(() => {
               setSelectedAttack(null) // 내 공격 삭제
@@ -364,9 +387,9 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
             }, 1000);
           } else {
           // 상대 공격 -> 내 공격
-            await petFight(opponentPetRefs, myPetRefs, opponentAttack.damage, setOpponentHp)
+            await petFight(opponentPetRefs, myPetRefs, opponentAttack.damage, opponentAttack.damageStatus, setOpponentHp)
             if (myHp - opponentAttack.damage > 0) {
-              await petFight(myPetRefs, opponentPetRefs, selectedAttack.damage, setMyHp)
+              await petFight(myPetRefs, opponentPetRefs, selectedAttack.damage, selectedAttack.damageStatus, setMyHp)
             }
             setTimeout(() => {
               setSelectedAttack(null) // 내 공격 삭제
@@ -379,7 +402,7 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
   
   // 체력 계산 및 전투 종료를 검정하는 함수
   useEffect(() => {
-    updateHpBar(myPetRefs, myHp, myMaxHp) // hp가 변경할 때마다 체력 업데이트
+    updateHpBar(myPetRefs, myHp, maxHp) // hp가 변경할 때마다 체력 업데이트
     // 내 체력이 0일 때
     if (myHp === 0) {
       // 사망 시 화면 흔들림
@@ -399,25 +422,21 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       myPetRefs.stunMark.current?.play(`${myPetRefs.name}-stun-bird`)  // 기절 마크 애니메이션 반복
       myPetRefs.stunMark.current?.setVisible(true)  // 스턴 모션이 보임
     } else {
-      // 피격 효과
-      myPetRefs.pet.current?.play(`${myPetRefs.name}-attacked`)
-      myPetRefs.pet.current?.scene.tweens.add({
-        targets: myPetRefs.pet.current,
-        x: myPetRefs.pet.current.x + myPetRefs.direction * opponentAttack!.damage * 10,  // 데미지에 따라 넉백 거리 설정
-        duration: 500,
-        yoyo: true,
-        ease: 'Power2',
-        onComplete: () => {
-          myPetRefs.pet.current?.play(`${myPetRefs.name}-idle`)  // 맞은 이후에는 전투 대기 상태로
+      myPetRefs.pet.current?.play(`${myPetRefs.name}-attacked`);
+
+      // 애니메이션이 완료된 후 idle 애니메이션으로 전환
+      myPetRefs.pet.current?.on('animationcomplete', (animation: Phaser.Animations.Animation) => {
+        if (animation.key === `${myPetRefs.name}-attacked`) {
+          // attacked 애니메이션이 끝났을 때 idle 상태로 전환
+          myPetRefs.pet.current?.play(`${myPetRefs.name}-idle`);
         }
-      })
-    }
-    
+      }
+    )}
   }, [myHp])
 
   // 체력 계산 및 전투 종료를 검정하는 함수
   useEffect(() => {
-    updateHpBar(opponentPetRefs, opponentHp, opponentMaxHp) // hp가 변경할 때마다 체력 업데이트
+    updateHpBar(opponentPetRefs, opponentHp, maxHp) // hp가 변경할 때마다 체력 업데이트
     // 상대 체력이 0일 때
     if (opponentHp === 0 && backgroundRef.current) {
       // 사망 시 화면 흔들림
@@ -438,19 +457,17 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       opponentPetRefs.stunMark.current?.play(`${opponentPetRefs.name}-stun-bird`)  // 기절 마크 애니메이션 반복
     } else {
     // 피격 효과
-    opponentPetRefs.pet.current?.play(`${opponentPetRefs.name}-attacked`)
-    opponentPetRefs.pet.current?.scene.tweens.add({
-        targets: opponentPetRefs.pet.current,
-        x: opponentPetRefs.pet.current.x + opponentPetRefs.direction * selectedAttack!.damage * 10,  // 데미지에 따라 넉백 거리 설정
-        duration: 500,
-        yoyo: true,
-        ease: 'Power2',
-        onComplete: () => {
-          opponentPetRefs.pet.current?.play(`${opponentPetRefs.name}-idle`)  // 맞은 이후에는 전투 대기 상태로
-        }
-      })
-    }
-  }, [opponentHp])
+    opponentPetRefs.pet.current?.play(`${opponentPetRefs.name}-attacked`);
+
+    // 애니메이션이 완료된 후 idle 애니메이션으로 전환
+    opponentPetRefs.pet.current?.on('animationcomplete', (animation: Phaser.Animations.Animation) => {
+      if (animation.key === `${opponentPetRefs.name}-attacked`) {
+        // attacked 애니메이션이 끝났을 때 idle 상태로 전환
+        opponentPetRefs.pet.current?.play(`${opponentPetRefs.name}-idle`);
+      }
+    });
+  }
+}, [opponentHp])
   
   return <div ref={gameContainerRef} className="round-lg" style={{ width: '100vw', height: '45vh' }} />;
 }

@@ -18,7 +18,7 @@ const BattlePage: React.FC = () => {
   const { matchId } = useParams<{ matchId: string }>();
   const { myInfo, opponentInfo } = useMatchStore();
   const [selectedAttack, setSelectedAttack] = useState<AttackOption | null>(null);  // 내가 선택한 공격
-  const [opponentAttack, setOpponentAttack] = useState<{ name: string; damage: number } | null>(null);  // 상대가 선택한 공격
+  const [opponentAttack, setOpponentAttack] = useState<{ name: string; damage: number; damageStatus: string; } | null>(null);  // 상대가 선택한 공격
   const [winner, setWinner] = useState<string | null>(null);  // 승리자
   const [showGameResult, setShowGameResult] = useState<boolean>(false);  // GameResult 표시 여부
 
@@ -46,7 +46,7 @@ const BattlePage: React.FC = () => {
     const setupWebSocket = async () => {
       try {
         if (!client.isConnectedStatus()) {
-          console.log("연결이 안되어있네요");
+          console.log("연결이 안 되어 있네요");
           await client.waitForConnect();
         }
         // console.log("배틀 구독하겠습니다");
@@ -67,16 +67,16 @@ const BattlePage: React.FC = () => {
           //   damage: opponentAttackOptions[opponentPetInfo.attackNum].damage,
           // });
 
-          console.log(opponentAttack?.name);
-          console.log(opponentAttack?.damage);
+          // console.log(opponentAttack?.name);
+          // console.log(opponentAttack?.damage);
 
-          if (result.isFinished) {
-            if (myPetInfo.isFirst) {
-              setWinner(myPetInfo);
-            } else {
-              setWinner(opponentPetInfo);
-            }
-          }
+          // if (result.isFinished) {
+          //   if (myPetInfo.isFirst) {
+          //     setWinner(myPetInfo);
+          //   } else {
+          //     setWinner(opponentPetInfo);
+          //   }
+          // }
 
 
         });
@@ -96,7 +96,8 @@ const BattlePage: React.FC = () => {
     if (opponentPetInfo) {
       setOpponentAttack({
         name: opponentAttackOptions[opponentPetInfo.attackNum].name,
-        damage: opponentAttackOptions[opponentPetInfo.attackNum].damage,
+        damage: opponentPetInfo.damageDealt,
+        damageStatus: opponentPetInfo.damageStatus,
       });
     }
   }, [opponentPetInfo]); // opponentPetInfo가 업데이트될 때만 실행
@@ -104,6 +105,7 @@ const BattlePage: React.FC = () => {
   // 공격을 선택하면 상대방이 임의로 공격을 선택하게 하는 함수 -> socket 연결 되면 없어질 함수
   const handleAttackSelect = (attackName: string) => {
     const selected = myAttackOptions.find((attack) => attack.name === attackName);
+    console.log(selected)
     if (selected) {
       setSelectedAttack(selected);
 
@@ -152,6 +154,8 @@ const BattlePage: React.FC = () => {
           setSelectedAttack={setSelectedAttack}
           setOpponentAttack={setOpponentAttack}
           setWinner={setWinner}
+          myHp1={myPetInfo?.hp? myPetInfo.hp : 100}
+          opponentHp1={opponentPetInfo?.hp ? opponentPetInfo.hp : 100}
         />
        {/* 공격 선택 컴포넌트 */}
        <div className="mt-2">
