@@ -7,8 +7,10 @@ import com.tbtr.ffing.domain.finance.dto.response.account.SsafyTransferDmdDepAcc
 import com.tbtr.ffing.domain.finance.entity.Account;
 import com.tbtr.ffing.domain.finance.entity.AccountTransaction;
 import com.tbtr.ffing.domain.finance.entity.Asset;
+import com.tbtr.ffing.domain.finance.entity.Goal;
 import com.tbtr.ffing.domain.finance.repository.AccountRepository;
 import com.tbtr.ffing.domain.finance.repository.AccountTransactionRepository;
+import com.tbtr.ffing.domain.finance.repository.GoalRepository;
 import com.tbtr.ffing.domain.finance.service.AccountService;
 import com.tbtr.ffing.domain.finance.service.AssetService;
 import com.tbtr.ffing.domain.finance.service.ExpenseService;
@@ -30,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -46,6 +49,7 @@ public class AccountServiceImpl implements AccountService {
     private final AssetService assetService;
     private final FcmRepository fcmRepository;
     private final AlarmRepository alarmRepository;
+    private final GoalRepository goalRepository;
     private final ApplicationEventPublisher eventPublisher;
 
     private static final Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
@@ -93,24 +97,46 @@ public class AccountServiceImpl implements AccountService {
             // expense 추가
             expenseService.addAccountTransferToExpense(newAccountTransaction, user);
 
+            // 목표 대비 지출 비율 계산
+            BigDecimal spendingPercentage = calculateSpendingPercentage(user.getUserId(), transferDmdDepAccReq.getTransactionBalance());
+
             // FCM 알림 전송
-            sendFcmNotification(user, transferDmdDepAccReq.getTransactionBalance());
+            sendFcmNotification(user, transferDmdDepAccReq.getTransactionBalance(), spendingPercentage);
 
             // Alarm 엔티티에 알림 추가
-            addAlarmForAccountTransfer(newAccountTransaction, user);
+            addAlarmForAccountTransfer(newAccountTransaction, user, spendingPercentage);
 
             // asset 업데이트 추가 필요
             assetService.addAccountTransferToAsset(newAccountTransaction, user);
         }
     }
 
-    private void sendFcmNotification(User user, BigDecimal amount) {
+    private BigDecimal calculateSpendingPercentage(Long userId, BigDecimal spendingAmount) {
+        String yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
+        Goal spendingGoal = goalRepository.findSpendingByUserIdAndYearMonth(userId, yearMonth);
+
+        if (spendingGoal != null && spendingGoal.getBalance().compareTo(BigDecimal.ZERO) > 0) {
+            return spendingAmount.divide(spendingGoal.getBalance(), 4, RoundingMode.HALF_UP)
+                    .multiply(new BigDecimal("100"));
+        }
+
+        return BigDecimal.ZERO;
+    }
+
+    private void sendFcmNotification(User user, BigDecimal amount, BigDecimal spendingPercentage) {
         Fcm fcm = fcmRepository.findByUser(user);
         if (fcm != null && fcm.getFcmToken() != null) {
-            FcmEvent fcmEvent = new FcmEvent(this,
-                    "💸 계좌 이체 알림",
-                    amount + "원이 이체되었습니다.",
-                    fcm.getFcmToken());
+            String title;
+            String content;
+            if (spendingPercentage.compareTo(new BigDecimal("50")) >= 0) {
+                title = "🚨비상🚨";
+                content = String.format("목표 지출의 %.0f%%가 이체되었습니다,,괜찮아,,.딩린리링리,.,,🎶", spendingPercentage);
+            } else {
+                title = "💸주의💸";
+                content = String.format("목표 지출의 %.0f%%가 이체되었습니다,,괜찮아,,.딩린리링리,.,,🎶", spendingPercentage);
+            }
+
+            FcmEvent fcmEvent = new FcmEvent(this, title, content, fcm.getFcmToken());
 
             logger.info("Publishing FCM event for user: {}", user.getUsername());
             eventPublisher.publishEvent(fcmEvent);
@@ -120,17 +146,31 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
-    private void addAlarmForAccountTransfer(AccountTransaction accountTransaction, User user) {
+    private void addAlarmForAccountTransfer(AccountTransaction accountTransaction, User user, BigDecimal spendingPercentage) {
         LocalDate currentDate = LocalDate.now();
         LocalTime currentTime = LocalTime.now();
+
+        String alarmTitle;
+        String alarmContent;
+        Alarm.AlarmLabel alarmLabel;
+
+        if (spendingPercentage.compareTo(new BigDecimal("50")) >= 0) {
+            alarmTitle = "🚨비상🚨";
+            alarmContent = String.format("🚨비상🚨 지출 상한의 %.0f%%만큼 이체가 발생했습니다,,괜찮아,,.딩린리링리,.,,🎶", spendingPercentage);
+            alarmLabel = Alarm.AlarmLabel.WARNING;
+        } else {
+            alarmTitle = "💸주의💸";
+            alarmContent = String.format("💸주의💸 지출 상한의 %.0f%%만큼 이체가 발생했습니다,,괜찮아,,.딩린리링리,.,,🎶", spendingPercentage);
+            alarmLabel = Alarm.AlarmLabel.CAUTION;
+        }
 
         Alarm alarm = Alarm.builder()
                 .alarmDate(currentDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")))
                 .alarmTime(currentTime.format(DateTimeFormatter.ofPattern("HHmmss")))
                 .alarmType(Alarm.AlarmType.EVENT)
-                .alarmTitle("계좌 이체 완료")
-                .alarmContent("금액: " + accountTransaction.getTransactionBalance() + "원이 이체되었습니다.")
-                .alarmLabel(Alarm.AlarmLabel.CHECK)
+                .alarmTitle(alarmTitle)
+                .alarmContent(alarmContent)
+                .alarmLabel(alarmLabel)
                 .alarmStatus(false)
                 .userId(user.getUserId())
                 .build();
