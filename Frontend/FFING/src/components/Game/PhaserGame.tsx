@@ -6,6 +6,8 @@ import myPetSpriteSheet from '/pets/penguin.png';
 import myPetAttackSpriteSheet from '/pets/penguin-attack.png'
 import opponentPetSpriteSheet from '/pets/oni.png';
 import opponentPetAttackSpriteSheet from '/pets/oni-attack.png';
+import { getPetImageUrl } from '../../utils/petUtils';
+import { useMatchStore } from '../../store/matchStore';
 
 // battlePage에서 받는 props 요소
 interface PhaserGameProps {
@@ -30,7 +32,15 @@ interface PetRefs {
 }
 
 // 게임판 객체
-const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack, setSelectedAttack, setOpponentAttack, setWinner, myHp1, opponentHp1 }) => {
+const PhaserGame: React.FC<PhaserGameProps> = (
+  { selectedAttack, 
+    opponentAttack, 
+    setSelectedAttack, 
+    setOpponentAttack, 
+    setWinner, 
+    myHp1, 
+    opponentHp1,
+   }) => {
 
   const sceneRef = useRef<Phaser.Scene | null>(null);
   const gameContainerRef = useRef<HTMLDivElement>(null); // HTML DOM 요소를 참조하기 위한 ref
@@ -47,6 +57,12 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
   // 속도는 임시로 정함(추후에 선공 계산 로직 추가)
   const mySpeed = 10
   const opponentSpeed = 5
+
+  const myInfo = useMatchStore((state) => state.myInfo)
+  const opponentInfo = useMatchStore((state) => state.opponentInfo)
+
+  const myPetUrl = getPetImageUrl(myInfo!.petCode)
+  const opponentPetUrl = getPetImageUrl(opponentInfo!.petCode)
 
 
   // 내 펫 관련 요소를 참조하는 딕셔너리
@@ -228,24 +244,24 @@ const PhaserGame: React.FC<PhaserGameProps> = ({ selectedAttack, opponentAttack,
       this.load.audio('game-background', '/musics/game-background.wav');
 
 
-      this.load.spritesheet('my-pet', myPetSpriteSheet, {
+      this.load.spritesheet('my-pet', myPetUrl, {
         frameWidth: 128,  // 각 프레임의 너비
         frameHeight: 128, // 각 프레임의 높이
       });
 
-      this.load.spritesheet('opponent-pet', opponentPetSpriteSheet, {
+      this.load.spritesheet('opponent-pet', opponentPetUrl, {
         frameWidth: 128,
         frameHeight: 128,
       });
 
       // 내 펫 공격 동작
-      this.load.spritesheet('my-pet-attack', myPetAttackSpriteSheet, {
+      this.load.spritesheet('my-pet-attack', myPetUrl!.replace('.png', '-attack.png'), {
         frameWidth: 192,
         frameHeight: 192,
       })
 
       // 상대 펫 공격 동작
-      this.load.spritesheet('opponent-pet-attack', opponentPetAttackSpriteSheet, {
+      this.load.spritesheet('opponent-pet-attack', opponentPetUrl!.replace('.png', '-attack.png'), {
         frameWidth: 192,
         frameHeight: 192,
       })
