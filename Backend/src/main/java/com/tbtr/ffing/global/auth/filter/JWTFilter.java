@@ -28,7 +28,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        String[] excludePath = {"/api/v1/auth", "/api/v1/ws"};
+        String[] excludePath = {"/api/v1/auth", "/api/v1/ws", "/api/v1/actuator"};
         String path = request.getRequestURI();
         return Arrays.stream(excludePath).anyMatch(path::startsWith);
 //        return true; // 테스트
