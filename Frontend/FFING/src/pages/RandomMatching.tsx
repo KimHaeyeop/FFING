@@ -47,7 +47,6 @@ const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUser
             //   setOpponentInfo(user1PetInfo);
             // }
             if (user1PetInfo.nickname === nickname) {
-              console.log(user1PetInfo, '이규석')
               setMyInfo(user1PetInfo);
               setOpponentInfo(user2PetInfo);
             } else {
