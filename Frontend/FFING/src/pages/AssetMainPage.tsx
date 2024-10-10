@@ -50,11 +50,22 @@ const AssetMainPage: React.FC = () => {
     startBalance: 0,
     targetIncrese: 0,
   });
-  const [assetHistory, setAssetHistory] = useState<assetHistoryInterface[]>([]); // 자산 변동 기록
+  const [assetHistory, setAssetHistory] = useState<assetHistoryInterface>({
+    assetId: 0,
+    totalAsset: 0,
+    accountBalance: 0,
+    depositSavingsBalance: 0,
+    stockBalance: 0,
+    othersBalance: 0,
+    updatedDate: '',
+  }
+
+  ); // 자산 변동 기록
 
   const dvw = useViewportStore((state) => state.dvw);
   const dvh = useViewportStore((state) => state.dvh);
   const todayYear = new Date().getFullYear(); // 현재 연도
+  console.log(assetHistory[0], assetHistory[1])
   const assetDifference = assetHistory[0].totalAsset - assetHistory[1].totalAsset;
   const iconPath = assetDifference > 0 ? mdiTriangle : mdiTriangleDown;
   const message = assetDifference > 0 ? "늘었어요!" : "줄었어요!";
