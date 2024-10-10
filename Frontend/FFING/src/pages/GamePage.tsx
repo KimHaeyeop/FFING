@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TextHeader from "../components/Common/TextHeader";
-import NavBar from "../components/Common/Navbar";
+// import NavBar from "../components/Common/Navbar";
 import PetIdle from "../components/Game/PetIdle";
 import PetStatusChart from "../components/Game/PetStatusChart";
 import RandomMatching from "./RandomMatching";
