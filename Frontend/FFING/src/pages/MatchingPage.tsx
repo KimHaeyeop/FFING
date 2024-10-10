@@ -13,6 +13,7 @@ interface PlayerInfo { // 사용자 정보
   petType: string;
   petTotalStat: number;
   recentMatches: string[];
+  petCode: string;
 }
 
 interface ModalProps {
@@ -138,7 +139,7 @@ const MatchingPageModal: React.FC<ModalProps> = ({ isOpen, onClose, opponentUser
 
   const handleReady = () => {
     console.log('Ready button clicked');
-    navigate('/game/battle');
+    navigate('/game/battle', {state: opponentInfo});
   };
 
   if (!isOpen) return null;
