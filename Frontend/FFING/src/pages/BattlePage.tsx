@@ -8,6 +8,7 @@ import GameResult from '../components/Game/DisplayResult';
 import { useAuthStore } from '../store/authStore';
 import { useMatchStore } from '../store/matchStore';
 import WebSocketClient from '../websocket/websocketClient';
+import useViewportStore from '../store/useViewportStore';
 
 interface AttackOption {
   name: string;
@@ -18,7 +19,7 @@ const BattlePage: React.FC = () => {
   // const { infos } = useLocation().state as { infos: PlayerInfo }; // useNavigate를 통해 가져온 데이터를 사용
   // console.log(infos)
 
-
+  const { dvw, dvh } = useViewportStore(); // Zustand에서 동적 뷰포트 크기 가져오기
   const { matchId } = useParams<{ matchId: string }>();
   const { myInfo, opponentInfo } = useMatchStore();
   const [selectedAttack, setSelectedAttack] = useState<{ name: string; damage: number; damageStatus: string } | null>(null);
@@ -33,13 +34,13 @@ const BattlePage: React.FC = () => {
 
   // 내 공격 리스트
   const myAttackOptions: AttackOption[] = myInfo?.stats.map((damage, index) => ({
-    name: ['금융', '식비', '생활/문화', '쇼핑', '교통'][index],  // 공격 이름 배열
+    name: ['금융', '식비', '생활', '쇼핑', '교통'][index],  // 공격 이름 배열
     damage: damage,
   })) || [];
 
   // 상대 공격 리스트
   const opponentAttackOptions: AttackOption[] = opponentInfo?.stats.map((damage, index) => ({
-    name: ['금융', '식비', '생활/문화', '쇼핑', '교통'][index],  // 공격 이름 배열
+    name: ['금융', '식비', '생활', '쇼핑', '교통'][index],  // 공격 이름 배열
     damage: damage,
   })) || [];
 
@@ -144,36 +145,45 @@ const BattlePage: React.FC = () => {
     <div className="flex justify-center items-center">
       <div className="w-screen h-screen">
         {/* 닉네임 */}
-        <div className="flex justify-center items-center text-xm font-bold my-2 h-[5dvh]">
+        <div className="flex justify-center items-center text-xm font-galmuri-11-bold my-2" style={{height: dvh * 5}}>
           <span className="mr-4">{myInfo?.nickname}</span>
           <span className="mx-4">vs</span>
           <span className="ml-4">{opponentInfo?.nickname}</span>
         </div>
-        {/* Phaser 게임 컨테이너 */}
-        <PhaserGame 
-          selectedAttack={selectedAttack}
-          opponentAttack={opponentAttack}
-          setSelectedAttack={setSelectedAttack}
-          setOpponentAttack={setOpponentAttack}
-          setWinner={setWinner}
-          myHp1={myPetInfo?.hp || 100}
-          opponentHp1={opponentPetInfo?.hp || 100}
-        />
+        <div style={{height: dvh * 50}}>
+          {/* Phaser 게임 컨테이너 */}
+          <PhaserGame 
+            selectedAttack={selectedAttack}
+            opponentAttack={opponentAttack}
+            setSelectedAttack={setSelectedAttack}
+            setOpponentAttack={setOpponentAttack}
+            setWinner={setWinner}
+            myHp1={myPetInfo?.hp || 100}
+            opponentHp1={opponentPetInfo?.hp || 100}
+          />
+          <div>
+            <p className='text-xl mt-1'>F F I N G</p>
+          </div>
+        </div>
         {/* 공격 선택 컴포넌트 */}
-        <div className="mt-2">
-          {winner ? (
-            showGameResult ? (
-              <GameResult winner={winner} />
+        <div style={{height: 45 * dvh}} className='bg-zinc-600 flex items-center'>
+          <div style={{width: 90 * dvw}} className='mx-auto '>
+            {winner ? (
+              showGameResult ? (
+                <GameResult winner={winner} />
+              ) : (
+                <div onClick={handleDisplayWinnerClick}>
+                  <DisplayWinner winner={winner} />
+                </div>
+              )
+            ) : selectedAttack ? (
+              <AttackResult selectedAttack={selectedAttack} opponentAttack={opponentAttack} />
             ) : (
-              <div onClick={handleDisplayWinnerClick}>
-                <DisplayWinner winner={winner} />
+              <div >
+                <AttackSelection attackOptions={myAttackOptions} onSelectAttack={handleAttackSelect} />
               </div>
-            )
-          ) : selectedAttack ? (
-            <AttackResult selectedAttack={selectedAttack} opponentAttack={opponentAttack} />
-          ) : (
-            <AttackSelection attackOptions={myAttackOptions} onSelectAttack={handleAttackSelect} />
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
