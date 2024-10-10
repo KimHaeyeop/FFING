@@ -12,6 +12,7 @@ import com.tbtr.ffing.domain.finance.repository.GoalRepository;
 import com.tbtr.ffing.domain.finance.service.AssetService;
 import com.tbtr.ffing.domain.user.entity.User;
 import com.tbtr.ffing.domain.user.repository.UserRepository;
+import java.math.RoundingMode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,8 +52,8 @@ public class AssetServiceImpl implements AssetService {
                 .goalBalance(goal.getBalance())
                 .startBalance(goal.getStartBalance())
                 .createdDate(goal.getCreatedAt().format(DateTimeFormatter.BASIC_ISO_DATE))
-                .averageIncrese(currentAsset.getTotalAsset().subtract(goal.getStartBalance()).divide(averagePeriod))
-                .targetIncrese(goal.getBalance().subtract(goal.getStartBalance()).divide(targetPeriod))
+                .averageIncrese(currentAsset.getTotalAsset().subtract(goal.getStartBalance()).divide(averagePeriod, 0, RoundingMode.CEILING))
+                .targetIncrese(goal.getBalance().subtract(goal.getStartBalance()).divide(targetPeriod, 0, RoundingMode.CEILING))
                 .build();
         assetHomeInfoMap.put("assetGoal", assetGoal);
 
