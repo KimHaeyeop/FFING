@@ -74,8 +74,9 @@ public class ExpenseController {
     }
 
     @GetMapping("/monthly/{yearMonth}")
-    public ResponseEntity<Response<MonthlySummaryRes>> getMonthlyExpenseSummary(@PathVariable String yearMonth) {
-        MonthlySummaryRes summary = expenseService.getMonthlySummary(yearMonth);
+    public ResponseEntity<Response<MonthlySummaryRes>> getMonthlyExpenseSummary(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                                @PathVariable String yearMonth) {
+        MonthlySummaryRes summary = expenseService.getMonthlySummary(yearMonth, userDetails.getUserId());
         return ResponseEntity.ok(Response.<MonthlySummaryRes>builder()
                                          .code(200L)
                                          .message("성공")

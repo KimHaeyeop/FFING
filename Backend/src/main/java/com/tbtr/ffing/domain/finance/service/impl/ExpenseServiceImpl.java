@@ -135,8 +135,8 @@ public class ExpenseServiceImpl implements ExpenseService {
      * @return
      */
     @Override
-    public MonthlySummaryRes getMonthlySummary(String yearMonth) {
-        BigDecimal totalExpense = expenseRepository.getTotalExpenseForMonth(yearMonth);
+    public MonthlySummaryRes getMonthlySummary(String yearMonth, Long userId) {
+        BigDecimal totalExpense = expenseRepository.getTotalExpenseForMonth(yearMonth, userId);
         BigDecimal totalIncome = accountTransactionRepository.getTotalIncomeForMonth(yearMonth);
         List<DailySummaryRes> dailySummary = expenseRepository.getDailySummaryForMonth(yearMonth);
 
@@ -182,7 +182,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         // 현재 날짜
         LocalDate now = LocalDate.now();
         // 6개월간 소비액 계산
-        List<BigDecimal> sixMonthTotalExpense = calculateSixMonthTotalExpense();
+        List<BigDecimal> sixMonthTotalExpense = calculateSixMonthTotalExpense(userId);
 
         // 저번달 대비 이번달 소비액 증감률 또는 차이값 계산
         BigDecimal monthOverMonthChange = calculateMonthOverMonthChange(sixMonthTotalExpense);
@@ -215,14 +215,14 @@ public class ExpenseServiceImpl implements ExpenseService {
                                         .build();
     }
 
-    private List<BigDecimal> calculateSixMonthTotalExpense() {
+    private List<BigDecimal> calculateSixMonthTotalExpense(Long userId) {
         List<BigDecimal> sixMonthTotalExpense = new ArrayList<>();
         LocalDate currentDate = LocalDate.now();
 
         for (int i = 5; i >= 0; i--) {
             LocalDate targetDate = currentDate.minusMonths(i);
             String yearMonth = targetDate.format(DATE_FORMATTER_YEARMONTH);
-            BigDecimal monthExpense = expenseRepository.getTotalExpenseForMonth(yearMonth);
+            BigDecimal monthExpense = expenseRepository.getTotalExpenseForMonth(yearMonth, userId);
             sixMonthTotalExpense.add(monthExpense == null ? BigDecimal.ZERO : monthExpense);
         }
         return sixMonthTotalExpense;
