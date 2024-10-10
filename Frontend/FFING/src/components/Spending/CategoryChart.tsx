@@ -112,6 +112,9 @@ const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({
           labels: {
             boxWidth: 15, // 범례 색상 공간의 너비 수정
             // 범례 색상의 테두리 삭제 필요
+            font: {
+              family: "Galmuri11", // Apply the font here
+            },
             generateLabels: (chart: Chart) => {
               const data = chart.data;
               return data.labels?.map((label, i) => {
@@ -124,7 +127,7 @@ const SpendingCategoryChart: React.FC<SpendingCategoryChartProps> = ({
                   fillStyle: data.datasets[0].backgroundColor[i],
                   hidden: false,
                   fontColor:
-                    label === highlightedCategory ? "#000000" : "#D9D9D9", // 이거 아직 안 되서 수정해야 함
+                    label === highlightedCategory ? "#000000" : "#828181", // 이거 아직 안 되서 수정해야 함
                   index: i,
                 };
               });
