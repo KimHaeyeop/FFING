@@ -37,6 +37,7 @@ const PetDance: React.FC = () => {
     const game = new Phaser.Game(config);
 
     function preload(this: Phaser.Scene) {
+      this.load.image('ffingLogo', '/logo/FFING.png') // FFING.png 파일을 로드
       this.load.spritesheet('pet1', pet1Sprite, { frameWidth: 128, frameHeight: 128 });
       this.load.spritesheet('pet2', pet2Sprite, { frameWidth: 128, frameHeight: 128 });
       this.load.spritesheet('pet3', pet3Sprite, { frameWidth: 128, frameHeight: 128 });
@@ -130,15 +131,15 @@ const PetDance: React.FC = () => {
     }
 
     function create(this: Phaser.Scene) {
-      // 로고 문구 렌더링
-      const text = this.add.text(this.scale.width / 2, this.scale.height / 2, 'FFING', {font: '80px Galmuri11-Bold', fontStyle: '1000', color: '#000000', stroke: '#000000', strokeThickness: 2, });
-      text.setAlpha(0);  // 초기 투명도 설정 (보이지 않음)
-      text.setScale(0.5);  // 초기 크기 설정 (작게 시작)
-      text.setOrigin(0.5, 0.5);  // 텍스트의 중심을 화면 중앙으로 설정
+      // FFING.png 이미지를 화면 중앙에 추가
+      const image = this.add.image(this.scale.width / 2, this.scale.height / 2, 'ffingLogo');
+      image.setAlpha(0);  // 초기 투명도 설정 (보이지 않음)
+      image.setScale(0.5);  // 초기 크기 설정 (작게 시작)
+      image.setOrigin(0.5, 0.5);  // 이미지 중심을 화면 중앙으로 설정
 
       // 트윈을 사용하여 서서히 나타나면서 확대
       this.tweens.add({
-        targets: text,
+        targets: image,
         alpha: { from: 0, to: 1 },  // 0에서 1로 서서히 보이게 함
         scale: { from: 0.5, to: 1.5 },  // 크기를 0.5에서 1.5로 확대
         ease: 'Power1',  // 애니메이션 곡선(완만하게 가속/감속)
