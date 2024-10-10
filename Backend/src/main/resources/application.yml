@@ -37,6 +37,14 @@ server:
   address: 0.0.0.0
   port: 8900
 
+management:
+  endpoint:
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 ---
 spring:
   config:
