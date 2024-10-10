@@ -24,13 +24,13 @@ const BattlePage: React.FC = () => {
 
   // 내 공격 리스트
   const myAttackOptions: AttackOption[] = myInfo?.stats.map((damage, index) => ({
-    name: ['금융', '식비', '생활/문화', '교통', '쇼핑'][index],  // 공격 이름 배열
+    name: ['금융', '식비', '생활/문화', '쇼핑', '교통'][index],  // 공격 이름 배열
     damage: damage,
   })) || [];  // myInfo가 없을 경우 빈 배열로 초기화
 
   // 상대 공격 리스트
   const opponentAttackOptions: AttackOption[] = opponentInfo?.stats.map((damage, index) => ({
-    name: ['금융', '식비', '생활/문화', '교통', '쇼핑'][index],  // 공격 이름 배열
+    name: ['금융', '식비', '생활/문화', '쇼핑', '교통'][index],  // 공격 이름 배열
     damage: damage,
   })) || [];  // opponentInfo가 없을 경우 빈 배열로 초기화
 
