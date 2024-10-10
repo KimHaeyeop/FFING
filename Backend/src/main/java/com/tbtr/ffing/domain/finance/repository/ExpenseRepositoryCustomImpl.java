@@ -60,14 +60,16 @@ public class ExpenseRepositoryCustomImpl implements ExpenseRepositoryCustom {
     }
 
     @Override
-    public List<CategoryExpenseRes> findCategoryExpenses(LocalDate startDate, LocalDate endDate) {
+    public List<CategoryExpenseRes> findCategoryExpenses(LocalDate startDate, LocalDate endDate, Long userId) {
         QExpense expense = QExpense.expense;
 
         // 카테고리별 총액 조회
         Map<ExpenseCategory, BigDecimal> categoryTotalMap = queryFactory
                 .select(expense.expenseCategory, expense.expenseBalance.sum())
                 .from(expense)
-                .where(expense.expenseDate.between(
+                .where(
+                        expense.user.userId.eq(userId),
+                        expense.expenseDate.between(
                         startDate.format(DateTimeFormatter.BASIC_ISO_DATE),
                         endDate.format(DateTimeFormatter.BASIC_ISO_DATE)))
                 .groupBy(expense.expenseCategory)

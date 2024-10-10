@@ -44,7 +44,8 @@ public class ExpenseController {
     }
 
     @GetMapping("/weekly/category/{week}")
-    public ResponseEntity<Response<WeeklyCategoryExpenseRes>> getWeeklyCategoryExpenses(@PathVariable String week) {
+    public ResponseEntity<Response<WeeklyCategoryExpenseRes>> getWeeklyCategoryExpenses(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                                        @PathVariable String week) {
         if (!week.equals("this") && !week.equals("last")) {
             return ResponseEntity.ok(Response.<WeeklyCategoryExpenseRes>builder()
                                              .code(400L)
@@ -53,7 +54,7 @@ public class ExpenseController {
         }
 
         boolean isThisWeek = week.equals("this");
-        WeeklyCategoryExpenseRes weeklyExpenses = expenseService.getWeeklyCategoryExpenses(isThisWeek);
+        WeeklyCategoryExpenseRes weeklyExpenses = expenseService.getWeeklyCategoryExpenses(isThisWeek, userDetails.getUserId());
 
         return ResponseEntity.ok(Response.<WeeklyCategoryExpenseRes>builder()
                                          .code(200L)
