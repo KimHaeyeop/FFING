@@ -53,7 +53,6 @@ export async function getStockDetail(ssafyUserId: string, stockAccountId: string
 export async function getTotalAsset(userId: string) {
   try {
     const response = await axios.get<getTotalAssetInterface>(`/asset?userId=${userId}`);
-    console.log(response)
     return response;
   } catch (error) {
     console.error('Error fetching total asset:', error);
