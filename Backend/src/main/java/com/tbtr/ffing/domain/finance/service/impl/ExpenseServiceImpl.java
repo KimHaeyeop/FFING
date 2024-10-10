@@ -73,12 +73,12 @@ public class ExpenseServiceImpl implements ExpenseService {
      * @return
      */
     @Override
-    public List<ExpenseRes> getMonthlyExpenses(ExpenseCategory category) {
+    public List<ExpenseRes> getMonthlyExpenses(ExpenseCategory category, Long userId) {
         LocalDate now = LocalDate.now();
         LocalDate startOfMonth = now.withDayOfMonth(1);
         LocalDate endOfMonth = now.withDayOfMonth(now.lengthOfMonth());
 
-        return expenseRepository.findMonthlyExpenses(startOfMonth, endOfMonth, category);
+        return expenseRepository.findMonthlyExpenses(startOfMonth, endOfMonth, category, userId);
     }
 
     /**
@@ -88,7 +88,7 @@ public class ExpenseServiceImpl implements ExpenseService {
      * @return
      */
     @Override
-    public WeeklyCategoryExpenseRes getWeeklyCategoryExpenses(boolean isThisWeek) {
+    public WeeklyCategoryExpenseRes getWeeklyCategoryExpenses(boolean isThisWeek, Long userId) {
         LocalDate today = LocalDate.now();
         LocalDate startDate;
         LocalDate endDate;
@@ -101,7 +101,7 @@ public class ExpenseServiceImpl implements ExpenseService {
             endDate = startDate.plusDays(6); // Saturday
         }
 
-        List<CategoryExpenseRes> categoryExpenses = expenseRepository.findCategoryExpenses(startDate, endDate);
+        List<CategoryExpenseRes> categoryExpenses = expenseRepository.findCategoryExpenses(startDate, endDate, userId);
 
         BigDecimal weeklyTotalAmount = categoryExpenses.stream()
                                                        .map(CategoryExpenseRes::getTotalAmount)
@@ -119,13 +119,13 @@ public class ExpenseServiceImpl implements ExpenseService {
      * @return
      */
     @Override
-    public List<CategoryExpenseRes> getThisMonthCategoryExpenses() {
+    public List<CategoryExpenseRes> getThisMonthCategoryExpenses(Long userId) {
 
         LocalDate today = LocalDate.now();
         LocalDate startDate = today.withDayOfMonth(1); // 이번 달의 첫 날
         LocalDate endDate = today.withDayOfMonth(today.lengthOfMonth()); // 이번 달의 마지막 날
 
-        return expenseRepository.findCategoryExpenses(startDate, endDate);
+        return expenseRepository.findCategoryExpenses(startDate, endDate, userId);
     }
 
     /**
@@ -135,10 +135,10 @@ public class ExpenseServiceImpl implements ExpenseService {
      * @return
      */
     @Override
-    public MonthlySummaryRes getMonthlySummary(String yearMonth) {
-        BigDecimal totalExpense = expenseRepository.getTotalExpenseForMonth(yearMonth);
-        BigDecimal totalIncome = accountTransactionRepository.getTotalIncomeForMonth(yearMonth);
-        List<DailySummaryRes> dailySummary = expenseRepository.getDailySummaryForMonth(yearMonth);
+    public MonthlySummaryRes getMonthlySummary(String yearMonth, Long userId, Long ssafyUserId) {
+        BigDecimal totalExpense = expenseRepository.getTotalExpenseForMonth(yearMonth, userId);
+        BigDecimal totalIncome = accountTransactionRepository.getTotalIncomeForMonth(yearMonth, ssafyUserId);
+        List<DailySummaryRes> dailySummary = expenseRepository.getDailySummaryForMonth(yearMonth, userId, ssafyUserId);
 
         return MonthlySummaryRes.builder()
                                 .yearMonth(yearMonth)
@@ -149,12 +149,12 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public DailyExpenseRes getDailyExpense(String dateString) {
+    public DailyExpenseRes getDailyExpense(String dateString, Long userId) {
         LocalDate date = LocalDate.parse(dateString, DATE_FORMATTER);
 
-        List<ExpenseRes> dailyExpenses = expenseRepository.findExpensesByDate(dateString);
+        List<ExpenseRes> dailyExpenses = expenseRepository.findExpensesByDate(dateString, userId);
 
-        BigDecimal dailyTotal = expenseRepository.calculateTotalExpenseByDate(dateString);
+        BigDecimal dailyTotal = expenseRepository.calculateTotalExpenseByDate(dateString, userId);
 
         // 현재 날짜가 속한 주의 일요일을 시작일로 설정
         LocalDate startOfWeek = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
@@ -182,7 +182,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         // 현재 날짜
         LocalDate now = LocalDate.now();
         // 6개월간 소비액 계산
-        List<BigDecimal> sixMonthTotalExpense = calculateSixMonthTotalExpense();
+        List<BigDecimal> sixMonthTotalExpense = calculateSixMonthTotalExpense(userId);
 
         // 저번달 대비 이번달 소비액 증감률 또는 차이값 계산
         BigDecimal monthOverMonthChange = calculateMonthOverMonthChange(sixMonthTotalExpense);
@@ -215,14 +215,14 @@ public class ExpenseServiceImpl implements ExpenseService {
                                         .build();
     }
 
-    private List<BigDecimal> calculateSixMonthTotalExpense() {
+    private List<BigDecimal> calculateSixMonthTotalExpense(Long userId) {
         List<BigDecimal> sixMonthTotalExpense = new ArrayList<>();
         LocalDate currentDate = LocalDate.now();
 
         for (int i = 5; i >= 0; i--) {
             LocalDate targetDate = currentDate.minusMonths(i);
             String yearMonth = targetDate.format(DATE_FORMATTER_YEARMONTH);
-            BigDecimal monthExpense = expenseRepository.getTotalExpenseForMonth(yearMonth);
+            BigDecimal monthExpense = expenseRepository.getTotalExpenseForMonth(yearMonth, userId);
             sixMonthTotalExpense.add(monthExpense == null ? BigDecimal.ZERO : monthExpense);
         }
         return sixMonthTotalExpense;

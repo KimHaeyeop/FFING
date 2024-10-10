@@ -25,30 +25,30 @@ public class GoalRepositoryCustomImpl implements GoalRepositoryCustom {
         return queryFactory
                 .selectFrom(transaction)
                 .where(
-                        transaction.userId.eq(userId) // 사용자 ID 조건
-                                          .and(transaction.goalType.eq(GOAL_TYPE_ASSET)) // 목표 유형 조건
-                                          .and(transaction.createdAt.year().eq(Integer.parseInt(year))) // 생성 연도 조건
+                        transaction.user.userId.eq(userId)
+                                               .and(transaction.goalType.eq(GOAL_TYPE_ASSET))
+                                               .and(transaction.createdAt.year().eq(Integer.parseInt(year)))
                 )
-                .fetchOne(); // 단일 결과를 반환
+                .fetchFirst();
     }
 
     @Override
     public Goal findSpendingByUserIdAndYearMonth(Long userId, String yearMonth) {
-        QGoal transaction = QGoal.goal; // QGoal 인스턴스 생성
+        QGoal transaction = QGoal.goal;
 
         // 연도와 월 추출
-        String year = yearMonth.substring(0, 4); // 2024
-        String month = yearMonth.substring(4, 6); // 09
+        String year = yearMonth.substring(0, 4);
+        String month = yearMonth.substring(4, 6);
 
         return queryFactory
                 .selectFrom(transaction)
                 .where(
-                        transaction.userId.eq(userId) // 사용자 ID 조건
-                                          .and(transaction.goalType.eq(GOAL_TYPE_SPENDING)) // 목표 유형 조건
-                                          .and(transaction.createdAt.year().eq(Integer.parseInt(year))) // 생성 연도 조건
-                                          .and(transaction.createdAt.month().eq(Integer.parseInt(month))) // 생성 월 조건
+                        transaction.user.userId.eq(userId)
+                                               .and(transaction.goalType.eq(GOAL_TYPE_SPENDING))
+                                               .and(transaction.createdAt.year().eq(Integer.parseInt(year)))
+                                               .and(transaction.createdAt.month().eq(Integer.parseInt(month)))
                 )
-                .fetchOne(); // 단일 결과를 반환
+                .fetchFirst();
     }
 
     @Override
@@ -58,11 +58,11 @@ public class GoalRepositoryCustomImpl implements GoalRepositoryCustom {
         return queryFactory
                 .selectFrom(transaction)
                 .where(
-                        transaction.userId.eq(userId) // 사용자 ID 조건
-                                          .and(transaction.goalType.eq("2")) // 소비 목표 유형 조건
-                                          .and(transaction.createdAt.year().eq(LocalDate.now().getYear())) // 올해 조건
+                        transaction.user.userId.eq(userId)
+                                               .and(transaction.goalType.eq("2"))
+                                               .and(transaction.createdAt.year().eq(LocalDate.now().getYear()))
                 )
-                .orderBy(transaction.createdAt.asc()) // 생성일 기준으로 정렬
+                .orderBy(transaction.createdAt.asc())
                 .fetchFirst();
     }
 
@@ -74,11 +74,11 @@ public class GoalRepositoryCustomImpl implements GoalRepositoryCustom {
                 .select(transaction.balance)
                 .from(transaction)
                 .where(
-                        transaction.userId.eq(userId) // 사용자 ID 조건
-                                          .and(transaction.goalType.eq("2")) // 소비 목표 유형 조건
-                                          .and(transaction.createdAt.year().eq(LocalDate.now().getYear())) // 올해 조건
+                        transaction.user.userId.eq(userId)
+                                               .and(transaction.goalType.eq("2"))
+                                               .and(transaction.createdAt.year().eq(LocalDate.now().getYear()))
                 )
-                .orderBy(transaction.createdAt.desc()) // 생성일 기준으로 역정렬
+                .orderBy(transaction.createdAt.desc())
                 .fetchFirst();
         return result == null ? BigDecimal.ZERO : result;
     }
@@ -91,9 +91,9 @@ public class GoalRepositoryCustomImpl implements GoalRepositoryCustom {
                 .select(transaction.balance)
                 .from(transaction)
                 .where(
-                        transaction.userId.eq(userId)
-                                          .and(transaction.goalType.eq(GOAL_TYPE_ASSET))
-                                          .and((transaction.createdAt.year().eq(LocalDate.now().getYear())))
+                        transaction.user.userId.eq(userId)
+                                               .and(transaction.goalType.eq(GOAL_TYPE_ASSET))
+                                               .and((transaction.createdAt.year().eq(LocalDate.now().getYear())))
                 )
                 .orderBy(transaction.createdAt.desc())
                 .fetchFirst();

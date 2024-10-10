@@ -15,15 +15,15 @@ public interface ExpenseService {
 
     void addAccountTransferToExpense(AccountTransaction newAccountTransaction, User user);
 
-    List<ExpenseRes> getMonthlyExpenses(ExpenseCategory category);
+    List<ExpenseRes> getMonthlyExpenses(ExpenseCategory category, Long userId);
 
-    WeeklyCategoryExpenseRes getWeeklyCategoryExpenses(boolean aThis);
+    WeeklyCategoryExpenseRes getWeeklyCategoryExpenses(boolean aThis, Long userId);
 
-    List<CategoryExpenseRes> getThisMonthCategoryExpenses();
+    List<CategoryExpenseRes> getThisMonthCategoryExpenses(Long userId);
 
-    MonthlySummaryRes getMonthlySummary(String yearMonth);
+    MonthlySummaryRes getMonthlySummary(String yearMonth, Long userId, Long ssafyUserId);
 
-    DailyExpenseRes getDailyExpense(String date);
+    DailyExpenseRes getDailyExpense(String date, Long userId);
 
     MonthlyExpenseAnalysisRes getAnalysisSummary(Long userId, Long ssafyUserId);
 }
