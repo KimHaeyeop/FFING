@@ -19,7 +19,7 @@ public interface ExpenseService {
 
     WeeklyCategoryExpenseRes getWeeklyCategoryExpenses(boolean aThis, Long userId);
 
-    List<CategoryExpenseRes> getThisMonthCategoryExpenses();
+    List<CategoryExpenseRes> getThisMonthCategoryExpenses(Long userId);
 
     MonthlySummaryRes getMonthlySummary(String yearMonth);
 
