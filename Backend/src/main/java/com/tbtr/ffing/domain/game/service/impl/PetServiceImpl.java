@@ -115,7 +115,7 @@ public class PetServiceImpl implements PetService {
         startDate = today.minusWeeks(1).with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
         endDate = startDate.plusDays(6); // Saturday
 
-        List<CategoryExpenseRes> categoryExpenses = expenseRepository.findCategoryExpenses(startDate, endDate);
+        List<CategoryExpenseRes> categoryExpenses = expenseRepository.findCategoryExpenses(startDate, endDate, userId);
         long typeId = 1;
         BigDecimal min = categoryExpenses.get(0).getTotalAmount();
         for (int i = 1; i < 5; i++) {
