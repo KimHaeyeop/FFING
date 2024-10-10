@@ -92,13 +92,15 @@ public class ExpenseRepositoryCustomImpl implements ExpenseRepositoryCustom {
     }
 
     @Override
-    public BigDecimal getTotalExpenseForMonth(String yearMonth) {
+    public BigDecimal getTotalExpenseForMonth(String yearMonth, Long userId) {
 
         QExpense expense = QExpense.expense;
         return queryFactory
                 .select(expense.expenseBalance.sum())
                 .from(expense)
-                .where(expense.expenseDate.startsWith(yearMonth))
+                .where(
+                        expense.user.userId.eq(userId),
+                        expense.expenseDate.startsWith(yearMonth))
                 .fetchOne();
     }
 
