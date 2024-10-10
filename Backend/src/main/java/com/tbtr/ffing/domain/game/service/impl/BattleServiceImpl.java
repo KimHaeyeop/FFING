@@ -1,11 +1,8 @@
 package com.tbtr.ffing.domain.game.service.impl;
 
-import com.tbtr.ffing.domain.game.dto.internal.BattleInfo;
-import com.tbtr.ffing.domain.game.dto.internal.BattlePetInfo;
-import com.tbtr.ffing.domain.game.dto.internal.DamageInfo;
+import com.tbtr.ffing.domain.game.dto.internal.*;
 import com.tbtr.ffing.domain.game.dto.request.BattleRoundInfoReq;
 import com.tbtr.ffing.domain.game.dto.response.BattleInfoRes;
-import com.tbtr.ffing.domain.game.dto.internal.MatchInfo;
 import com.tbtr.ffing.domain.game.dto.response.BattlePetInfoDetailsRes;
 import com.tbtr.ffing.domain.game.dto.response.BattleRoundInfoRes;
 import com.tbtr.ffing.domain.game.entity.BattleHistory;
@@ -129,6 +126,8 @@ public class BattleServiceImpl implements BattleService {
             System.out.println("Battle Start : " + battleInfo.toString());
             BattlePetInfo battlePetInfo1 = null;
             BattlePetInfo battlePetInfo2 = null;
+            BattleRoundPetInfo battleRoundPet1Info;
+            BattleRoundPetInfo battleRoundPet2Info;
 
             if (battleInfo.getBattlePet1().getPetInfoId() == battleRoundInfo1.getPetInfoId()) {
                 battlePetInfo1 = battleInfo.getBattlePet1();
@@ -137,9 +136,13 @@ public class BattleServiceImpl implements BattleService {
                 battlePetInfo1 = battleInfo.getBattlePet2();
                 battlePetInfo2 = battleInfo.getBattlePet1();
             }
+            battleRoundPet1Info = BattleRoundPetInfo.from(battlePetInfo1);
+            battleRoundPet2Info = BattleRoundPetInfo.from(battlePetInfo2);
 
             int pet1AtkNum = battleRoundInfo1.getPetAttackNum();
             int pet2AtkNum = battleRoundInfo2.getPetAttackNum();
+            battleRoundPet1Info.setAttackNum(pet1AtkNum);
+            battleRoundPet2Info.setAttackNum(pet2AtkNum);
 
             // [싸움 로직]
             double pet1Hp = battlePetInfo1.getHp();
@@ -152,6 +155,11 @@ public class BattleServiceImpl implements BattleService {
 
             DamageInfo pet2DamageInfo = doDamage(getPet1Stat, getPet2AtkStat);
             DamageInfo pet1DamageInfo = doDamage(getPet2Stat, getPet1AtkStat);
+
+            battleRoundPet1Info.setDamageDealt(pet1DamageInfo.getDamage());
+            battleRoundPet1Info.setDamageStatus(pet1DamageInfo.getDamageStatus());
+            battleRoundPet2Info.setDamageDealt(pet2DamageInfo.getDamage());
+            battleRoundPet2Info.setDamageStatus(pet2DamageInfo.getDamageStatus());
 
             // 데미지 넣기
             pet1Hp -= pet2DamageInfo.getDamage();
@@ -169,13 +177,32 @@ public class BattleServiceImpl implements BattleService {
 
             battleInfo.setBattlePet1(battlePetInfo1);
             battleInfo.setBattlePet2(battlePetInfo2);
+            battleRoundPet1Info.setHp(pet1Hp);
+            battleRoundPet2Info.setHp(pet2Hp);
 
             // 먼저 공격할 pet 정하기
             Random random = new Random();
             Long firstToMovePetId = random.nextBoolean() ? battlePetInfo1.getPetInfoId() : battlePetInfo2.getPetInfoId();
 
+            if (firstToMovePetId == battlePetInfo1.getPetInfoId()) {
+                battleRoundPet1Info.setFirst(true);
+                battleRoundPet2Info.setFirst(false);
+            } else {
+                battleRoundPet1Info.setFirst(false);
+                battleRoundPet2Info.setFirst(true);
+            }
+
+            BattleRoundInfoRes battleRoundResult = BattleRoundInfoRes.builder()
+                    .matchId(matchId)
+                    .isFinished(false)
+                    .pet1Info(battleRoundPet1Info)
+                    .pet2Info(battleRoundPet2Info)
+                    .build();
+
             // 만약 체력이 0 이면 redis에서 삭제
             if (pet1Hp <= 0 || pet2Hp <= 0) {
+                battleRoundResult.setFinished(true);
+
                 battleRedisTemplate.delete(battleRedisKey);
 
                 // + 배틀 히스토리 기록
@@ -194,16 +221,6 @@ public class BattleServiceImpl implements BattleService {
             }
 
             // 턴 결과 반환
-            BattleRoundInfoRes battleRoundResult = BattleRoundInfoRes.builder()
-                    .matchId(matchId)
-                    .firstToMovePetId(firstToMovePetId)
-                    .pet1AttackNum(pet1AtkNum)
-                    .pet1DamageStatus(pet1DamageInfo.getDamageStatus())
-                    .pet2AttackNum(pet2AtkNum)
-                    .pet2DamageStatus(pet2DamageInfo.getDamageStatus())
-                    .pet1Info(battlePetInfo1)
-                    .pet2Info(battlePetInfo2)
-                    .build();
             System.out.println(battleRoundResult.toString());
 
             // 두 사용자에게 결과 보내기
