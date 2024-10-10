@@ -17,12 +17,12 @@ interface assetHistoryInterface {
 
 const AssetTimeSeriesChart: React.FC<assetHistoryProps> = ({ assetHistory }) => {
 
-  // 현재 날짜부터 5개월 전까지의 월 이름을 labels로 가져오기
+  // 현재 날짜부터 6개월 전까지의 월 이름을 labels로 가져오기
   const getLastFiveMonths = (): string[] => {
     const months = [];
     const today = new Date();
   
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
       const month = new Date(today.getFullYear(), today.getMonth() - i, 1);
       const monthLabel = `${String(month.getMonth() + 1)}월`; // 'MM월' 형식
       months.push(monthLabel); 
