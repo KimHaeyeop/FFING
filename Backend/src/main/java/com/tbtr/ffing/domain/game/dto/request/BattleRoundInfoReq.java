@@ -2,10 +2,11 @@ package com.tbtr.ffing.domain.game.dto.request;
 
 import lombok.*;
 
-@AllArgsConstructor
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class BattleRoundInfoReq {
     private String matchId;

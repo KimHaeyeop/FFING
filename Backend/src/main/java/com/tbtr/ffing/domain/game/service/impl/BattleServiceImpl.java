@@ -73,6 +73,7 @@ public class BattleServiceImpl implements BattleService {
         BattleInfo battleInfo = BattleInfo.from(matchId, battlePetInfo1, battlePetInfo2, LocalDateTime.now());
         battleRedisTemplate.opsForValue().set(redisKey, battleInfo);
         countRedisTemplate.opsForValue().set(redisKey, 0);
+        System.out.println(battleInfo.toString());
 
         // 사용자들에게 줄 정보 반환
         BattleInfoRes battleInfoRes = BattleInfoRes.builder()
@@ -123,6 +124,7 @@ public class BattleServiceImpl implements BattleService {
         BattleInfo battleInfo = battleRedisTemplate.opsForValue().get(redisKey);
 
         if (battleInfo != null) {
+            System.out.println("Battle Start : " + battleInfo.toString());
             BattlePetInfo battlePetInfo1 = null;
             BattlePetInfo battlePetInfo2 = null;
 
@@ -200,6 +202,7 @@ public class BattleServiceImpl implements BattleService {
                     .pet1Info(battlePetInfo1)
                     .pet2Info(battlePetInfo2)
                     .build();
+            System.out.println(battleRoundResult.toString());
 
             // 두 사용자에게 결과 보내기
             messagingTemplate.convertAndSend("/sub/battle/playing/" + matchId, battleRoundResult);
