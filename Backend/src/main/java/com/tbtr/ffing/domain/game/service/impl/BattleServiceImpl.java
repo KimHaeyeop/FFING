@@ -199,14 +199,13 @@ public class BattleServiceImpl implements BattleService {
                     .pet2Info(battleRoundPet2Info)
                     .build();
 
-            // 만약 체력이 0 이면 redis에서 삭제
+            // 만약 체력이 0 이면 (승자가 나왔으면)
             if (pet1Hp <= 0 || pet2Hp <= 0) {
                 battleRoundResult.setFinished(true);
 
-                battleRedisTemplate.delete(battleRedisKey);
-
-                // + 배틀 히스토리 기록
+                // 배틀 히스토리 기록
                 Long winnerPetId = findWinner(battlePetInfo1.getPetInfoId(), battlePetInfo2.getPetInfoId(), pet1Hp, pet2Hp, firstToMovePetId);
+                System.out.println(winnerPetId + ", " +  battlePetInfo1.getPetInfoId() + ", " + battlePetInfo2.getPetInfoId());
 
                 BattleHistory battleHistory = BattleHistory.builder()
                         .createdAt(battleInfo.getCreatedAt())
@@ -215,6 +214,9 @@ public class BattleServiceImpl implements BattleService {
                         .winnerPetId(winnerPetId)
                         .build();
                 battleHistoryRepository.save(battleHistory);
+
+                // redis에서 기록 삭제
+                battleRedisTemplate.delete(battleRedisKey);
 
             } else {
                 battleRedisTemplate.opsForValue().set(battleRedisKey, battleInfo);
