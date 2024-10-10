@@ -162,7 +162,6 @@ const AssetMainPage: React.FC = () => {
                 >
                   {formatCurrency(assetDifference)}
                 </span>
-                 
                 <span>{message}</span>
               </div>
             </div>
