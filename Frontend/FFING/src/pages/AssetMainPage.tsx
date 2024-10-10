@@ -109,7 +109,7 @@ const AssetMainPage: React.FC = () => {
           </div>
 
           {/* 현재 자산 & 월평균 저축 */}
-          <div className="bg-[#BBEAED] bg-opacity-20 content-around h-1/4 rounded-xl mt-10 mb-4">
+          <div className="bg-[#D9D9D9] bg-opacity-20 content-around h-1/4 rounded-xl mt-10 mb-4">
             <div className="flex justify-between m-4">
               <p className="flex items-center text-left">현재 순자산</p>
               <div className="text-right">
