@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface ExpenseRepositoryCustom {
 
-    List<ExpenseRes> findMonthlyExpenses(LocalDate startDate, LocalDate endDate, ExpenseCategory category);
+    List<ExpenseRes> findMonthlyExpenses(LocalDate startDate, LocalDate endDate, ExpenseCategory category, Long userId);
 
     List<CategoryExpenseRes> findCategoryExpenses(LocalDate startDate, LocalDate endDate);
 

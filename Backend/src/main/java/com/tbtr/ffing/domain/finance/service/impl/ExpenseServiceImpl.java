@@ -73,12 +73,12 @@ public class ExpenseServiceImpl implements ExpenseService {
      * @return
      */
     @Override
-    public List<ExpenseRes> getMonthlyExpenses(ExpenseCategory category) {
+    public List<ExpenseRes> getMonthlyExpenses(ExpenseCategory category, Long userId) {
         LocalDate now = LocalDate.now();
         LocalDate startOfMonth = now.withDayOfMonth(1);
         LocalDate endOfMonth = now.withDayOfMonth(now.lengthOfMonth());
 
-        return expenseRepository.findMonthlyExpenses(startOfMonth, endOfMonth, category);
+        return expenseRepository.findMonthlyExpenses(startOfMonth, endOfMonth, category, userId);
     }
 
     /**
