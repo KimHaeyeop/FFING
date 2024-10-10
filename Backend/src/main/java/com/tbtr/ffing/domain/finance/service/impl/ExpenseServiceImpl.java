@@ -201,8 +201,8 @@ public class ExpenseServiceImpl implements ExpenseService {
         BigDecimal monthlyTargetExpense = goalRepository.findRecentSpendingBalanceByUserId(userId);
 
         // 앞으로의 매달 소비액 계산
-        Goal yearGoal = goalRepository.findGoalByUserIdAndYear(userId, String.valueOf(now.getYear()));
-        BigDecimal futureMonthlyExpenses = calculateFutureMonthlyExpenses(userId, ssafyUserId, yearGoal);
+        BigDecimal yearGoalBalance = goalRepository.findGoalBalanceByUserIdAndThisYear(userId);
+        BigDecimal futureMonthlyExpenses = calculateFutureMonthlyExpenses(userId, ssafyUserId, yearGoalBalance);
 
         return MonthlyExpenseAnalysisRes.builder()
                                         .sixMonthTotalExpense(sixMonthTotalExpense)
@@ -259,25 +259,24 @@ public class ExpenseServiceImpl implements ExpenseService {
                     .setScale(0, RoundingMode.CEILING);
     }
 
-    private BigDecimal calculateFutureMonthlyExpenses(Long userId, Long ssafyUserId, Goal yearGoal) {
-        if (yearGoal == null) {
-            return BigDecimal.ZERO;
-        }
-
+    private BigDecimal calculateFutureMonthlyExpenses(Long userId, Long ssafyUserId, BigDecimal yearGoalBalance) {
         LocalDate currentDate = LocalDate.now();
         String lastMonth = currentDate.minusMonths(1).format(DATE_FORMATTER_YEARMONTH);
 
         BigDecimal fixedIncome = accountTransactionRepository.getTotalFixedIncomeForYearMonthBySsafyUserId(lastMonth,
                 ssafyUserId);
-        BigDecimal currentAsset = assetRepository.findCurrentAssetByUserId(userId).getTotalAsset();
-
+        BigDecimal currentAsset = assetRepository.findRecentAssetByUserId(userId).getTotalAsset();
+        System.out.println("yearGoalBalance: " + yearGoalBalance);
+        System.out.println("leftMonths: " + remainingMonths(currentDate.getMonthValue()));
+        System.out.println("fixedIncome: " + fixedIncome);
+        System.out.println("currentAsset: " + currentAsset);
         int remainingMonths = remainingMonths(currentDate.getMonthValue());
 
         // 목표 소비액
         // 필요한 월별 저축액 : (목표 자산 - 총 자산) / 남은 달
         // 가능 소비액 : 고정 수입 - 필요한 월별 저축액
         return fixedIncome.subtract(
-                yearGoal.getBalance().subtract(currentAsset).divide(new BigDecimal(remainingMonths), RoundingMode.CEILING)
+                yearGoalBalance.subtract(currentAsset).divide(new BigDecimal(remainingMonths), RoundingMode.CEILING)
                         .setScale(0, RoundingMode.CEILING));
     }
 
