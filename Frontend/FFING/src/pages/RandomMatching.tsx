@@ -17,6 +17,7 @@ const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUser
   const [isMatched, setIsMatched] = useState(false);
   const [matchId, setMatchId] = useState<any>(null);
   const navigate = useNavigate();
+  const statLabels = ['금융', '외식', '생활', '쇼핑', '교통']
 
   useEffect(() => {
     console.log(myInfo)
@@ -41,6 +42,7 @@ const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUser
             // 닉네임 비교
             console.log("내 닉네임: ", nickname);
             if (user1PetInfo.nickname === nickname) {
+              console.log(user1PetInfo, '이규석')
               setMyInfo(user1PetInfo);
               setOpponentInfo(user2PetInfo);
             } else {
@@ -67,7 +69,6 @@ const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUser
     };
 
     startRandomMatch();
-
     
     return () => {
       // 매칭 취소
@@ -80,27 +81,30 @@ const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUser
   };
 
   const renderStatComparison = (label: string, myStat: number, opponentStat: number) => {
-    const maxStat = Math.max(myStat, opponentStat);
+    const maxStat = myStat + opponentStat
     const myPosition = (myStat / maxStat) * 100;
     const opponentPosition = (opponentStat / maxStat) * 100;
 
+    console.log(myPosition, opponentPosition);
 
     return (
       <div className="mb-4">
-        <p className="text-lg font-semibold">{label}</p>
+        <p className="text-sm">{label}</p>
         <div className="relative h-4 bg-gray-300 rounded">
+          {/* 나의 스탯 점유율 */}
           <div
             className="absolute top-0 h-4 bg-blue-500 rounded"
             style={{ width: `${myPosition}%` }}
-          ></div>
+          />
+          {/* 상대방의 스탯 점유율 */}
           <div
             className="absolute top-0 h-4 bg-red-500 rounded"
-            style={{ width: `${opponentPosition}%` }}
-          ></div>
+            style={{ width: `${opponentPosition}%`, left: `${myPosition}%` }}  // 내 점유율 끝에서 시작
+          />
         </div>
         <div className="flex justify-between mt-1">
-          <span className="text-blue-500">내 능력치: {myStat}</span>
-          <span className="text-red-500">상대 능력치: {opponentStat}</span>
+          <span className="text-blue-500">{myStat}</span>
+          <span className="text-red-500">{opponentStat}</span>
         </div>
       </div>
     );
@@ -115,25 +119,25 @@ const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUser
           <div className="bg-gray-200 p-4 rounded-lg">
             <div className="mb-4">
               {/* API 연동하면 좋을 것 같은데 */}
-              <p className="font-galmuri-11-bold text-lg p-2">{myInfo?.nickname}</p>
+              <p className="font-galmuri-11-bold text-2xl p-2 text-blue-500">{myInfo?.nickname}</p>
               <div className="flex justify-center space-x-4">
                 <p className="bg-[#C8E697] p-1 rounded-md text-sm">{myInfo?.winCount}승</p>
                 <p className="bg-[#D23B8C] p-1 rounded-md text-white text-sm">{myInfo?.loseCount}패</p>
               </div>
-              <p className="text-lg mt-2 font-galmuri-11-bold">{myInfo?.totalStat}</p>
+              <p className="text-xl mt-2 font-galmuri-11-bold">{myInfo?.totalStat}</p>
             </div>  
 
             {myInfo?.stats.map((stat: number, index: number) => (
-              renderStatComparison(`스탯 ${index + 1}`, stat, opponentInfo?.stats[index] || 0)
+              renderStatComparison(statLabels[index], stat, opponentInfo?.stats[index] || 0)
             ))}
 
             <div className="mb-4">
-              <p className="font-galmuri-11-bold text-lg p-2">{opponentInfo?.nickname}</p>
+              <p className="font-galmuri-11-bold text-2xl p-2 text-red-500">{opponentInfo?.nickname}</p>
               <div className="flex justify-center space-x-4">
                 <p className="bg-[#C8E697] p-1 rounded-md text-sm">{opponentInfo?.winCount}승</p>
                 <p className="bg-[#D23B8C] p-1 rounded-md text-white text-sm">{opponentInfo?.loseCount}패</p>
               </div>
-              <p className="text-lg mt-2 font-galmuri-11-bold">{opponentInfo?.totalStat}</p>
+              <p className="text-xl mt-2 font-galmuri-11-bold">{opponentInfo?.totalStat}</p>
             </div>
 
             <button 
