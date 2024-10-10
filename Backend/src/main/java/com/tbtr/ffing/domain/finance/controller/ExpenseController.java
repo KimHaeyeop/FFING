@@ -101,8 +101,8 @@ public class ExpenseController {
      * 월별(6개월 간) 지출액 확인 및 월간 지출 분석 API
      */
     @GetMapping("/monthly-summary")
-    public ResponseEntity<?> getAnalysisSummary(Long userId, Long ssafyUserId) {
-        MonthlyExpenseAnalysisRes analysisRes = expenseService.getAnalysisSummary(userId, ssafyUserId);
+    public ResponseEntity<?> getAnalysisSummary(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        MonthlyExpenseAnalysisRes analysisRes = expenseService.getAnalysisSummary(userDetails.getUserId(), userDetails.getSsafyUserId());
         return ResponseEntity.ok(Response.builder()
                                          .code(200L)
                                          .message("성공")
