@@ -150,7 +150,7 @@ const BattlePage: React.FC = () => {
           <span className="mx-4">vs</span>
           <span className="ml-4">{opponentInfo?.nickname}</span>
         </div>
-        <div style={{height: dvh * 50}}>
+        <div style={{height: dvh * 44}}>
           {/* Phaser 게임 컨테이너 */}
           <PhaserGame 
             selectedAttack={selectedAttack}
@@ -161,13 +161,10 @@ const BattlePage: React.FC = () => {
             myHp1={myPetInfo?.hp || 100}
             opponentHp1={opponentPetInfo?.hp || 100}
           />
-          <div>
-            <p className='text-xl mt-1'>F F I N G</p>
-          </div>
         </div>
         {/* 공격 선택 컴포넌트 */}
-        <div style={{height: 45 * dvh}} className='bg-zinc-600 flex items-center'>
-          <div style={{width: 90 * dvw}} className='mx-auto '>
+        <div style={{height: 51 * dvh}} className='bg-zinc-600 flex items-center'>
+          <div className='mx-auto w-full'>
             {winner ? (
               showGameResult ? (
                 <GameResult winner={winner} />
