@@ -11,7 +11,6 @@ import com.tbtr.ffing.domain.user.entity.User;
 import com.tbtr.ffing.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -55,6 +54,9 @@ public class FcmServiceImpl implements FcmService {
 
         // JSON 형식에서 순수 토큰 추출
         String cleanToken = extractTokenFromJson(decodedToken);
+
+        // 끝에 '=' 문자가 있으면 제거
+        cleanToken = cleanToken.endsWith("=") ? cleanToken.substring(0, cleanToken.length() - 1) : cleanToken;
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + userId));

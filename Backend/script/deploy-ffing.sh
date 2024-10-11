@@ -41,6 +41,6 @@ echo "Pulling latest docker image..."
 docker pull bjho606/ffing-backend-develop:latest
 
 echo "Running new docker container..."
-docker run -d -p 8900:8900 --name ffing-backend-develop -v /home/ubuntu/logs:/home/ubuntu/logs bjho606/ffing-backend-develop:latest
+docker run -d -p 8900:8900 --name ffing-backend-develop --network my-network -v /home/ubuntu/logs:/home/ubuntu/logs bjho606/ffing-backend-develop:latest
 
 echo "Deployment completed successfully."

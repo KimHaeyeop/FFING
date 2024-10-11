@@ -2,6 +2,7 @@ package com.tbtr.ffing.domain.game.controller;
 
 import com.tbtr.ffing.domain.game.dto.internal.*;
 import com.tbtr.ffing.domain.game.dto.request.*;
+import com.tbtr.ffing.domain.game.dto.response.BattleInfoRes;
 import com.tbtr.ffing.domain.game.dto.response.BattleMatchRejectRes;
 import com.tbtr.ffing.domain.game.dto.response.BattleRoundInfoRes;
 import com.tbtr.ffing.domain.game.dto.response.DirectMatchRes;
@@ -43,6 +44,7 @@ public class MatchingController {
         log.info("received random match event: {}", randomMatchEvent.toString());
 
         String matchedUserId = matchingService.preferMatching(randomMatchEvent);
+        System.out.println(matchedUserId + ", " + randomMatchEvent.getFromUserId());
 
         if (matchedUserId != null) {
             // 매치 생성 (matchId)
@@ -54,17 +56,17 @@ public class MatchingController {
                     .toUserId(Long.valueOf(matchedUserId))
                     .build();
 
-            BattleInfo battleInfo = battleService.setBattleMatchInfo(matchId, randomMatchRes);
+            BattleInfoRes battleInfoRes = battleService.setBattleMatchInfo(matchId, randomMatchRes);
 
             // 양 사용자에게 매치 성사 알림
             messagingTemplate.convertAndSend(
-                    "/sub/battle/ready/" + randomMatchRes.getFromUserId(), battleInfo
+                    "/sub/battle/ready/" + randomMatchRes.getFromUserId(), battleInfoRes
             );
             messagingTemplate.convertAndSend(
-                    "/sub/battle/ready/" + randomMatchRes.getToUserId(), battleInfo
+                    "/sub/battle/ready/" + randomMatchRes.getToUserId(), battleInfoRes
             );
 
-            log.info("random match accomplished with key: {} - {} vs {}", battleInfo.getMatchId(), randomMatchRes.getFromUserId(), randomMatchRes.getToUserId());
+            log.info("random match accomplished with key: {} - {} vs {}", battleInfoRes.getMatchId(), randomMatchRes.getFromUserId(), randomMatchRes.getToUserId());
         }
 
 //        messagingTemplate.convertAndSend("/sub/match/random/" + randomMatchEvent.getFromUserId());
@@ -76,10 +78,6 @@ public class MatchingController {
 
         matchingService.cancelRandomMatch(randomMatchCancelReq);
 
-//        messagingTemplate.convertAndSend(
-//                "/sub/match/battle-request-cancelled/" + matchCancelReq.getFromUserId(),
-//                new BattleCancelledNotification(matchCancelReq.getRequestId())
-//        );
     }
 
     // FIXME: Service Layer로 리팩토링해야 함
@@ -120,14 +118,14 @@ public class MatchingController {
             // TODO: matchId 중복 처리
             String matchId = UUID.randomUUID().toString();
 
-            BattleInfo battleInfo = battleService.setBattleMatchInfo(matchId, directMatchRes);
+            BattleInfoRes battleInfoRes = battleService.setBattleMatchInfo(matchId, directMatchRes);
 
             // 양 사용자에게 매치 성사 알림
             messagingTemplate.convertAndSend(
-                    "/sub/battle/ready/" + directMatchRes.getFromUserId(), battleInfo
+                    "/sub/battle/ready/" + directMatchRes.getFromUserId(), battleInfoRes
             );
             messagingTemplate.convertAndSend(
-                    "/sub/battle/ready/" + directMatchRes.getToUserId(), battleInfo
+                    "/sub/battle/ready/" + directMatchRes.getToUserId(), battleInfoRes
             );
         }
 
@@ -147,7 +145,7 @@ public class MatchingController {
 
             // 요청한 사용자에게 거절 알림
             messagingTemplate.convertAndSend(
-                    "/sub/battle/rejected/" + directMatchRes.getFromUserId(),
+                    "/sub/match/rejected/" + directMatchRes.getFromUserId(),
                     new BattleMatchRejectRes(directMatchReject.getRequestId(), directMatchRes.getToUserId())
             );
         }
@@ -164,16 +162,6 @@ public class MatchingController {
 //                "/sub/match/battle-request-cancelled/" + matchCancelReq.getFromUserId(),
 //                new BattleCancelledNotification(matchCancelReq.getRequestId())
 //        );
-    }
-
-    // 매칭 이후, 배틀 과정에서의 통신
-    @MessageMapping("/battle/{matchId}")
-    public void handleBattleEvent(@DestinationVariable String matchId, BattleRoundInfoReq battleRoundInfo) {
-        // 배틀 관련 Service 구현부
-        BattleRoundInfoRes battleRoundInfoRes = battleService.battle(battleRoundInfo);
-
-        messagingTemplate.convertAndSend("/sub/battle/playing/"+ battleRoundInfo.getMatchId(), battleRoundInfoRes);
-
     }
 
     // 배틀 종료 후, 매칭 연결 끊기

@@ -37,6 +37,11 @@ public enum ErrorCode {
     STOCK_TRANSACTION_NOT_FOUND(HttpStatus.NOT_FOUND, "STOCK-002", "사용자의 거래내역을 찾을 수 없습니다."),
 
     /*
+    Pet 관련
+     */
+    PET_NOT_FOUND(HttpStatus.NOT_FOUND, "PET-001", "펫이 존재하지 않습니다."),
+
+    /*
     Battle 관련 오류
      */
     BATTLE_NOT_EXISTS(HttpStatus.NOT_FOUND, "BATTLE-001", "해당 배틀이 존재하지 않습니다."),

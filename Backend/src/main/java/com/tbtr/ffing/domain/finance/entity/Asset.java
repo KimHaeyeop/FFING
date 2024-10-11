@@ -36,6 +36,9 @@ public class Asset {
     @Column(precision = 16, scale = 2, nullable = true, columnDefinition = "decimal(16, 2) default 0")
     private BigDecimal othersBalance;
 
+    @Column(nullable = false, length = 8)
+    private String updatedDate;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -49,6 +52,7 @@ public class Asset {
                 .depositSavingsBalance(asset.depositSavingsBalance)
                 .stockBalance(asset.stockBalance)
                 .othersBalance(asset.othersBalance)
+                .updatedDate(asset.updatedDate)
                 .build();
     }
 }

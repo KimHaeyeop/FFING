@@ -32,9 +32,30 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                         asset.accountBalance,
                         asset.depositSavingsBalance,
                         asset.stockBalance,
-                        asset.othersBalance))
+                        asset.othersBalance,
+                        asset.updatedDate))
                 .from(asset)
                 .where(asset.user.userId.eq(userId))
+                .limit(1)
+                .fetchOne();
+    }
+
+    @Override
+    public AssetRes findRecentAssetByUserId(Long userId) {
+        QAsset asset = QAsset.asset;
+
+        return queryFactory
+                .select(Projections.constructor(AssetRes.class,
+                        asset.assetId,
+                        asset.totalAsset,
+                        asset.accountBalance,
+                        asset.depositSavingsBalance,
+                        asset.stockBalance,
+                        asset.othersBalance,
+                        asset.updatedDate))
+                .from(asset)
+                .where(asset.user.userId.eq(userId))
+                .orderBy(asset.updatedDate.desc())
                 .limit(1)
                 .fetchOne();
     }
@@ -50,9 +71,11 @@ public class AssetRepositoryImpl implements AssetRepositoryCustom {
                         asset.accountBalance,
                         asset.depositSavingsBalance,
                         asset.stockBalance,
-                        asset.othersBalance))
+                        asset.othersBalance,
+                        asset.updatedDate))
                 .from(asset)
                 .where(asset.user.userId.eq(userId))
+                .orderBy(asset.updatedDate.desc())
                 .limit(6)
                 .fetch();
     }

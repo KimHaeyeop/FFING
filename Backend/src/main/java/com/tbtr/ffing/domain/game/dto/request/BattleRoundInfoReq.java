@@ -2,16 +2,16 @@ package com.tbtr.ffing.domain.game.dto.request;
 
 import lombok.*;
 
-@AllArgsConstructor
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class BattleRoundInfoReq {
     private String matchId;
 
-    private int currentRound;   // 현재 공격 횟수
-    private int fromUserAttackNum;  // 고른 공격 숫자
-    private int toUserAttackNum;    // 고른 공격 숫자
+    private Long petInfoId;
+    private int petAttackNum;      // 고른 공격 숫자
 
 }

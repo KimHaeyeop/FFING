@@ -18,18 +18,20 @@ public class AccountTransactionRepositoryCustomImpl implements AccountTransactio
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public BigDecimal getTotalIncomeForMonth(String yearMonth) {
+    public BigDecimal getTotalIncomeForMonth(String yearMonth, Long ssafyUserId) {
         QAccountTransaction transaction = QAccountTransaction.accountTransaction;
         return queryFactory
                 .select(transaction.transactionBalance.sum())
                 .from(transaction)
-                .where(transaction.transactionDate.startsWith(yearMonth)
+                .where(
+                        transaction.account.ssafyUser.ssafyUserId.eq(ssafyUserId),
+                        transaction.transactionDate.startsWith(yearMonth)
                                                   .and(transaction.transactionType.eq("1")))
                 .fetchOne();
     }
 
     @Override
-    public BigDecimal getTotalFixedIncomeForMonthBySsafyUserId(String yearMonth, Long ssafyUserId) {
+    public BigDecimal getTotalFixedIncomeForYearMonthBySsafyUserId(String yearMonth, Long ssafyUserId) {
         QAccountTransaction transaction = QAccountTransaction.accountTransaction;
         return queryFactory
                 .select(transaction.transactionBalance.sum().coalesce(BigDecimal.ZERO))
