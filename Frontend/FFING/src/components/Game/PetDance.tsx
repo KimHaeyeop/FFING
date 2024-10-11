@@ -134,14 +134,14 @@ const PetDance: React.FC = () => {
       // FFING.png 이미지를 화면 중앙에 추가
       const image = this.add.image(this.scale.width / 2, this.scale.height / 2, 'ffingLogo');
       image.setAlpha(0);  // 초기 투명도 설정 (보이지 않음)
-      image.setScale(0.5);  // 초기 크기 설정 (작게 시작)
+      image.setScale(0.2);  // 초기 크기 설정 (작게 시작)
       image.setOrigin(0.5, 0.5);  // 이미지 중심을 화면 중앙으로 설정
 
       // 트윈을 사용하여 서서히 나타나면서 확대
       this.tweens.add({
         targets: image,
         alpha: { from: 0, to: 1 },  // 0에서 1로 서서히 보이게 함
-        scale: { from: 0.5, to: 1 },  // 크기를 0.5에서 1.5로 확대
+        scale: { from: 0.2, to: 0.8 },  // 크기를 0.5에서 1.5로 확대
         ease: 'Power1',  // 애니메이션 곡선(완만하게 가속/감속)
         duration: 2000,  // 2초 동안 애니메이션
       });
