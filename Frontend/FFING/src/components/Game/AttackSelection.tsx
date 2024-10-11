@@ -53,7 +53,7 @@ const AttackSelection: React.FC<AttackSelectionProps> = ({ attackOptions, onSele
           onClick={() => handleAttackSelect(attack.name)}
         >
           {/* 공격 이름 */}
-          <div className="flex items-center">
+          <div className="flex items-center m-1">
             <span className="text-xl">{attack.name}</span>
           </div>
           {/* 공격 데미지 */}
