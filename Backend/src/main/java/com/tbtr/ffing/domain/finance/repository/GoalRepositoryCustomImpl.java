@@ -1,8 +1,13 @@
 package com.tbtr.ffing.domain.finance.repository;
 
+import static com.tbtr.ffing.domain.finance.constants.GoalConstants.GOAL_TYPE_ASSET;
+import static com.tbtr.ffing.domain.finance.constants.GoalConstants.GOAL_TYPE_SPENDING;
+
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tbtr.ffing.domain.finance.entity.Goal;
 import com.tbtr.ffing.domain.finance.entity.QGoal;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,34 +20,83 @@ public class GoalRepositoryCustomImpl implements GoalRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Goal findByUserIdAndGoalTypeAndYear(Long userId, String goalType, String year) {
+    public Goal findGoalByUserIdAndYear(Long userId, String year) {
         QGoal transaction = QGoal.goal;
         return queryFactory
                 .selectFrom(transaction)
                 .where(
-                        transaction.userId.eq(userId) // 사용자 ID 조건
-                                          .and(transaction.goalType.eq(goalType)) // 목표 유형 조건
-                                          .and(transaction.createdAt.year().eq(Integer.parseInt(year))) // 생성 연도 조건
+                        transaction.user.userId.eq(userId)
+                                               .and(transaction.goalType.eq(GOAL_TYPE_ASSET))
+                                               .and(transaction.createdAt.year().eq(Integer.parseInt(year)))
                 )
-                .fetchOne(); // 단일 결과를 반환
+                .fetchFirst();
     }
 
     @Override
-    public Goal findByUserIdAndGoalTypeAndYearMonth(Long userId, String goalType, String yearMonth) {
-        QGoal goal = QGoal.goal; // QGoal 인스턴스 생성
+    public Goal findSpendingByUserIdAndYearMonth(Long userId, String yearMonth) {
+        QGoal transaction = QGoal.goal;
 
         // 연도와 월 추출
-        String year = yearMonth.substring(0, 4); // 2024
-        String month = yearMonth.substring(4, 6); // 09
+        String year = yearMonth.substring(0, 4);
+        String month = yearMonth.substring(4, 6);
 
         return queryFactory
-                .selectFrom(goal)
+                .selectFrom(transaction)
                 .where(
-                        goal.userId.eq(userId) // 사용자 ID 조건
-                                   .and(goal.goalType.eq(goalType)) // 목표 유형 조건
-                                   .and(goal.createdAt.year().eq(Integer.parseInt(year))) // 생성 연도 조건
-                                   .and(goal.createdAt.month().eq(Integer.parseInt(month))) // 생성 월 조건
+                        transaction.user.userId.eq(userId)
+                                               .and(transaction.goalType.eq(GOAL_TYPE_SPENDING))
+                                               .and(transaction.createdAt.year().eq(Integer.parseInt(year)))
+                                               .and(transaction.createdAt.month().eq(Integer.parseInt(month)))
                 )
-                .fetchOne(); // 단일 결과를 반환
+                .fetchFirst();
+    }
+
+    @Override
+    public Goal findFirstSpendingByUserIdAndThisYear(Long userId, String year) {
+        QGoal transaction = QGoal.goal;
+
+        return queryFactory
+                .selectFrom(transaction)
+                .where(
+                        transaction.user.userId.eq(userId)
+                                               .and(transaction.goalType.eq("2"))
+                                               .and(transaction.createdAt.year().eq(LocalDate.now().getYear()))
+                )
+                .orderBy(transaction.createdAt.asc())
+                .fetchFirst();
+    }
+
+    @Override
+    public BigDecimal findRecentSpendingBalanceByUserId(Long userId) {
+        QGoal transaction = QGoal.goal;
+
+        BigDecimal result = queryFactory
+                .select(transaction.balance)
+                .from(transaction)
+                .where(
+                        transaction.user.userId.eq(userId)
+                                               .and(transaction.goalType.eq("2"))
+                                               .and(transaction.createdAt.year().eq(LocalDate.now().getYear()))
+                )
+                .orderBy(transaction.createdAt.desc())
+                .fetchFirst();
+        return result == null ? BigDecimal.ZERO : result;
+    }
+
+    @Override
+    public BigDecimal findGoalBalanceByUserIdAndThisYear(Long userId) {
+        QGoal transaction = QGoal.goal;
+
+        BigDecimal result = queryFactory
+                .select(transaction.balance)
+                .from(transaction)
+                .where(
+                        transaction.user.userId.eq(userId)
+                                               .and(transaction.goalType.eq(GOAL_TYPE_ASSET))
+                                               .and((transaction.createdAt.year().eq(LocalDate.now().getYear())))
+                )
+                .orderBy(transaction.createdAt.desc())
+                .fetchFirst();
+        return result == null ? BigDecimal.ZERO : result;
     }
 }

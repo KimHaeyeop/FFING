@@ -1,5 +1,6 @@
 package com.tbtr.ffing.domain.finance.entity;
 
+import com.tbtr.ffing.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @Entity
+@ToString
 @Table(name = "goal")
 public class Goal {
 
@@ -25,14 +27,18 @@ public class Goal {
     @Column(nullable = false, precision = 16, scale = 2)
     private BigDecimal balance;
 
+    @Column(precision = 16, scale = 2)
+    private BigDecimal startBalance;
+
     @Column(nullable = false)
     private LocalDate createdAt;
 
     @Column(nullable = false)
     private LocalDate updatedAt;
 
-    @Column(nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @PrePersist
     protected void onCreate() {

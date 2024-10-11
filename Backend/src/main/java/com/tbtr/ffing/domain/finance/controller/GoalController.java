@@ -55,9 +55,8 @@ public class GoalController {
      * 목표 달성액 및 소비액 설정 - 달성액은 변경 X
      */
     @PostMapping("/set-goal")
-    public ResponseEntity<?> setGoal(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                     @RequestBody GoalReq goalReq) {
-        GoalRes goalRes = goalService.setGoal(customUserDetails.getUserId(), goalReq);
+    public ResponseEntity<?> setGoal(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody GoalReq goalReq) {
+        GoalRes goalRes = goalService.setGoal(userDetails.getUserId(), goalReq);
 
         Response<Object> response = Response.builder()
                                             .code(200L)
@@ -71,9 +70,8 @@ public class GoalController {
      */
     @PostMapping("/set-spending")
 
-    public ResponseEntity<?> setSpending(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                         @RequestBody SpendingReq spendingReq) {
-        SpendingRes spendingRes = goalService.setSpending(customUserDetails.getUserId(), spendingReq);
+    public ResponseEntity<?> setSpending(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody SpendingReq spendingReq) {
+        SpendingRes spendingRes = goalService.setSpending(userDetails.getUserId(), spendingReq);
 
         Response<Object> response = Response.builder()
                                             .code(200L)

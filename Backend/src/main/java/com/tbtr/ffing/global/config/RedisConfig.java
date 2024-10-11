@@ -1,14 +1,19 @@
 package com.tbtr.ffing.global.config;
 
 import com.tbtr.ffing.domain.game.dto.internal.BattleInfo;
+import com.tbtr.ffing.domain.game.dto.request.BattleRoundInfoReq;
+import com.tbtr.ffing.domain.game.dto.response.BattleInfoRes;
 import com.tbtr.ffing.domain.game.dto.internal.MatchInfo;
+import com.tbtr.ffing.global.redis.component.RedisRefreshToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
@@ -27,6 +32,16 @@ public class RedisConfig {
     }
 
     @Bean
+    public RedisTemplate<String, RedisRefreshToken> tokenRedisTemplate() {
+        RedisTemplate<String, RedisRefreshToken> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+
+        return redisTemplate;
+    }
+
+    @Bean
     public RedisTemplate<String, String> randomMatchRedisTemplate() {
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
@@ -42,9 +57,28 @@ public class RedisConfig {
         RedisTemplate<String, MatchInfo> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(connectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-//        redisTemplate.setValueSerializer(new GenericToStringSerializer<>(Integer.class));
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
 
+        return redisTemplate;
+
+    }
+
+    @Bean
+    public RedisTemplate<String, Integer> countRedisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, Integer> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(connectionFactory);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericToStringSerializer<>(Integer.class));
+        return redisTemplate;
+
+    }
+
+    @Bean
+    public RedisTemplate<String, BattleRoundInfoReq> userSignalRedisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, BattleRoundInfoReq> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(connectionFactory);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         return redisTemplate;
 
     }

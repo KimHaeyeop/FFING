@@ -1,5 +1,7 @@
 package com.tbtr.ffing.domain.finance.dto.response.asset;
 
+import com.tbtr.ffing.domain.finance.entity.Asset;
+import com.tbtr.ffing.domain.user.entity.User;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -18,5 +20,30 @@ public class AssetRes {
 	private BigDecimal stockBalance;
 	private BigDecimal othersBalance;
 	private String updatedDate;
+
+	public Asset toNewEntity(User user) {
+		return Asset.builder()
+				.totalAsset(totalAsset)
+				.accountBalance(accountBalance)
+				.depositSavingsBalance(depositSavingsBalance)
+				.stockBalance(stockBalance)
+				.othersBalance(othersBalance)
+				.updatedDate(updatedDate)
+				.user(user)
+				.build();
+	}
+
+	public Asset toOldEntity(User user) {
+		return Asset.builder()
+				.assetId(assetId)
+				.totalAsset(totalAsset)
+				.accountBalance(accountBalance)
+				.depositSavingsBalance(depositSavingsBalance)
+				.stockBalance(stockBalance)
+				.othersBalance(othersBalance)
+				.updatedDate(updatedDate)
+				.user(user)
+				.build();
+	}
 
 }

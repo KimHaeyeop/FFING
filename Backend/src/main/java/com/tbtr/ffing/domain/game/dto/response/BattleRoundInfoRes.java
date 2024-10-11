@@ -1,20 +1,20 @@
 package com.tbtr.ffing.domain.game.dto.response;
 
-import com.tbtr.ffing.domain.game.dto.internal.PetStatus;
+import com.tbtr.ffing.domain.game.dto.internal.BattlePetInfo;
+import com.tbtr.ffing.domain.game.dto.internal.BattleRoundPetInfo;
 import lombok.*;
 
-@AllArgsConstructor
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class BattleRoundInfoRes {
     private String matchId;
 
-    private Long firstToMoveUserId;     // 먼저 공격하는 사람
-    private int fromUserAttackNum;
-    private int toUserAttackNum;
-    private PetStatus fromUserPet;      // 모든 공격처리를 마친 후의 펫 상태
-    private PetStatus toUserPet;        // 모든 공격처리를 마친 후의 펫 상태
+    private boolean isFinished;
+    private BattleRoundPetInfo pet1Info;
+    private BattleRoundPetInfo pet2Info;
 
 }

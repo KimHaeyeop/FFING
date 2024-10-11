@@ -2,16 +2,15 @@ package com.tbtr.ffing.domain.finance.controller;
 
 import com.tbtr.ffing.domain.finance.dto.response.asset.AccountAssetRes;
 import com.tbtr.ffing.domain.finance.dto.response.asset.AccountTransactionAssetRes;
-import com.tbtr.ffing.domain.finance.dto.response.asset.AssetRes;
-import com.tbtr.ffing.domain.finance.dto.response.asset.DepositAssetRes;
 import com.tbtr.ffing.domain.finance.service.AssetService;
+import com.tbtr.ffing.domain.user.dto.CustomUserDetails;
 import com.tbtr.ffing.global.common.dto.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,27 +21,22 @@ public class AssetController {
 
     private final AssetService assetService;
 
-
     @GetMapping("")
-    public ResponseEntity<Object> selectTotalAsset(@RequestParam long userId) {
-        Map<String, Object> resultMap = new HashMap<>();
-        AssetRes currentAsset = assetService.getCurrentAsset(userId);
-        resultMap.put("currentAsset", currentAsset);
-        List<AssetRes> assets = assetService.getAssetHistory(userId);
-        resultMap.put("assets", assets);
+    public ResponseEntity<Object> selectAssetHomeInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Map<String, Object> assetInfoMap = assetService.getAssetHomeInfo(userDetails.getUserId());
 
         Response<Object> response = Response.builder()
                 .code(200L)
                 .message("성공")
-                .result(resultMap)
+                .result(assetInfoMap)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/deposit")
-    public ResponseEntity<Object> selectDepositAsset(@RequestParam long userId) {
-        List<Object> deposits = assetService.getDepositList(userId);
+    public ResponseEntity<Object> selectDepositAsset(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        List<Object> deposits = assetService.getDepositList(userDetails.getUserId());
 
         Response<Object> response = Response.builder()
                 .code(200L)
@@ -67,8 +61,8 @@ public class AssetController {
     }
 
     @GetMapping("/account")
-    public ResponseEntity<Object> selectAccountAsset(@RequestParam long userId) {
-        List<AccountAssetRes> accounts = assetService.getAccountList(userId);
+    public ResponseEntity<Object> selectAccountAsset(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        List<AccountAssetRes> accounts = assetService.getAccountList(userDetails.getUserId());
 
         Response<Object> response = Response.builder()
                 .code(200L)
