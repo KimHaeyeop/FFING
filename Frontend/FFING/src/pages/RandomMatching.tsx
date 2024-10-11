@@ -91,17 +91,17 @@ const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUser
     const opponentPosition = (opponentStat / maxStat) * 100;
 
     return (
-      <div className="mb-4">
+      <div className="mb-2">
         <p className="text-sm">{label}</p>
-        <div className="relative h-4 bg-gray-300 rounded">
+        <div className="relative h-2 bg-gray-300 rounded">
           {/* 나의 스탯 점유율 */}
           <div
-            className="absolute top-0 h-4 bg-blue-500 rounded"
+            className="absolute top-0 h-2 bg-blue-500 rounded"
             style={{ width: `${myPosition}%` }}
           />
           {/* 상대방의 스탯 점유율 */}
           <div
-            className="absolute top-0 h-4 bg-red-500 rounded"
+            className="absolute top-0 h-2 bg-red-500 rounded"
             style={{ width: `${opponentPosition}%`, left: `${myPosition}%` }}  // 내 점유율 끝에서 시작
           />
         </div>
@@ -115,49 +115,52 @@ const RandomMatching: React.FC<RandomMatchingProps> = ({ isOpen, onClose, myUser
 
   return isOpen ? (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-lg">
-        <h2 className="text-2xl font-bold mb-4">랜덤 매칭 중...</h2>
-
+      <div
+        className="bg-white rounded-lg shadow-lg p-4 w-11/12 max-w-lg"
+        style={{
+          maxHeight: '85vh',  // 화면 높이의 85%를 넘지 않도록 설정
+          overflow: 'hidden',  // 스크롤 발생 방지
+        }}
+      >
         {isMatched ? (
-          <div className="bg-gray-200 p-4 rounded-lg">
+          <div className="bg-gray-200 p-2 rounded-lg">
             <div className="mb-4">
-              {/* API 연동하면 좋을 것 같은데 */}
-              <p className="font-galmuri-11-bold text-2xl p-2 text-blue-500">{myInfo?.nickname}</p>
-              <div className="flex justify-center space-x-4">
+              <p className="font-galmuri-11-bold text-xl p-1 text-blue-500">{myInfo?.nickname}</p>
+              <div className="flex justify-center space-x-2">
                 <p className="bg-[#C8E697] p-1 rounded-md text-sm">{myInfo?.winCount}승</p>
                 <p className="bg-[#D23B8C] p-1 rounded-md text-white text-sm">{myInfo?.loseCount}패</p>
               </div>
-              <p className="text-xl mt-2 font-galmuri-11-bold">전투력 {myInfo?.totalStat}</p>
+              <p className="text-lg mt-2 font-galmuri-11-bold">전투력 {myInfo?.totalStat}</p>
             </div>  
-
+  
             {myInfo?.stats.map((stat: number, index: number) => (
               renderStatComparison(statLabels[index], stat, opponentInfo?.stats[index] || 0)
             ))}
-
+  
             <div className="mb-4">
-              <p className="font-galmuri-11-bold text-2xl p-2 text-red-500">{opponentInfo?.nickname}</p>
-              <div className="flex justify-center space-x-4">
+              <p className="font-galmuri-11-bold text-xl p-1 text-red-500">{opponentInfo?.nickname}</p>
+              <div className="flex justify-center space-x-2">
                 <p className="bg-[#C8E697] p-1 rounded-md text-sm">{opponentInfo?.winCount}승</p>
                 <p className="bg-[#D23B8C] p-1 rounded-md text-white text-sm">{opponentInfo?.loseCount}패</p>
               </div>
-              <p className="text-xl mt-2 font-galmuri-11-bold">전투력 {opponentInfo?.totalStat}</p>
+              <p className="text-lg mt-2 font-galmuri-11-bold">전투력 {opponentInfo?.totalStat}</p>
             </div>
-
-
+  
           </div>
         ) : (
           <p className="text-center text-lg">매칭 중...</p>
         )}
-
+  
         <button 
           onClick={onClose} 
-          className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300"
+          className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300 text-sm"  // 작은 화면에 맞게 텍스트 크기 축소
         >
           취소
         </button>
       </div>
     </div>
   ) : null;
+  
 };
 
 export default RandomMatching;
