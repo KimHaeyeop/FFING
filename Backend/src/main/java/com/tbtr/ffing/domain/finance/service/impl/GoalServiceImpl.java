@@ -5,6 +5,7 @@ import static com.tbtr.ffing.domain.finance.constants.GoalConstants.GOAL_TYPE_SP
 
 import com.tbtr.ffing.domain.finance.dto.request.goal.GoalReq;
 import com.tbtr.ffing.domain.finance.dto.request.goal.SpendingReq;
+import com.tbtr.ffing.domain.finance.dto.response.asset.AssetRes;
 import com.tbtr.ffing.domain.finance.dto.response.goal.CheckRes;
 import com.tbtr.ffing.domain.finance.dto.response.goal.GoalDetailRes;
 import com.tbtr.ffing.domain.finance.dto.response.goal.GoalRes;
@@ -38,7 +39,8 @@ public class GoalServiceImpl implements GoalService {
         LocalDate now = LocalDate.now();
 
         // 현재 총 자산 : asset 테이블에서 가져오기
-        BigDecimal totalAsset = assetRepository.findCurrentAssetByUserId(userId).getTotalAsset();
+        AssetRes asset = assetRepository.findCurrentAssetByUserId(userId);
+        BigDecimal totalAsset = asset.getTotalAsset();
 
         // 고정 수입 : 현재 기준 한 달 전 account_transaction 에서 transaction_type_name = 입금(고정) 에서 가져오기
         LocalDate previousMonth = now.minusMonths(1);
@@ -48,7 +50,7 @@ public class GoalServiceImpl implements GoalService {
                 ssafyUserId);
 
         // 남은 개월 수
-        int leftMonths = toLeftMonths(LocalDate.now().getMonthValue());
+        int leftMonths = toLeftMonths(Integer.parseInt(asset.getUpdatedDate().substring(4, 6)));
 
         // 최대 목표 자산
         BigDecimal totalAmount = totalAsset.add(fixedIncome.multiply(new BigDecimal(leftMonths)));
@@ -148,7 +150,7 @@ public class GoalServiceImpl implements GoalService {
     }
 
     private int toLeftMonths(int month) {
-        return 12 - month + 1;
+        return 12 - month;
     }
 
     private String toYearMonths(int year, int month) {
