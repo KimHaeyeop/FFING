@@ -99,7 +99,7 @@
 - 서로의 스탯 비교를 통해 데미지의 가중치가 계산됩니다.
 
 <div style="display: flex; justify-content: space-between;">
-    <img src="https://github.com/user-attachments/assets/bef5381e-694f-4129-aadb-9d4fcaee61e2" alt="Screenshot 1" width="48%">
+    <img src="https://github.com/user-attachments/assets/4c50ad6e-e93c-4ae0-9ce9-62733ccc2826" alt="Screenshot 1" width="48%">
 </div>
 <br>
 
