@@ -90,16 +90,16 @@
     <img src="https://github.com/user-attachments/assets/fab5aa23-dfe3-491f-b2be-1c1643e3e072" alt="Screenshot 1" width="48%">
 </div>
 
+### 펫
+
 ### 게임
 
-- 자기 자신 또는 타인을 위한 펀딩을 개설할 수 있습니다.
-- 펀딩 개설자가 금액을 입력하면 펀딩이 시작됩니다.
-- QR코드를 통해 편의점 등에서 간편하게 펀딩에 참여할 수 있습니다.
-- 펀딩에 참여한 모든 이는 메시지를 남길 수 있습니다.
+- 상대방과 펫간 1:1 배틀을 할 수 있습니다.
+- 펫간 배틀은 펫이 보유한 스탯을 기반으로 번갈아 가며 공격을 가해 상대방의 체력을 깎는 것입니다.
+- 서로의 스탯 비교를 통해 데미지의 가중치가 계산됩니다.
 
 <div style="display: flex; justify-content: space-between;">
-    <img src="https://github.com/user-attachments/assets/c36aaf33-dee3-481f-b0ae-2f5000655e00" alt="Screenshot 1" width="48%">
-    <img src="https://github.com/user-attachments/assets/52757a39-41f1-485f-bbde-ff3aa03d59dd" alt="Screenshot 2" width="48%">
+    <img src="https://github.com/user-attachments/assets/bef5381e-694f-4129-aadb-9d4fcaee61e2" alt="Screenshot 1" width="48%">
 </div>
 <br>
 
@@ -107,7 +107,7 @@
 
 - Front-end: React 18.3.1, Firebase 9.5.0, Phaser 3.85.2, Typescript, Zustand, React-query, tailwind
 - Back-end: JDK 21, SpringBoot 3.3.2, SpringSecurity 6.3.1, MySQL 8.3.0
-- Infra: Nginx, AWS EC2, AWS S3, Prometheus, Grafana
+- Infra: Nginx, AWS EC2, AWS S3, Docker, Prometheus, Grafana
 - 버전 및 이슈관리: Gitlab, Gitlab Issues
 - 협업 툴: Notion, MatterMost, Figma, Erdcloud, Jira, GoogleWorkspace
 
@@ -117,7 +117,7 @@
 
 | 이름                                     | 구분 | 역할      | 수행업무                                          |
 | ---------------------------------------- | ---- | --------- | ------------------------------------------------- |
-| [변재호](https://github.com/bjho606)     | 팀장 | BE, Infra | 로그인, 자녀관리, 추억적금                        |
+| [변재호](https://github.com/bjho606)     | 팀장 | BE, Infra | 주식, 게임-매칭, 게임-배틀                        |
 | [김명화](https://github.com/monghwadang) | 팀원 | BE, FE    | 금융 API, Spring Batch 및 스케줄러 구현, FCM 구현 |
 | [김해엽](https://github.com/KimHaeyeop)      | 팀원 | BE       | Spring Security 및 JWT, 목표 설정, 모니터링 시스템                          |
 | [탁인혁](https://github.com/InhyukTak)   | 팀원 | BE, DB    | 목표설정, 리워드                                  |
@@ -130,7 +130,8 @@
 
 ### 변재호
 
-> 느낀점
+> - 기획을 잘하는 것은 매우 어려운 일이다. 기획 내용도 좋아야하고, 기획 내용이 좋은지 알 수 있어야 하고, 구체화하며 심지어 디자인까지도 잘해야하는 것까지가 기획인 것 같다. 아마 이래서 기획자와 디자이너가 따로 있는 것이 아닐까 싶다.
+> - 시간이 늘어지는 부분을 어떻게 처리해야할지 아직 모르겠다. 늘어지니 넘어가자고 하기엔 꼭 해결해야하고, 그냥 놔두자니 시간이 너무 걸리는 문제가 있어 어떻게 이를 동시에 해결할 수 있을지 고민이 필요한 것 같다.
 
 ### 김명화
 
