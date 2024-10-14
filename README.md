@@ -121,7 +121,7 @@
 | [김명화](https://github.com/monghwadang) | 팀원 | BE, FE    | 금융 API, Spring Batch 및 스케줄러 구현, FCM 구현 |
 | [김해엽](https://github.com/KimHaeyeop)      | 팀원 | BE       | Spring Security 및 JWT, 목표 설정, 모니터링 시스템                          |
 | [탁인혁](https://github.com/InhyukTak)   | 팀원 | BE, DB    | 목표설정, 리워드                                  |
-| [원민혁](https://github.com/wmy4534)     | 팀원 | FE        | 목표설정, 리워드, 펀딩                            |
+| [원민혁](https://github.com/wmy4534)     | 팀원 | FE        | 게임 에셋 수정 및 차트, 로그인, WebSocket 연결, API 연결 시 검증 |
 | [이규석](https://github.com/qldrh112)    | 팀원 | FE        | 게임, 도감, 자산, 지출, 알림                      |
 
 <br>
