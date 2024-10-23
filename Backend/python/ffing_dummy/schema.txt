@@ -1,0 +1,291 @@
+DROP DATABASE ffing_db;
+CREATE DATABASE ffing_db;
+USE ffing_db;
+
+
+CREATE TABLE `user` (
+    `user_id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `email` VARCHAR(40) NOT NULL,
+    `password` VARCHAR(100) NOT NULL,
+    `username` VARCHAR(20) NOT NULL,
+    `role` ENUM('USER', 'ADMIN') NOT NULL,
+    `gender` ENUM('M', 'F') NOT NULL,
+    `birth` DATE NOT NULL,
+    `nickname` VARCHAR(20) NOT NULL UNIQUE,
+    `pin` INT,
+    `created_at` DATE NOT NULL,
+    `updated_at` DATE NOT NULL,
+    `ssafy_user_id` BIGINT NOT NULL
+);
+
+CREATE TABLE `goal` (
+    `goal_id`    bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT    COMMENT 'AUTO_INCREMENT',
+    `goal_type`    VARCHAR(5)    NOT NULL,
+    `balance`    decimal(16, 2)    NOT NULL,
+    `start_balance`	decimal(16, 2),
+    `created_at`    Date    NOT NULL,
+    `updated_at`    Date    NOT NULL,
+    `user_id`    bigint    NOT NULL    COMMENT 'AUTO_INCREMENT'
+);
+
+CREATE TABLE `ssafy_user` (
+    `ssafy_user_id`    bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT    COMMENT 'AUTO_INCREMENT',
+    `user_id`    varchar(40)    NOT NULL    COMMENT '이메일 주소',
+    `username`    varchar(20)    NOT NULL    COMMENT '이메일 주소의 사용자명(@ 앞)에 해당',
+    `user_key`    varchar(60)    NOT NULL    COMMENT '랜덤 UUID',
+    `created_at`    date    NOT NULL    COMMENT 'NOW()'
+);
+
+CREATE TABLE `account_product` (
+    `account_product_id`    bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT    COMMENT 'AUTO_INCREMENT',
+    `account_type_unique_no`    varchar(20)    NOT NULL,
+    `account_name`    varchar(20)    NOT NULL,
+    `bank_code`    varchar(5)    NOT NULL,
+    `bank_name`    varchar(20)    NOT NULL
+);
+
+CREATE TABLE `account` (
+    `account_id`    bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT    COMMENT 'AUTO_INCREMENT',
+    `bank_code`    varchar(5)    NOT NULL,
+    `account_name`    varchar(20)    NOT NULL,
+    `account_no`    varchar(16)    NOT NULL,
+    `account_created_date`    date    NOT NULL,
+    `account_expiry_date`    date    NOT NULL,
+    `account_balance`    decimal(16, 2)    NULL,
+    `last_transaction_date`    date    NOT NULL,
+    `ssafy_user_id`    bigint    NOT NULL    COMMENT 'AUTO_INCREMENT',
+    `demand_deposit_id`    bigint    NOT NULL    COMMENT 'AUTO_INCREMENT'
+);
+
+CREATE TABLE `account_transaction` (
+    `account_transaction_id`    bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT    COMMENT 'AUTO_INCREMENT',
+    `transaction_date`    varchar(8)    NOT NULL,
+    `transaction_time`    varchar(6)    NOT NULL,
+    `transaction_type`    varchar(5)    NOT NULL    COMMENT '1: 입금, 2: 출금',
+    `transaction_type_name`    varchar(10)    NOT NULL    COMMENT '입금, 출금, 입금(이체), 출금(이체)',
+    `transaction_account_no`    varchar(16)    NULL,
+    `transaction_balance`    decimal(16, 2)    NOT NULL,
+    `transaction_after_balance`    decimal(16, 2)    NOT NULL,
+    `transaction_summary`    varchar(255)    NOT NULL,
+    `transaction_memo`    varchar(255)    NOT NULL,
+    `account_id`    bigint    NOT NULL    COMMENT 'AUTO_INCREMENT'
+);
+
+CREATE TABLE `deposit_product` (
+    `deposit_product_id`    bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT    COMMENT 'AUTO_INCREMENT',
+    `account_type_unique_no` varchar(20) NOT NULL,
+    `bank_code`    varchar(3)    NOT NULL,
+    `bank_name`    varchar(20)    NOT NULL,
+    `account_name`    varchar(20)    NOT NULL,
+    `subscription_period`    bigint    NOT NULL,
+    `min_subscription_balance`    decimal(16, 2)    NOT NULL,
+    `max_subscription_balance`    decimal(16, 2)    NOT NULL,
+    `interest_rate`    decimal(3,1)    NOT NULL    COMMENT '최대 99.9%'
+);
+
+CREATE TABLE `card_product` (
+    `card_product_id`    bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT    COMMENT 'AUTO_INCREMENT',
+    `card_unique_no`    varchar(20)    NOT NULL    COMMENT '카드사 코드 - 난수',
+    `card_issuer_code`    varchar(4)    NOT NULL    COMMENT '숫자 4자리',
+    `card_issuer_name`    varchar(20)    NOT NULL,
+    `card_name`    varchar(100)    NOT NULL,
+    `card_description`    varchar(255)    NULL
+);
+
+CREATE TABLE `deposit_account` (
+    `deposit_account_id`    bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT    COMMENT 'AUTO_INCREMENT',
+    `bank_code`    varchar(3)    NOT NULL,
+    `account_name`    varchar(20)    NOT NULL,
+    `withdrawal_account_no`    varchar(20)    NOT NULL    COMMENT '출금할 수시입출금 계좌번호 -> 해당 계좌의 pk를 fk로 쓰면 더 간편.,',
+    `account_no`    varchar(20)    NOT NULL,
+    `deposit_balance`    decimal(16, 2)    NOT NULL,
+    `total_balance`    decimal(16, 2)    NOT NULL    COMMENT '현재 보유 금액',
+    `account_create_date`    date    NOT NULL,
+    `account_expiry_date`    date    NOT NULL,
+    `deposit_product_id`    bigint    NOT NULL    COMMENT 'AUTO_INCREMENT',
+    `ssafy_user_id`    bigint    NOT NULL    COMMENT 'AUTO_INCREMENT'
+);
+
+CREATE TABLE `deposit_transaction` (
+    `deposit_transaction_id`    bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT    COMMENT 'AUTO_INCREMENT',
+    `payment_date`    varchar(8)    NOT NULL,
+    `payment_time`    varchar(6)    NOT NULL,
+    `payment_balance`    decimal(16, 2)    NOT NULL    COMMENT '계좌 개설시 납입 해야함. 계좌 잔액 이하',
+    `deposit_account_id`    bigint    NOT NULL    COMMENT 'AUTO_INCREMENT'
+);
+
+CREATE TABLE `savings_product` (
+    `savings_product_id`    bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT    COMMENT 'AUTO_INCREMENT',
+    `account_type_unique_no` varchar(20) NOT NULL,	-- 적금 상품 코드
+    `bank_code`    varchar(3)    NOT NULL,
+    `bank_name`    varchar(20)    NOT NULL,
+    `account_name`    varchar(20)    NOT NULL,
+    `subscription_period`    bigint    NOT NULL,
+    `min_subscription_balance`    decimal(16, 2)    NOT NULL,
+    `max_subscription_balance`    decimal(16, 2)    NOT NULL,
+    `interest_rate`    decimal(3,1)    NOT NULL    COMMENT '최대 99.9%'
+);
+
+CREATE TABLE `savings_account` (
+    `savings_account_id`    bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT    COMMENT 'AUTO_INCREMENT',
+    `bank_code`    varchar(3)    NOT NULL,
+    `account_name`    varchar(20)    NOT NULL,
+    `withdrawal_account_no`    varchar(20)    NOT NULL    COMMENT '출금할 수시입출금 계좌번호',
+    `account_no`    varchar(20)    NOT NULL,
+    `deposit_balance`    decimal(16, 2)    NOT NULL,
+    `total_balance`    decimal(16, 2)    NOT NULL    COMMENT '보유 금액',
+    `installment_number`    bigint    NULL,
+    `account_create_date`    date    NOT NULL,
+    `account_expiry_date`    date    NOT NULL,
+    `status`    enum('ACTIVE', 'MATURED', 'CLOSED')    NOT NULL    COMMENT 'ACTIVE,MATURED,CLOSED',
+    `savings_product_id`    bigint    NOT NULL    COMMENT 'AUTO_INCREMENT',
+    `ssafy_user_id`    bigint    NOT NULL    COMMENT 'AUTO_INCREMENT'
+);
+
+CREATE TABLE `savings_transaction` (
+    `savings_transaction_id`    bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT    COMMENT 'AUTO_INCREMENT',
+    `payment_date`    varchar(8)    NOT NULL    COMMENT 'YYYYMMDD',
+    `payment_time`    varchar(6)    NOT NULL    COMMENT 'HHMMSS',
+    `payment_balance`    decimal(16, 2)    NOT NULL,
+    `deposit_installment`    bigint    NOT NULL,
+    `savings_account_id`    bigint    NOT NULL    COMMENT 'AUTO_INCREMENT'
+);
+
+CREATE TABLE `card` (
+    `card_id`    bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT    COMMENT 'AUTO_INCREMENT',
+    `card_issuer_code`    varchar(4)    NOT NULL,
+    `card_name`    varchar(100)    NOT NULL,
+    `card_no`    varchar(16)    NOT NULL,
+    `cvc`    varchar(3)    NOT NULL,
+    `card_expiry_date`    date    NOT NULL    COMMENT '개설일 + 5년',
+    `withdrawal_account_no`    varchar(16)    NOT NULL,
+    `card_product_id`    bigint    NOT NULL    COMMENT 'AUTO_INCREMENT',
+    `ssafy_user_id`    bigint    NOT NULL    COMMENT 'AUTO_INCREMENT'
+);
+
+CREATE TABLE `card_transaction` (
+    `card_transaction_id`    bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT    COMMENT 'AUTO_INCREMENT',
+    `category`    varchar(255)    NOT NULL,
+    `merchant`    varchar(100)    NOT NULL,
+    `transaction_date`    varchar(8)    NOT NULL    COMMENT 'YYYYMMDD',
+    `transaction_time`    varchar(6)    NOT NULL    COMMENT 'HHMMSS',
+    `payment_balance`    decimal(16, 2)    NOT NULL,
+    `card_id`    bigint    NOT NULL    COMMENT 'AUTO_INCREMENT'
+);
+
+CREATE TABLE `alarm` (
+    `alarm_id`    bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT    COMMENT 'AUTO_INCREMENT',
+    `alarm_date`    varchar(8)    NOT NULL    COMMENT 'YYYYMMDD',
+    `alarm_time`    varchar(6)    NOT NULL    COMMENT 'HHMMSS',
+    `alarm_type`    enum('DAILY', 'WEEKLY', 'MONTHLY', 'EVENT', 'GAME')    NOT NULL    COMMENT 'DAILY, WEEKLY, MONTHLY, EVENT, GAME',
+    `alarm_title`    varchar(20)    NOT NULL,
+    `alarm_content`    varchar(255)    NOT NULL,
+    `alarm_label`    enum('CHECK', 'ADVICE', 'WARNING', 'CAUTION', 'GAME')    NOT NULL    COMMENT 'CHECK, ADVICE, WARNING, CAUTION, GAME',
+    `alarm_status`    tinyint(1)    NULL    DEFAULT 0    COMMENT '0(안읽음), 1(읽음)',
+    `user_id`    bigint    NOT NULL    COMMENT 'AUTO_INCREMENT'
+);
+
+CREATE TABLE `expense` (
+    `expense_id`    bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT    COMMENT 'AUTO_INCREMENT',
+    `expense_name`    varchar(255)    NOT NULL,
+    `expense_category`    enum('FINANCE', 'FOOD_BAKERY', 'LIFE_CULTURE', 'SHOPPING', 'TRANSPORTATION', 'OVERSEAS')    NOT NULL,
+    `expense_memo`    varchar(255)    NULL,
+    `expense_date`    varchar(8)    NOT NULL    COMMENT 'YYYYMMDD',
+    `expense_time`    varchar(6)    NOT NULL    COMMENT 'HHMMSS',
+    `expense_balance`    decimal(16, 2)    NOT NULL,
+    `user_id`    bigint    NOT NULL    COMMENT 'AUTO_INCREMENT'
+);
+
+CREATE TABLE `alarm_setting` (
+    `alarm_id`    bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT    COMMENT 'AUTO_INCREMENT',
+    `daily_alarm`    tinyint(1)    NULL    DEFAULT 1,
+    `weekly_alarm`    tinyint(1)    NULL    DEFAULT 1,
+    `monthly_alarm`    tinyint(1)    NULL    DEFAULT 1,
+    `event_alarm`    tinyint(1)    NULL    DEFAULT 1    COMMENT 'ADVICE, WARNING, CAUTION에 해당',
+    `game_alarm`    tinyint(1)    NULL    DEFAULT 1,
+    `user_id`    bigint    NOT NULL    COMMENT 'AUTO_INCREMENT'
+);
+
+CREATE TABLE `asset` (
+    `asset_id`    bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT    COMMENT 'AUTO_INCREMENT',
+    `total_asset`    decimal(16, 2)    NULL    DEFAULT 0,
+    `account_balance`    decimal(16, 2)    NULL    DEFAULT 0,
+    `deposit_savings_balance`    decimal(16, 2)    NULL    DEFAULT 0,
+    `stock_balance`    decimal(16, 2)    NULL    DEFAULT 0,
+    `others_balance`    decimal(16, 2)    NULL    DEFAULT 0,
+    `updated_date`    varchar(8)    NULL	COMMENT 'YYYYMMDD',
+    `user_id`    bigint    NOT NULL    COMMENT 'AUTO_INCREMENT'
+);
+
+CREATE TABLE `stock_account` (
+	`stock_account_id` bigint NOT NULL primary key auto_increment,
+    `securities_company_code` varchar(3) not null,
+    `securities_company_name` varchar(50) not null,
+    `stock_account_balance` bigint not null,
+    `total_evaluation_amount` bigint not null,
+    `total_purchase_amount` bigint not null,
+    `ssafy_user_id`    bigint    NOT NULL
+);
+
+CREATE TABLE `stock_info` (
+	`stock_info_id` bigint NOT NULL primary key auto_increment,
+    `stock_code` varchar(6) not null,
+    `stock_name` varchar(50) not null,
+    `current_evaluation_price` bigint not null
+);
+
+CREATE TABLE `stock_transaction` (
+	`stock_transaction_id` bigint NOT NULL primary key auto_increment,
+    `transaction_type` varchar(5) not null,
+    `transaction_balance` bigint not null,
+    `transaction_quantity` bigint not null,
+    `transaction_date` varchar(8) not null,
+    `transaction_time` varchar(6) not null,
+	`stock_account_id` bigint not null,
+    `stock_info_id` bigint not null
+);
+
+CREATE TABLE `pet_list` (
+	`pet_id`	bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT,
+	`pet_code`	varchar(3)	NOT NULL,
+	`pet_name`	varchar(20)	NOT NULL,
+	`image_url`	varchar(255)	NULL
+);
+
+CREATE TABLE `pet_type` (
+	`type_id`	bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT,
+	`type_code`	varchar(3)	NOT NULL,
+	`type_name`	varchar(20)	NOT NULL	COMMENT '금융, 식비, 생활, 쇼핑, 교통',
+	`image_url`	varchar(255)	NULL
+);
+
+CREATE TABLE `pet_collection` (
+	`pet_collection_id`	bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT,
+	`created_date`	varchar(8)	NOT NULL COMMENT 'YYYYMMDD',
+	`pet_id`	bigint	NOT NULL,
+	`user_id`	bigint	NOT NULL
+);
+
+CREATE TABLE `pet_info` (
+	`pet_info_id`	bigint    NOT NULL    PRIMARY KEY    AUTO_INCREMENT,
+	`total_stat`	int	NOT NULL,
+	`finance_stat`	int	NOT NULL,
+	`food_bakery_stat`	int	NOT NULL,
+	`life_culture_stat`	int	NOT NULL,
+	`shopping_stat`	int	NOT NULL,
+	`transportation_stat`	int	NOT NULL,
+	`win_count`	int	NOT NULL,
+	`lose_count`	int	NOT NULL,
+	`created_date`	varchar(8)	NOT NULL COMMENT 'YYYYMMDD',
+	`pet_id`	bigint	NOT NULL,
+	`type_id`	bigint	NOT NULL,
+	`user_id`	bigint	NOT NULL
+);
+
+CREATE TABLE `battle_history` (
+	`battle_history_id` bigint	NOT NULL	PRIMARY KEY	AUTO_INCREMENT,
+  `created_at`    DATETIME 	NOT NULL	DEFAULT CURRENT_TIMESTAMP 	COMMENT 'NOW()',
+  `winner_pet_id`		bigint	NOT NULL,
+  `pet1_id`			bigint	NOT NULL,
+  `pet2_id`			bigint	NOT NULL
+);
